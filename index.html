@@ -1,404 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Database Systems — Digital Business</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --bg: #ede8e0;
-            --bg-alt: #e2dbd1;
-            --text: #1a1a1a;
-            --text-sec: #5a5a5a;
-            --accent: #8a8178;
-            --line: #b8b0a4;
-            --green: #2d5a27;
-            --green-light: #e8f0e7;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-        }
-
-        /* --- NAV --- */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 2.5vh 4vw;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--line);
-            background: rgba(237,232,224,0.92);
-            backdrop-filter: blur(12px);
-        }
-
-        nav .brand {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.15rem;
-            letter-spacing: 0.5px;
-        }
-
-        nav .meta {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--accent);
-        }
-
-        /* --- HERO --- */
-        .hero {
-            padding: 18vh 4vw 8vh;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            border-bottom: 1px solid var(--line);
-            position: relative;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 12vh;
-            right: 4vw;
-            width: 22vw;
-            height: 22vw;
-            border: 1px solid var(--line);
-            border-radius: 50%;
-            opacity: 0.35;
-            pointer-events: none;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 16vh;
-            right: 8vw;
-            width: 14vw;
-            height: 14vw;
-            border: 1px dashed var(--line);
-            border-radius: 50%;
-            opacity: 0.25;
-            pointer-events: none;
-        }
-
-        .hero-left {
-            max-width: 55vw;
-            position: relative;
-            z-index: 1;
-        }
-
-        .hero .label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent);
-            margin-bottom: 2.5vh;
-            font-weight: 500;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.8rem, 5.5vw, 5rem);
-            font-weight: 400;
-            line-height: 1.08;
-            margin-bottom: 2.5vh;
-        }
-
-        .hero h1 em {
-            font-style: italic;
-            color: var(--green);
-        }
-
-        .hero .subtitle {
-            font-size: clamp(0.95rem, 1.3vw, 1.15rem);
-            color: var(--text-sec);
-            max-width: 38vw;
-            line-height: 1.65;
-        }
-
-        /* --- VERTICAL LINE --- */
-        .vline {
-            position: fixed;
-            left: 8vw;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            background: var(--line);
-            opacity: 0.25;
-            z-index: 0;
-        }
-
-        /* --- SLIDES GRID --- */
-        .slides-section {
-            padding: 6vh 4vw 10vh;
-            position: relative;
-            z-index: 1;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent);
-            margin-bottom: 4vh;
-            font-weight: 500;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2.5vh 2.5vw;
-        }
-
-        .card {
-            border: 1px solid var(--line);
-            padding: 3.5vh 2.2vw;
-            background: rgba(255,255,255,0.25);
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.25s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            background: rgba(255,255,255,0.6);
-            transform: translateY(-3px);
-            border-color: var(--accent);
-        }
-
-        .card .num {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
-            color: var(--accent);
-            margin-bottom: 1.5vh;
-            line-height: 1;
-        }
-
-        .card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.08rem;
-            font-weight: 400;
-            line-height: 1.3;
-            margin-bottom: 1.2vh;
-        }
-
-        .card .desc {
-            font-size: 0.8rem;
-            color: var(--text-sec);
-            line-height: 1.55;
-            flex: 1;
-        }
-
-        .card .badge {
-            display: inline-block;
-            margin-top: 1.8vh;
-            padding: 0.4vh 0.8vw;
-            border: 1px solid var(--line);
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--accent);
-            align-self: flex-start;
-        }
-
-        .card .badge.phase {
-            border-color: var(--green);
-            color: var(--green);
-            background: var(--green-light);
-        }
-
-        .card.locked {
-            opacity: 0.45;
-            pointer-events: none;
-        }
-
-        .card.locked::after {
-            content: 'Soon';
-            position: absolute;
-            top: 1.5vh;
-            right: 1.5vw;
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--accent);
-            background: var(--bg);
-            padding: 0.3vh 0.6vw;
-            border: 1px solid var(--line);
-        }
-
-        /* --- FOOTER --- */
-        footer {
-            padding: 4vh 4vw;
-            border-top: 1px solid var(--line);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--accent);
-            letter-spacing: 1px;
-        }
-
-        footer a {
-            color: var(--text);
-            text-decoration: none;
-            border-bottom: 1px solid var(--line);
-            transition: border-color 0.2s;
-        }
-
-        footer a:hover {
-            border-color: var(--text);
-        }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 1024px) {
-            .grid { grid-template-columns: repeat(2, 1fr); }
-            .hero { flex-direction: column; align-items: flex-start; gap: 3vh; }
-            .hero .subtitle { max-width: 100%; }
-        }
-
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: 1fr; }
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{--bg:#ede8e0;--bg2:#e2dbd1;--text:#1a1a1a;--sec:#5a5a5a;--acc:#8a8178;--line:#b8b0a4;--grn:#2d5a27;--grn-l:#e8f0e7}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:2.5vh 4vw;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:rgba(237,232,224,.92);backdrop-filter:blur(12px)}
+        nav .brand{font-family:'Playfair Display',serif;font-size:1.15rem}
+        nav .meta{font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--acc)}
+        .hero{padding:18vh 4vw 8vh;border-bottom:1px solid var(--line);position:relative}
+        .hero::before{content:'';position:absolute;top:12vh;right:4vw;width:22vw;height:22vw;border:1px solid var(--line);border-radius:50%;opacity:.35;pointer-events:none}
+        .hero::after{content:'';position:absolute;top:16vh;right:8vw;width:14vw;height:14vw;border:1px dashed var(--line);border-radius:50%;opacity:.25;pointer-events:none}
+        .hero-left{max-width:55vw;position:relative;z-index:1}
+        .hero .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:4px;color:var(--acc);margin-bottom:2.5vh;font-weight:500}
+        .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5.5vw,5rem);font-weight:400;line-height:1.08;margin-bottom:2.5vh}
+        .hero h1 em{font-style:italic;color:var(--grn)}
+        .hero .sub{font-size:clamp(.95rem,1.3vw,1.15rem);color:var(--sec);max-width:38vw;line-height:1.65}
+        .vline{position:fixed;left:8vw;top:0;width:1px;height:100%;background:var(--line);opacity:.25;z-index:0}
+        .slides-section{padding:6vh 4vw 10vh;position:relative;z-index:1}
+        .section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:4px;color:var(--acc);margin-bottom:4vh;font-weight:500}
+        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vh 2.5vw}
+        .card{border:1px solid var(--line);padding:3.5vh 2.2vw;background:rgba(255,255,255,.25);text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all .25s ease;position:relative;overflow:hidden}
+        .card:hover{background:rgba(255,255,255,.6);transform:translateY(-3px);border-color:var(--acc)}
+        .card .num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--acc);margin-bottom:1.5vh;line-height:1}
+        .card h3{font-family:'Playfair Display',serif;font-size:1.08rem;font-weight:400;line-height:1.3;margin-bottom:1.2vh}
+        .card .desc{font-size:.8rem;color:var(--sec);line-height:1.55;flex:1}
+        .card .badge{display:inline-block;margin-top:1.8vh;padding:.4vh .8vw;border:1px solid var(--line);font-size:.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--acc);align-self:flex-start}
+        .card.locked{opacity:.45;pointer-events:none}
+        .card.locked::after{content:'Segera';position:absolute;top:1.5vh;right:1.5vw;font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--acc);background:var(--bg);padding:.3vh .6vw;border:1px solid var(--line)}
+        footer{padding:4vh 4vw;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--acc);letter-spacing:1px}
+        footer a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}
+        footer a:hover{border-color:var(--text)}
+        @media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}.hero .sub{max-width:100%}}
+        @media(max-width:600px){.grid{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
-    <div class="vline"></div>
-
-    <nav>
-        <div class="brand">Database Systems</div>
-        <div class="meta">Digital Business — Semester III</div>
-    </nav>
-
-    <section class="hero">
-        <div class="hero-left">
-            <div class="label">Digital Business Program</div>
-            <h1>Database <em>Systems</em></h1>
-            <p class="subtitle">From spreadsheets to SQL — understanding how data powers modern business, and how to design systems that scale.</p>
-        </div>
-    </section>
-
-    <section class="slides-section">
-        <div class="section-label">Slides</div>
-        <div class="grid">
-
-            <!-- 01 -->
-            <a href="slides/01-why-databases-matter.html" class="card">
-                <div class="num">01</div>
-                <h3>Why Databases Matter in Business</h3>
-                <p class="desc">Data vs. information, problems with spreadsheets at scale, and what a DBMS solves — through a growing online shop drowning in Excel.</p>
-                <div class="badge">Tersedia</div>
-            </a>
-
-            <!-- 02 -->
-            <div class="card locked">
-                <div class="num">02</div>
-                <h3>Database Systems Landscape</h3>
-                <p class="desc">Relational vs. NoSQL, key players (MySQL, PostgreSQL, MongoDB), and where databases sit in a business tech stack.</p>
+<div class="vline"></div>
+<nav>
+    <div class="brand">Database Systems</div>
+    <div class="meta">Digital Business — Semester III</div>
+</nav>
+<section class="hero">
+    <div class="hero-left">
+        <div class="lbl">Program Studi Digital Business</div>
+        <h1>Database <em>Systems</em></h1>
+        <p class="sub">Dari spreadsheet yang berantakan sampai bisa query SQL — belajar kenapa data jadi nyawa bisnis masa kini.</p>
+    </div>
+</section>
+<section class="slides-section">
+    <div class="section-label">Slide</div>
+    <div class="grid">
+        <a href="slides/01-why-databases-matter.html" class="card">
+            <div class="num">01</div>
+            <h3>Mengapa Database Penting untuk Bisnis</div>
             </div>
-
-            <!-- 03 -->
-            <div class="card locked">
-                <div class="num">03</div>
-                <h3>Data Modeling Basics</h3>
-                <p class="desc">Entities, attributes, and relationships — explained through a business domain of customers, orders, and products.</p>
-            </div>
-
-            <!-- 04 -->
-            <div class="card locked">
-                <div class="num">04</div>
-                <h3>ERD Practice</h3>
-                <p class="desc">Build an ER diagram together for a case study. Hands-on with dbdiagram.io.</p>
-            </div>
-
-            <!-- 05 -->
-            <div class="card locked">
-                <div class="num">05</div>
-                <h3>From ERD to Tables</h3>
-                <p class="desc">Translating entities and relationships into tables, rows, columns, primary keys, and foreign keys.</p>
-            </div>
-
-            <!-- 06 -->
-            <div class="card locked">
-                <div class="num">06</div>
-                <h3>Data Redundancy & Normalization</h3>
-                <p class="desc">Why duplicate data causes business headaches — inconsistent prices, orphaned records. 1NF through 3NF.</p>
-            </div>
-
-            <!-- 07 -->
-            <div class="card locked">
-                <div class="num">07</div>
-                <h3>Getting Hands-On: SQL & Tools</h3>
-                <p class="desc">Intro to MySQL Workbench / phpMyAdmin. First SELECT queries — reading data like a business analyst.</p>
-            </div>
-
-            <!-- 08 -->
-            <div class="card locked">
-                <div class="num">08</div>
-                <h3>Querying Data</h3>
-                <p class="desc">SELECT, WHERE, ORDER BY — filtering with business questions like "customers from Medan who spent over X."</p>
-            </div>
-
-            <!-- 09 -->
-            <div class="card locked">
-                <div class="num">09</div>
-                <h3>Summarizing Data</h3>
-                <p class="desc">GROUP BY and aggregate functions (SUM, COUNT, AVG) framed as building simple business reports.</p>
-            </div>
-
-            <!-- 10 -->
-            <div class="card locked">
-                <div class="num">10</div>
-                <h3>Combining Data — JOINs</h3>
-                <p class="desc">INNER JOIN and LEFT JOIN using a multi-table business case: orders, customers, and products.</p>
-            </div>
-
-            <!-- 11 -->
-            <div class="card locked">
-                <div class="num">11</div>
-                <h3>Views & Simple Subqueries</h3>
-                <p class="desc">Building reusable "reports" a business team could use. Intro to dashboards.</p>
-            </div>
-
-            <!-- 12 -->
-            <div class="card locked">
-                <div class="num">12</div>
-                <h3>Databases in Real Business Systems</h3>
-                <p class="desc">How CRM, ERP, POS, and e-commerce platforms use databases. Intro to data warehousing & BI.</p>
-            </div>
-
-            <!-- 13 -->
-            <div class="card locked">
-                <div class="num">13</div>
-                <h3>Data Security, Backup & Governance</h3>
-                <p class="desc">Access control, backups, and Indonesia's PDP Law — why this matters for business owners, not just IT.</p>
-            </div>
-
-            <!-- 14 -->
-            <div class="card locked">
-                <div class="num">14</div>
-                <h3>Capstone Project Work</h3>
-                <p class="desc">Design a complete database (ERD + tables + queries) for a business case of your choice. In-class consultation.</p>
-            </div>
-
-        </div>
-    </section>
-
-    <footer>
-        <span>Digital Business — Universitas Medan</span>
-        <a href="https://github.com/trixyncid/database-systems">GitHub</a>
-    </footer>
+            <p class="desc">Data vs informasi, masalah spreadsheet di skala besar, dan kenapa sebuah toko online yang lagi berkembang butuh database — bukan Excel.</p>
+            <div class="badge">Tersedia</div>
+        </a>
+        <div class="card locked"><div class="num">02</div><h3>Lanskap Sistem Database</h3><p class="desc">Relasional vs NoSQL, pemain utama (MySQL, PostgreSQL, MongoDB), dan posisi database di tech stack bisnis.</p></div>
+        <div class="card locked"><div class="num">03</div><h3>Dasar-Dasar Data Modeling</h3><p class="desc">Entity, attribute, dan relasi — dijelasin lewat domain bisnis: pelanggan, pesanan, produk.</p></div>
+        <div class="card locked"><div class="num">04</div><h3>Latihan ERD</h3><p class="desc">Bikin ER diagram bareng-bareng pakai studi kasus. Praktik langsung pakai dbdiagram.io.</p></div>
+        <div class="card locked"><div class="num">05</div><h3>Dari ERD ke Tabel</h3><p class="desc">Translate entity dan relasi jadi tabel, baris, kolom, primary key, dan foreign key.</p></div>
+        <div class="card locked"><div class="num">06</div><h3>Data Redundansi & Normalisasi</h3><p class="desc">Kenapa data duplikat bikin pusing bisnis — harga nggak konsisten, data yatim piatu. Dari 1NF sampai 3NF.</p></div>
+        <div class="card locked"><div class="num">07</div><h3>Praktik SQL & Tools</h3><p class="desc">Kenalan sama MySQL Workbench / phpMyAdmin. Query SELECT pertama — baca data kayak analis bisnis.</p></div>
+        <div class="card locked"><div class="num">08</div><h3>Query Data</h3><p class="desc">SELECT, WHERE, ORDER BY — filter data pakai pertanyaan bisnis: "tampilin pelanggan dari Medan yang belanja di atas X."</p></div>
+        <div class="card locked"><div class="num">09</div><h3>Rangkum Data</h3><p class="desc">GROUP BY dan fungsi agregat (SUM, COUNT, AVG) — bikin laporan penjualan sederhana.</p></div>
+        <div class="card locked"><div class="num">10</div><h3>Gabungin Data — JOINs</h3><p class="desc">INNER JOIN dan LEFT JOIN pakai kasus multi-tabel: pesanan, pelanggan, dan produk.</p></div>
+        <div class="card locked"><div class="num">11</div><h3>View & Subquery Sederhana</h3><p class="desc">Bikin "laporan" yang bisa dipakai ulang oleh tim bisnis. Intro ke dashboard.</p></div>
+        <div class="card locked"><div class="num">12</div><h3>Database di Sistem Bisnis Nyata</h3><p class="desc">Gimana CRM, ERP, POS, dan e-commerce pakai database. Intro data warehouse & BI.</p></div>
+        <div class="card locked"><div class="num">13</div><h3>Keamanan, Backup & Tata Kelola Data</h3><p class="desc">Akses kontrol, backup, dan UU PDP Indonesia — kenapa ini penting buat pemilik bisnis, bukan cuma IT.</p></div>
+        <div class="card locked"><div class="num">14</div><h3>Proyek Akhir</h3><p class="desc">Rancang database lengkap (ERD + tabel + query) untuk studi kasus bisnis pilihan. Konsultasi di kelas.</p></div>
+    </div>
+</section>
+<footer>
+    <span>Digital Business — Universitas Medan</span>
+    <a href="https://github.com/trixyncid/database-systems">GitHub</a>
+</footer>
 </body>
 </html>
