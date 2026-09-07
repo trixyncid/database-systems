@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Databases Matter in Business — Slide 01</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ede8e0;
+            --bg-secondary: #e2dbd1;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --accent: #8a8178;
+            --line: #b8b0a4;
+            --highlight: #2d5a27;
+            --highlight-light: #e8f0e7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 4vw;
+            background: var(--bg-primary);
+            overflow: hidden;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Geometric decorations */
+        .geo-decoration {
+            position: absolute;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Navigation */
+        .nav-dots {
+            position: fixed;
+            right: 2vw;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--line);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--text-primary);
+            transform: scale(1.3);
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 3vh;
+            right: 3vw;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            z-index: 100;
+        }
+
+        .nav-arrows {
+            position: fixed;
+            bottom: 3vh;
+            left: 3vw;
+            display: flex;
+            gap: 16px;
+            z-index: 100;
+        }
+
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--line);
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .nav-arrow:hover {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 400;
+            line-height: 1.1;
+        }
+
+        h1 { font-size: clamp(2.5rem, 5vw, 4.5rem); }
+        h2 { font-size: clamp(1.8rem, 3.5vw, 3rem); }
+        h3 { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+
+        p, li {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.2vw, 1.1rem);
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+
+        .label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* ===== SLIDE 1: Title ===== */
+        .slide-title {
+            justify-content: center;
+        }
+
+        .slide-title .content {
+            position: relative;
+            z-index: 1;
+            max-width: 65vw;
+        }
+
+        .slide-title .label { margin-bottom: 3vh; }
+
+        .slide-title h1 {
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            margin-bottom: 2vh;
+        }
+
+        .slide-title .subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(1rem, 1.5vw, 1.3rem);
+            color: var(--text-secondary);
+            max-width: 40vw;
+        }
+
+        .slide-title .meta {
+            margin-top: 4vh;
+            font-size: 0.85rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        .slide-title .geo-decoration {
+            right: 5vw;
+            bottom: 10vh;
+            width: 30vw;
+            height: 30vw;
+            opacity: 0.4;
+        }
+
+        .slide-title .geo-decoration::before {
+            content: '';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+
+        /* ===== SLIDE 2: Agenda ===== */
+        .slide-agenda .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-agenda .left-col h2 { margin-bottom: 3vh; }
+        .slide-agenda .left-col p { max-width: 30vw; }
+
+        .slide-agenda .agenda-list {
+            list-style: none;
+        }
+
+        .slide-agenda .agenda-list li {
+            padding: 2vh 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            gap: 2vw;
+        }
+
+        .slide-agenda .agenda-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            min-width: 3vw;
+        }
+
+        /* ===== SLIDE 3: Statement ===== */
+        .slide-statement {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-statement .content {
+            max-width: 60vw;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .slide-statement .quote-mark {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--line);
+            opacity: 0.5;
+            display: block;
+            margin-bottom: 2vh;
+        }
+
+        .slide-statement h2 { margin-bottom: 3vh; }
+
+        .slide-statement .attribution {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* ===== SLIDE 4: Two Column with Image ===== */
+        .slide-twocol .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-twocol .image-container {
+            width: 100%;
+            height: 60vh;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        .slide-twocol .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-twocol .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5vh 1.5vw;
+            background: rgba(26,26,26,0.85);
+            color: #fff;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .slide-twocol .right-col h2 { margin-bottom: 2vh; }
+        .slide-twocol .right-col p { margin-bottom: 2vh; }
+
+        .slide-twocol .right-col ul {
+            list-style: none;
+            margin-top: 2vh;
+        }
+
+        .slide-twocol .right-col ul li {
+            padding: 1.2vh 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            gap: 1vw;
+        }
+
+        .slide-twocol .right-col ul li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--highlight);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        /* ===== SLIDE 5: Comparison (Database vs Excel) ===== */
+        .slide-compare .content {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 3vw;
+            align-items: start;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+            padding-top: 8vh;
+        }
+
+        .slide-compare .compare-col {
+            padding: 3vh 2.5vw;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .slide-compare .compare-col.highlight-col {
+            background: var(--highlight-light);
+            border-color: var(--highlight);
+        }
+
+        .slide-compare .compare-col h3 {
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 3vh;
+            font-size: 1.8rem;
+        }
+
+        .slide-compare .compare-col .icon-badge {
+            width: 50px;
+            height: 50px;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2vh;
+            font-size: 1.4rem;
+        }
+
+        .slide-compare .highlight-col .icon-badge {
+            border-color: var(--highlight);
+            background: var(--highlight);
+            color: white;
+        }
+
+        .slide-compare .compare-list {
+            list-style: none;
+        }
+
+        .slide-compare .compare-list li {
+            padding: 1.5vh 0;
+            border-bottom: 1px solid var(--line);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1vw;
+        }
+
+        .slide-compare .compare-list li:last-child {
+            border-bottom: none;
+        }
+
+        .slide-compare .compare-list .check {
+            color: var(--highlight);
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .slide-compare .compare-list .cross {
+            color: #c0392b;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .slide-compare .vs-badge {
+            align-self: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            font-style: italic;
+            padding-top: 8vh;
+        }
+
+        .slide-compare .header-area {
+            position: absolute;
+            top: 4vh;
+            left: 4vw;
+            z-index: 2;
+        }
+
+        /* ===== SLIDE 6: Three Cards (DBMS Types) ===== */
+        .slide-cards {
+            justify-content: center;
+        }
+
+        .slide-cards .content {
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-cards .header {
+            text-align: center;
+            margin-bottom: 5vh;
+        }
+
+        .slide-cards .header h2 { margin-bottom: 1vh; }
+
+        .slide-cards .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3vw;
+        }
+
+        .slide-cards .card {
+            border: 1px solid var(--line);
+            padding: 3.5vh 2vw;
+            background: rgba(255,255,255,0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .slide-cards .card:hover {
+            transform: translateY(-4px);
+        }
+
+        .slide-cards .card-logo {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 2vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-cards .card-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .slide-cards .card h3 {
+            margin-bottom: 1.5vh;
+            font-size: 1.3rem;
+        }
+
+        .slide-cards .card p {
+            font-size: 0.88rem;
+        }
+
+        .slide-cards .card .card-tag {
+            display: inline-block;
+            margin-top: 2vh;
+            padding: 0.5vh 1vw;
+            border: 1px solid var(--line);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+        }
+
+        /* ===== SLIDE 7: Timeline ===== */
+        .slide-timeline .content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-timeline .header { margin-bottom: 5vh; }
+
+        .slide-timeline .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            padding-top: 3vh;
+        }
+
+        .slide-timeline .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: var(--line);
+        }
+
+        .slide-timeline .timeline-item {
+            flex: 1;
+            padding-right: 2vw;
+            position: relative;
+        }
+
+        .slide-timeline .timeline-item::before {
+            content: none;
+        }
+
+        .slide-timeline .timeline-item h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            margin-bottom: 1vh;
+            margin-top: 2vh;
+        }
+
+        .slide-timeline .timeline-item .year {
+            font-size: 0.75rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1vh;
+        }
+
+        .slide-timeline .timeline-item p {
+            font-size: 0.82rem;
+        }
+
+        /* ===== SLIDE 8: Database dalam Bisnis Digital ===== */
+        .slide-biz .content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 5vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-biz .left-col h2 { margin-bottom: 2vh; }
+        .slide-biz .left-col p { margin-bottom: 2.5vh; }
+
+        .slide-biz .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vh;
+        }
+
+        .slide-biz .example-item {
+            border: 1px solid var(--line);
+            padding: 2vh 1.5vw;
+            background: rgba(255,255,255,0.3);
+        }
+
+        .slide-biz .example-item .example-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 0.8vh;
+        }
+
+        .slide-biz .example-item h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            margin-bottom: 0.5vh;
+        }
+
+        .slide-biz .example-item p {
+            font-size: 0.82rem;
+        }
+
+        .slide-biz .image-container {
+            width: 100%;
+            height: 55vh;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        .slide-biz .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-biz .image-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5vh 1.5vw;
+            background: rgba(26,26,26,0.85);
+            color: #fff;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ===== SLIDE 9: Recap & Summary ===== */
+        .slide-recap .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5vw;
+            align-items: center;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-recap .left-col h2 { margin-bottom: 3vh; }
+
+        .slide-recap .recap-list {
+            list-style: none;
+        }
+
+        .slide-recap .recap-list li {
+            padding: 2vh 0;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: baseline;
+            gap: 1.5vw;
+        }
+
+        .slide-recap .recap-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--accent);
+            min-width: 2.5vw;
+        }
+
+        .slide-recap .recap-text h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.3vh;
+        }
+
+        .slide-recap .recap-text p {
+            font-size: 0.85rem;
+        }
+
+        .slide-recap .right-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+        }
+
+        .slide-recap .next-session {
+            border: 1px solid var(--line);
+            padding: 3vh 2.5vw;
+            background: var(--highlight-light);
+        }
+
+        .slide-recap .next-session .label { margin-bottom: 1.5vh; }
+
+        .slide-recap .next-session h3 {
+            margin-bottom: 1.5vh;
+            font-size: 1.4rem;
+        }
+
+        .slide-recap .next-session ul {
+            list-style: none;
+        }
+
+        .slide-recap .next-session ul li {
+            padding: 0.8vh 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .slide-recap .next-session ul li::before {
+            content: '\2192 ';
+            color: var(--highlight);
+            margin-right: 0.5vw;
+        }
+
+        .slide-recap .image-container {
+            width: 100%;
+            height: 35vh;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        .slide-recap .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== SLIDE 10: Closing ===== */
+        .slide-closing {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-closing .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .slide-closing h1 { margin-bottom: 3vh; }
+
+        .slide-closing p {
+            margin-bottom: 4vh;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+        }
+
+        .slide-closing .geo-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50vw;
+            height: 50vw;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .slide-closing .geo-ring::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 15%;
+            width: 70%;
+            height: 70%;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+        }
+
+        .vertical-line {
+            position: absolute;
+            left: 8vw;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: var(--line);
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        @media (max-aspect-ratio: 4/3) {
+            .slide-agenda .content,
+            .slide-twocol .content,
+            .slide-compare .content,
+            .slide-biz .content,
+            .slide-recap .content {
+                grid-template-columns: 1fr;
+                gap: 3vh;
+            }
+            .slide-cards .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            .slide-timeline .timeline {
+                flex-direction: column;
+                gap: 3vh;
+            }
+            .slide-timeline .timeline::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation">
+
+        <!-- ==================== SLIDE 1: TITLE ==================== -->
+        <div class="slide slide-title active">
+            <div class="geo-decoration"></div>
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="label">Slide 01 &mdash; Database Systems</div>
+                <h1>Why Databases Matter in Business</h1>
+                <p class="subtitle">From Excel chaos to structured data — understanding why every growing business needs a database.</p>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: AGENDA ==================== -->
+        <div class="slide slide-agenda">
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">Today</div>
+                    <h2>What We'll Cover</h2>
+                    <p>The first step in understanding why databases are the backbone of every digital business.</p>
+                </div>
+                <div class="right-col">
+                    <ul class="agenda-list">
+                        <li><span class="agenda-number">01</span> Data vs. Information — What's the Difference?</li>
+                        <li><span class="agenda-number">02</span> The Spreadsheet Problem at Scale</li>
+                        <li><span class="agenda-number">03</span> What a DBMS Actually Solves</li>
+                        <li><span class="agenda-number">04</span> Types of DBMS You Should Know</li>
+                        <li><span class="agenda-number">05</span> Database in the Business Tech Stack</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: STATEMENT ==================== -->
+        <div class="slide slide-statement">
+            <div class="content">
+                <span class="quote-mark">&ldquo;</span>
+                <h2>Data is the new oil — but without a database, it's just crude sitting in a barrel.</h2>
+                <div class="attribution">Adapted from Clive Humby, 2006</div>
+            </div>
+            <div class="geo-decoration" style="left: -10vw; top: 10vh; width: 40vw; height: 40vw; opacity: 0.2;"></div>
+        </div>
+
+        <!-- ==================== SLIDE 4: DATA VS INFORMATION ==================== -->
+        <div class="slide slide-twocol">
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="left-col">
+                    <div class="image-container">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdCIFhZWiAHzgACAAkABgAxAABhY3NwTVNGVAAAAABJRUMgc1JHQgAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLUhQICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFjcHJ0AAABUAAAADNkZXNjAAABhAAAAGx3dHB0AAAB8AAAABRia3B0AAACBAAAABRyWFlaAAACGAAAABRnWFlaAAACLAAAABRiWFlaAAACQAAAABRkbW5kAAACVAAAAHBkbWRkAAACxAAAAIh2dWVkAAADTAAAAIZ2aWV3AAAD1AAAACRsdW1pAAAD+AAAABRtZWFzAAAEDAAAACR0ZWNoAAAEMAAAAAxyVFJDAAAEPAAACAxnVFJDAAAEPAAACAxiVFJDAAAEPAAACAx0ZXh0AAAAAENvcHlyaWdodCAoYykgMTk5OCBIZXdsZXR0LVBhY2thcmQgQ29tcGFueQAAZGVzYwAAAAAAAAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAPNRAAEAAAABFsxYWVogAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z2Rlc2MAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENvbmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHZpZXcAAAAAABOk/gAUXy4AEM8UAAPtzAAEEwsAA1yeAAAAAVhZWiAAAAAAAEwJVgBQAAAAVx/nbWVhcwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAo8AAAACc2lnIAAAAABDUlQgY3VydgAAAAAAAAQAAAAABQAKAA8AFAAZAB4AIwAoAC0AMgA3ADsAQABFAEoATwBUAFkAXgBjAGgAbQByAHcAfACBAIYAiwCQAJUAmgCfAKQAqQCuALIAtwC8AMEAxgDLANAA1QDbAOAA5QDrAPAA9gD7AQEBBwENARMBGQEfASUBKwEyATgBPgFFAUwBUgFZAWABZwFuAXUBfAGDAYsBkgGaAaEBqQGxAbkBwQHJAdEB2QHhAekB8gH6AgMCDAIUAh0CJgIvAjgCQQJLAlQCXQJnAnECegKEAo4CmAKiAqwCtgLBAssC1QLgAusC9QMAAwsDFgMhAy0DOANDA08DWgNmA3IDfgOKA5YDogOuA7oDxwPTA+AD7AP5BAYEEwQgBC0EOwRIBFUEYwRxBH4EjASaBKgEtgTEBNME4QTwBP4FDQUcBSsFOgVJBVgFZwV... [truncated]
+                        <div class="image-caption">Where Your Data Lives</div>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="label">Foundation</div>
+                    <h2>Data vs. Information</h2>
+                    <p><strong>Data</strong> is raw facts — numbers, names, dates stored without context. <strong>Information</strong> is data that has been organized and presented in a way that's useful for decisions.</p>
+                    <ul>
+                        <li>Data: "10234, 2024-01-15, 150000"</li>
+                        <li>Information: "Order #10234 — Jan 15, Rp 150.000"</li>
+                        <li>A database turns data into information</li>
+                        <li>Without structure, data is just noise</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 5: DATABASE VS EXCEL ==================== -->
+        <div class="slide slide-compare">
+            <div class="vertical-line"></div>
+            <div class="header-area">
+                <div class="label">The Problem</div>
+                <h2 style="font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3vw, 2.5rem);">Spreadsheets vs. Databases</h2>
+            </div>
+            <div class="content">
+                <div class="compare-col">
+                    <div class="icon-badge">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#5a5a5a" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                    </div>
+                    <h3>Spreadsheet</h3>
+                    <ul class="compare-list">
+                        <li><span class="check">&#10003;</span> Mudah digunakan untuk data kecil</li>
+                        <li><span class="check">&#10003;</span> Cocok untuk analisis sederhana</li>
+                        <li><span class="cross">&#10007;</span> Tidak bisa menangani jutaan baris</li>
+                        <li><span class="cross">&#10007;</span> Sulit menjaga konsistensi data</li>
+                        <li><span class="cross">&#10007;</span> Tidak aman untuk data sensitif</li>
+                        <li><span class="cross">&#10007;</span> Tidak ada akses simultan yang baik</li>
+                    </ul>
+                </div>
+                <div class="vs-badge">vs</div>
+                <div class="compare-col highlight-col">
+                    <div class="icon-badge">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2d5a27" stroke-width="1.5"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg>
+                    </div>
+                    <h3>Database</h3>
+                    <ul class="compare-list">
+                        <li><span class="check">&#10003;</span> Menangani jutaan hingga miliaran data</li>
+                        <li><span class="check">&#10003;</span> Menjamin konsistensi & integritas</li>
+                        <li><span class="check">&#10003;</span> Keamanan data tingkat enterprise</li>
+                        <li><span class="check">&#10003;</span> Akses simultan oleh banyak pengguna</li>
+                        <li><span class="check">&#10003;</span> Query kompleks dengan SQL</li>
+                        <li><span class="check">&#10003;</span> Backup & recovery otomatis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 6: JENIS DBMS ==================== -->
+        <div class="slide slide-cards">
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="header">
+                    <div class="label">DBMS</div>
+                    <h2>What a DBMS Actually Solves</h2>
+                </div>
+                <div class="cards-grid">
+                    <div class="card">
+                        <div class="card-logo">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cGF0aCBmaWxsPSIjMDA2MThBIiBkPSJNMCA5MS4zMTNoNC4yNDJWNzQuNTY2bDYuNTY2IDE0LjU5OGMuNzczIDEuNzcgMS44MzIgMi4zOTEgMy45MTQgMi4zOTFzMy4wOTgtLjYyMSAzLjg3MS0yLjM5MWw2LjU2Ni0xNC41OTh2MTYuNzQ2aDQuMjQyVjc0LjU5NGMwLTEuNjMzLS42NTItMi40MjItMi0yLjgyOC0zLjIyMy0xLjAwNC01LjM4My0uMTM3LTYuMzYzIDIuMDM5bC02LjQ0MSAxNC40MS02LjIzOC0xNC40MWMtLjkzNy0yLjE3Ni0zLjE0LTMuMDQzLTYuMzU5LTIuMDM5LTEuMzQ4LjQwNi0yIDEuMTk1LTIgMi44Mjh6TTMyLjkzIDc3LjY4aDQuMjM4djkuMjI3Yy0uMDM5LjUuMTYgMS42NzYgMi40ODQgMS43MTVoOS4yMjNWNzcuNjMzaDQuMjVjLjAyIDAtLjAwOCAxNC45ODQtLjAwOCAxNS4wNDcuMDIzIDMuNjk1LTQuNTgyIDQuNDk2LTYuNzA3IDQuNTU5SDMzLjAydi0yLjg1MmwxMy40MTQtLjAwNGMyLjczLS4yODUgMi40MDYtMS42NDUgMi40MDYtMi4wOTh2LTEuMTEzaC05LjAxMmMtNC4xOTUtLjAzOS02Ljg2My0xLjg3MS02Ljg5OC0zLjk3Ny0uMDA0LS4xOTEuMDktOS40MjIgMC05LjUxNnptMCAwIi8+PHBhdGggZmlsbD0iI0U0OEUwMCIgZD0iTTU2LjM5MSA5MS4zMTNoMTIuMTk1YzEuNDI2IDAgMi44MTMtLjMwMSAzLjkxNC0uODE2IDEuODM2LS44NCAyLjczLTEuOTg0IDIuNzMtMy40OHYtMy4wOThjMC0xLjIyMy0xLjAxNi0yLjM2Ny0zLjAxNi0zLjEyNS0xLjA1OS0uNDEtMi4zNjctLjYyNS0zLjYyOS0uNjI1aC01LjE0MWMtMS43MTEgMC0yLjUyNy0uNTE2LTIuNzMtMS42NTYtLjAzOS0uMTM3LS4wMzktLjI0Ni0uMDM5LS4zODNWNzYuMmMwLS4xMDkgMC0uMjE5LjAzOS0uMzU1LjIwMy0uODY3LjY1Mi0xLjExMyAyLjE2LTEuMjVsLjQxLS4wMjdoMTIuMTA5di0yLjgyNEg2My40ODhjLTEuNzExIDAtMi42MDkuMTA5LTMuNDI2LjM1Mi0yLjUyNy43ODktMy42MjkgMi4wMzktMy42MjkgNC4yMTV2Mi40NzNjMCAxLjkwMiAyLjE2IDMuNTM1IDUuNzg5IDMuOTE0bDEuMjIzLjA1NWg0LjQwNmMuMTY0IDAgLjMyNCAwIC40NDkuMDI3IDEuMzQ0LjEwOSAxLjkxNC4zNTUgMi4zMjQuODQ0LjIxMS4xOTUuMzMyLjQ3My4zMjQuNzU4djIuNDc3YzAgLjI5Ny0uMjAzLjY4LS42MDkgMS4wMDQtLjM2Ny4zMjgtLjk4LjU0My0xLjc5My41OThsLS40NDkuMDI3SDU2LjM5MXptNDUuMjk3LTQuOTIyYzAgMi45MSAyLjE2NCA0LjUzOSA2LjUyMyA0Ljg2N2wxLjIyNy4wNTVoMTEuMDUxdi0yLjgyOGgtMTEuMTMzYy0yLjQ4OCAwLTMuNDI2LS42MjUtMy40MjYtMi4xMjFWNzEuNzM4aC00LjIzOFY4Ni4zOXptLTIzLjc1LjE0OFY3Ni40NTdjMC0yLjU1OSAxLjgwMS00LjExMyA1LjM1NS00LjYwMmE3Ljk3NiA3Ljk3NiAwIDAgMSAxLjE0NS0uMDgyaDgu... [truncated]
+                        </div>
+                        <h3>MySQL</h3>
+                        <p>The world's most popular open-source DBMS. Powers millions of websites including WordPress, Facebook, and Twitter.</p>
+                        <div class="card-tag">Open Source</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-logo">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cGF0aCBkPSJNODUuOTg4IDc2LjA3NWMuNjMyLTUuMjYyLjQ0My02LjAzNCA0LjM2Mi01LjE4MmwuOTk1LjA4OGMzLjAxNC4xMzcgNi45NTctLjQ4NSA5LjI3Mi0xLjU2MSA0Ljk4Ni0yLjMxMyA3Ljk0Mi02LjE3NyAzLjAyNi01LjE2Mi0xMS4yMTUgMi4zMTMtMTEuOTg2LTEuNDgzLTExLjk4Ni0xLjQ4M0MxMDMuNSA0NS4yMDQgMTA4LjQ1MSAyMi45IDEwNC4xNzggMTcuNDQgOTIuNTI0IDIuNTQ4IDcyLjM1IDkuNTkgNzIuMDEyIDkuNzczbC0uMTA4LjAyMWMtMi4yMTYtLjQ2MS00LjY5NS0uNzM1LTcuNDgxLS43OC01LjA3NS0uMDgzLTguOTI2IDEuMzMxLTExLjg0NyAzLjU0NiAwIDAtMzUuOTg5LTE0LjgyNy0zNC4zMTUgMTguNjQ2LjM1NiA3LjEyMSAxMC4yMDcgNTMuODgyIDIxLjk1NiAzOS43NTggNC4yOTQtNS4xNjQgOC40NDQtOS41MzEgOC40NDQtOS41MzEgMi4wNjEgMS4zNjkgNC41MjggMi4wNjcgNy4xMTYgMS44MTZsLjItLjE3Yy0uMDYyLjY0MS0uMDM1IDEuMjY4LjA4MSAyLjAxLTMuMDI3IDMuMzgzLTIuMTM3IDMuOTc3LTguMTg5IDUuMjIyLTYuMTIyIDEuMjYyLTIuNTI1IDMuNTA4LS4xNzggNC4wOTUgMi44NDguNzEzIDkuNDMzIDEuNzIyIDEzLjg4NC00LjUwOWwtLjE3Ny43MTFjMS4xODguOTUgMS4xMDcgNi44MjcgMS4yNzUgMTEuMDI2LjE2OCA0LjE5OS40NSA4LjExNyAxLjMwNiAxMC40MjkuODU2IDIuMzEgMS44NjYgOC4yNjEgOS44MTkgNi41NTcgNi42NDYtMS40MjYgMTEuNzI3LTMuNDc2IDEyLjE5LTIyLjU0NSIvPjxwYXRoIGQ9Ik03MS4yMDggMTAyLjc3Yy0zLjUxOCAwLTUuODA4LTEuMzYtNy4yLTIuNjc0LTIuMS0xLjk4MS0yLjkzMy00LjUzNC0zLjQzLTYuMDU5bC0uMjE1LS42MzdjLTEuMDAyLTIuNzA1LTEuMzQxLTYuNTk5LTEuNTQyLTExLjYxM2ExOTkuMjUgMTk5LjI1IDAgMDEtLjA3NS0yLjM1MmMtLjAxNy0uNjAxLS4wMzgtMS4zNTUtLjA2OC0yLjE0NmExNS4xNTcgMTUuMTU3IDAgMDEtMy45OTcgMS4yNjRjLTIuNDguNDI0LTUuMTQ2LjI4Ni03LjkyNi0uNDA5LTEuOTYxLS40OS0zLjk5OS0xLjUwNi01LjE2LTMuMDc2LTMuMzg1IDIuOTY1LTYuNjE0IDIuNTYyLTguMzczIDEuOTc2LTMuMTAzLTEuMDM1LTUuODgtMy45NDItOC40OTEtOC44OS0xLjg1OS0zLjUyMy0zLjY1OC04LjExNS01LjM0Ny0xMy42NDYtMi45NC05LjYzMy00LjgwOC0xOS43NzktNC45NzQtMjMuMTA5LS41MjItMTAuNDI3IDIuMjg0LTE3Ljg4MyA4LjM0LTIyLjE2IDkuNTU1LTYuNzQ5IDI0LjAzLTIuNzgxIDI5LjMwNy0uOTc5IDMuNTQ1LTIuMTM3IDcuNzE2LTMuMTc4IDEyLjQzLTMuMTAyIDIuNTMyLjA0MSA0Ljk0Mi4yNjQgNy4xODEuNjYyIDIuMzM1LS43MzQgNi45NDktMS43ODggMTIuMjMtMS43MjMgOS43My4xMTYgMTcuNzkz... [truncated]
+                        </div>
+                        <h3>PostgreSQL</h3>
+                        <p>Advanced open-source DBMS with full ACID compliance. Used by Apple, Instagram, and Spotify at massive scale.</p>
+                        <div class="card-tag">Open Source</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-logo">
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjggMTI4Ij48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZmlsbD0iIzk0Nzk1RCIgZD0iTTg3LjI1OSAxMDAuMTM5Yy4xNjktLjMyNS4zMzEtLjYxMi40NjktLjkwOS4wODctLjE5LjIyMS0uMjI4LjQxLS4yMjMgMS4xMzMuMDMyIDIuMjY2LjA2NyAzLjQuMDc4Ljk2My4wMSAxLjkyOC0uMDA4IDIuODkyLS4wMTkgMS4wODYtLjAxMyAyLjE3Mi0uMDcgMy4yNTctLjAzOSAxLjQ0NS4wNDIgMi44NTMuMzI1IDQuMTYuOTY4IDEuNTYxLjc2OSAyLjc0MiAxLjk0IDMuNTQ3IDMuNDgzYTguNzEgOC43MSAwIDAxLjkzMSAzLjE0Yy4xNzIgMS42MDguMDU5IDMuMTc5LS40NTEgNC43MTctLjYzMiAxLjkwNi0xLjgzMiAzLjM2NS0zLjQ5OSA0LjQ1OC0xLjI4My44NDEtMi42OSAxLjMzOC00LjE5OCAxLjYyMi0xLjU5Ni4zMDEtMy4xOTcuMjA0LTQuNzk4LjIwOS0xLjc1Ni4wMDctMy41MTEtLjAzMS01LjI2Ny0uMDUxLS4zMDctLjAwMy0uMzUxLS4wNjEtLjI3LS4zNTRsLjA3NS0uMjdjLjE3MS0uNTM4LjI2My0uNTYyLjgwOS0uNjUyYTIuODMgMi44MyAwIDAwMS4wODctLjQxM2MuMTg0LS4xMjIuMjYtLjQ0LjMzMi0uNjg1LjA2Mi0uMjE0LjA2NS0uNDQ5LjA2Ny0uNjc1LjAyNS0zLjQyNS4wNTEtNi44NDkuMDY1LTEwLjI3MmE0NC4wNzcgNDQuMDc3IDAgMDAtLjA2NS0yLjU5NmMtLjAzNC0uNjA1LS4zNTctMS4wMTktMS4wNzctMS4xNjItLjU2LS4xMTEtMS4xMjQtLjE5Ny0xLjY4Ny0uMjk2bC0uMTg5LS4wNTl6bTE2LjA3NiA4LjI5M2MtLjA3Ni0uNjgyLS4xMTMtMS4zNy0uMjM1LTIuMDQyLS4yOTItMS42MTMtLjk5OC0zLjAxOC0yLjIzOC00LjExOS0yLjAwNS0xLjc3OS00LjQxOS0yLjA1My02Ljk0OS0xLjg0MS0uNTc2LjA0OC0uNy4yNDUtLjcwOS44MzctLjAxNC44NC0uMDI4IDEuNjgtLjAyOSAyLjUyLS4wMDQgMi42NjQtLjAwNCA1LjMyOCAwIDcuOTkyLjAwMS43NTguMDA5IDEuNTE2LjAzMSAyLjI3Mi4wMjQuNzc0LjMwNSAxLjQyOSAxLjA2MyAxLjcyOSAxLjE5NS40NzMgMi40NTIuNTI5IDMuNzA2LjMzNiAyLjAwMy0uMzA3IDMuNDA0LTEuNDc0IDQuMzQ0LTMuMjIzLjc0NC0xLjM4OC45NTQtMi45MDMgMS4wMTYtNC40NjF6bTQuODY5IDkuMDcxYy0uMDI0LS40MTUuMTQ2LS43NTguMzU2LTEuMDczLjA1Ny0uMDg1LjI1My0uMDgxLjM4OC0uMTA4bDEuMTQ2LS4yMjdjLjQwNS0uMDg2LjYxOC0uMzU4LjY3NS0uNzU1LjAzOC0uMjYyLjA3NC0uNTI3LjA3Ny0uNzkyYTg3OS42IDg3OS42IDAgMDAuMDU5LTYuMjkxYy4wMS0yLjEuMDAyLTQuMi4wMDItNi4zbC0uMDA5LS40MDFjLS4wNDEtLjY3NS0uMzY3LTEuMDI1LTEuMDM3LTEuMTI0bC0xLjQ1My0uMjIxYy0uMTc5LS4wMjQtLjI0NC0uMTEtLjE3OS0uMjY5LjExMi0uMjcxLjIx... [truncated]
+                        </div>
+                        <h3>MongoDB</h3>
+                        <p>Document-based NoSQL database. Flexible for changing data schemas. Popular in real-time apps and IoT systems.</p>
+                        <div class="card-tag">NoSQL</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 7: EVOLUSI DATABASE ==================== -->
+        <div class="slide slide-timeline">
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="header">
+                    <div class="label">Evolution</div>
+                    <h2>Where Databases Sit in a Business Tech Stack</h2>
+                </div>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="year">Front of House</div>
+                        <h4>POS & E-Commerce</h4>
+                        <p>Customer-facing systems that capture every transaction and interaction in real time.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">Operations</div>
+                        <h4>CRM & ERP</h4>
+                        <p>Managing customer relationships, inventory, supply chain, and internal workflows.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">Data Layer</div>
+                        <h4>The Database</h4>
+                        <p>Where all business data lives — structured, secured, and ready to be queried for decisions.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">Analytics</div>
+                        <h4>BI & Reporting</h4>
+                        <p>Dashboards, reports, and data warehouses that turn raw data into business insights.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="year">Intelligence</div>
+                        <h4>AI & Automation</h4>
+                        <p>Machine learning models, recommendation engines, and automated decision systems.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 8: DATABASE IN BUSINESS ==================== -->
+        <div class="slide slide-biz">
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">Real World</div>
+                    <h2>Database in the Business Tech Stack</h2>
+                    <p>Every digital app you use daily runs on a database. Without databases, there's no e-commerce, no social media, no fintech.</p>
+                    <div class="example-grid">
+                        <div class="example-item">
+                            <div class="example-label">E-Commerce</div>
+                            <h4>Tokopedia / Shopee</h4>
+                            <p>Products, orders, payments, reviews — all stored in relational databases.</p>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-label">Fintech</div>
+                            <h4>GoPay / OVO</h4>
+                            <p>Real-time transactions demand fast, secure, and consistent databases.</p>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-label">Social</div>
+                            <h4>Instagram / TikTok</h4>
+                            <p>Billions of posts, comments, and interactions managed by distributed databases.</p>
+                        </div>
+                        <div class="example-item">
+                            <div class="example-label">SaaS</div>
+                            <h4>Google Workspace</h4>
+                            <p>Documents, email, and calendars synced through cloud databases.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-col">
+                    <div class="image-container">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdCIFhZWiAHzgACAAkABgAxAABhY3NwTVNGVAAAAABJRUMgc1JHQgAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLUhQICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFjcHJ0AAABUAAAADNkZXNjAAABhAAAAGx3dHB0AAAB8AAAABRia3B0AAACBAAAABRyWFlaAAACGAAAABRnWFlaAAACLAAAABRiWFlaAAACQAAAABRkbW5kAAACVAAAAHBkbWRkAAACxAAAAIh2dWVkAAADTAAAAIZ2aWV3AAAD1AAAACRsdW1pAAAD+AAAABRtZWFzAAAEDAAAACR0ZWNoAAAEMAAAAAxyVFJDAAAEPAAACAxnVFJDAAAEPAAACAxiVFJDAAAEPAAACAx0ZXh0AAAAAENvcHlyaWdodCAoYykgMTk5OCBIZXdsZXR0LVBhY2thcmQgQ29tcGFueQAAZGVzYwAAAAAAAAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAPNRAAEAAAABFsxYWVogAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z2Rlc2MAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENvbmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHZpZXcAAAAAABOk/gAUXy4AEM8UAAPtzAAEEwsAA1yeAAAAAVhZWiAAAAAAAEwJVgBQAAAAVx/nbWVhcwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAo8AAAACc2lnIAAAAABDUlQgY3VydgAAAAAAAAQAAAAABQAKAA8AFAAZAB4AIwAoAC0AMgA3ADsAQABFAEoATwBUAFkAXgBjAGgAbQByAHcAfACBAIYAiwCQAJUAmgCfAKQAqQCuALIAtwC8AMEAxgDLANAA1QDbAOAA5QDrAPAA9gD7AQEBBwENARMBGQEfASUBKwEyATgBPgFFAUwBUgFZAWABZwFuAXUBfAGDAYsBkgGaAaEBqQGxAbkBwQHJAdEB2QHhAekB8gH6AgMCDAIUAh0CJgIvAjgCQQJLAlQCXQJnAnECegKEAo4CmAKiAqwCtgLBAssC1QLgAusC9QMAAwsDFgMhAy0DOANDA08DWgNmA3IDfgOKA5YDogOuA7oDxwPTA+AD7AP5BAYEEwQgBC0EOwRIBFUEYwRxBH4EjASaBKgEtgTEBNME4QTwBP4FDQUcBSsFOgVJBVgFZwV... [truncated]
+                        <div class="image-caption">Data-Driven Business</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 9: REKAP ==================== -->
+        <div class="slide slide-recap">
+            <div class="vertical-line"></div>
+            <div class="content">
+                <div class="left-col">
+                    <div class="label">Key Takeaways</div>
+                    <h2>What We Covered Today</h2>
+                    <ul class="recap-list">
+                        <li>
+                            <span class="recap-num">01</span>
+                            <div class="recap-text">
+                                <h4>Data vs. Information</h4>
+                                <p>Data is raw; information is organized data that drives decisions.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="recap-num">02</span>
+                            <div class="recap-text">
+                                <h4>Spreadsheets Break at Scale</h4>
+                                <p>Duplication, inconsistency, no concurrent access, weak security.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="recap-num">03</span>
+                            <div class="recap-text">
+                                <h4>A DBMS Solves This</h4>
+                                <p>Structure, integrity, security, scalability, and multi-user access.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="recap-num">04</span>
+                            <div class="recap-text">
+                                <h4>DBMS Types for Different Needs</h4>
+                                <p>Relational (MySQL, PostgreSQL) vs. NoSQL (MongoDB).</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="right-col">
+                    <div class="next-session">
+                        <div class="label">Next Up</div>
+                        <h3>Slide 02</h3>
+                        <ul>
+                            <li>Database Systems Landscape</li>
+                            <li>Relational vs. NoSQL deep-dive</li>
+                            <li>Where databases sit in your tech stack</li>
+                        </ul>
+                    </div>
+                    <div class="image-container">
+                        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/4gxYSUNDX1BST0ZJTEUAAQEAAAxITGlubwIQAABtbnRyUkdCIFhZWiAHzgACAAkABgAxAABhY3NwTVNGVAAAAABJRUMgc1JHQgAAAAAAAAAAAAAAAAAA9tYAAQAAAADTLUhQICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABFjcHJ0AAABUAAAADNkZXNjAAABhAAAAGx3dHB0AAAB8AAAABRia3B0AAACBAAAABRyWFlaAAACGAAAABRnWFlaAAACLAAAABRiWFlaAAACQAAAABRkbW5kAAACVAAAAHBkbWRkAAACxAAAAIh2dWVkAAADTAAAAIZ2aWV3AAAD1AAAACRsdW1pAAAD+AAAABRtZWFzAAAEDAAAACR0ZWNoAAAEMAAAAAxyVFJDAAAEPAAACAxnVFJDAAAEPAAACAxiVFJDAAAEPAAACAx0ZXh0AAAAAENvcHlyaWdodCAoYykgMTk5OCBIZXdsZXR0LVBhY2thcmQgQ29tcGFueQAAZGVzYwAAAAAAAAASc1JHQiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAABJzUkdCIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWFlaIAAAAAAAAPNRAAEAAAABFsxYWVogAAAAAAAAAAAAAAAAAAAAAFhZWiAAAAAAAABvogAAOPUAAAOQWFlaIAAAAAAAAGKZAAC3hQAAGNpYWVogAAAAAAAAJKAAAA+EAAC2z2Rlc2MAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAFklFQyBodHRwOi8vd3d3LmllYy5jaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABkZXNjAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAC5JRUMgNjE5NjYtMi4xIERlZmF1bHQgUkdCIGNvbG91ciBzcGFjZSAtIHNSR0IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAZGVzYwAAAAAAAAAsUmVmZXJlbmNlIFZpZXdpbmcgQ29uZGl0aW9uIGluIElFQzYxOTY2LTIuMQAAAAAAAAAAAAAALFJlZmVyZW5jZSBWaWV3aW5nIENvbmRpdGlvbiBpbiBJRUM2MTk2Ni0yLjEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHZpZXcAAAAAABOk/gAUXy4AEM8UAAPtzAAEEwsAA1yeAAAAAVhZWiAAAAAAAEwJVgBQAAAAVx/nbWVhcwAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAo8AAAACc2lnIAAAAABDUlQgY3VydgAAAAAAAAQAAAAABQAKAA8AFAAZAB4AIwAoAC0AMgA3ADsAQABFAEoATwBUAFkAXgBjAGgAbQByAHcAfACBAIYAiwCQAJUAmgCfAKQAqQCuALIAtwC8AMEAxgDLANAA1QDbAOAA5QDrAPAA9gD7AQEBBwENARMBGQEfASUBKwEyATgBPgFFAUwBUgFZAWABZwFuAXUBfAGDAYsBkgGaAaEBqQGxAbkBwQHJAdEB2QHhAekB8gH6AgMCDAIUAh0CJgIvAjgCQQJLAlQCXQJnAnECegKEAo4CmAKiAqwCtgLBAssC1QLgAusC9QMAAwsDFgMhAy0DOANDA08DWgNmA3IDfgOKA5YDogOuA7oDxwPTA+AD7AP5BAYEEwQgBC0EOwRIBFUEYwRxBH4EjASaBKgEtgTEBNME4QTwBP4FDQUcBSsFOgVJBVgFZwV... [truncated]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== SLIDE 10: CLOSING ==================== -->
+        <div class="slide slide-closing">
+            <div class="geo-ring"></div>
+            <div class="content">
+                <div class="label">Slide 01 &mdash; Done</div>
+                <h1>Terima Kasih</h1>
+                <p>Questions & Discussion</p>
+                <div style="margin-top: 3vh;">
+                    <p style="color: var(--accent); font-size: 0.85rem; letter-spacing: 1px; text-transform: none; margin-bottom: 1vh;">Digital Business &mdash; Semester III</p>
+                    <p style="color: var(--accent); font-size: 0.85rem; letter-spacing: 1px; text-transform: none;">Database Systems &mdash; 14 Slides</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-dots" id="navDots"></div>
+
+    <div class="nav-arrows">
+        <button class="nav-arrow" id="prevBtn">&#8592;</button>
+        <button class="nav-arrow" id="nextBtn">&#8594;</button>
+    </div>
+
+    <div class="slide-counter">
+        <span id="currentSlide">01</span> / <span id="totalSlides">10</span>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        // Generate nav dots
+        const navDots = document.getElementById('navDots');
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+            dot.dataset.slide = i;
+            navDots.appendChild(dot);
+        }
+
+        const dots = document.querySelectorAll('.nav-dot');
+        let currentSlide = 0;
+
+        document.getElementById('totalSlides').textContent = String(totalSlides).padStart(2, '0');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            document.getElementById('currentSlide').textContent = String(index + 1).padStart(2, '0');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % totalSlides;
+            showSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(prev);
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', nextSlide);
+        document.getElementById('prevBtn').addEventListener('click', prevSlide);
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSlide(parseInt(dot.dataset.slide));
+            });
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+
+        // Touch support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) nextSlide();
+                else prevSlide();
+            }
+        }, false);
+    </script>
+</body>
+</html>
