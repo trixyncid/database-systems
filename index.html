@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Database — Digital Business</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #ede8e0;
+            --bg-alt: #e2dbd1;
+            --text: #1a1a1a;
+            --text-sec: #5a5a5a;
+            --accent: #8a8178;
+            --line: #b8b0a4;
+            --green: #2d5a27;
+            --green-light: #e8f0e7;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* --- NAV --- */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 2.5vh 4vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+            background: rgba(237,232,224,0.92);
+            backdrop-filter: blur(12px);
+        }
+
+        nav .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+        }
+
+        nav .meta {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+        }
+
+        /* --- HERO --- */
+        .hero {
+            padding: 18vh 4vw 8vh;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 1px solid var(--line);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 12vh;
+            right: 4vw;
+            width: 22vw;
+            height: 22vw;
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 16vh;
+            right: 8vw;
+            width: 14vw;
+            height: 14vw;
+            border: 1px dashed var(--line);
+            border-radius: 50%;
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .hero-left {
+            max-width: 55vw;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 2.5vh;
+            font-weight: 500;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.8rem, 5.5vw, 5rem);
+            font-weight: 400;
+            line-height: 1.08;
+            margin-bottom: 2.5vh;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--green);
+        }
+
+        .hero .subtitle {
+            font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+            color: var(--text-sec);
+            max-width: 38vw;
+            line-height: 1.65;
+        }
+
+        .hero-right {
+            text-align: right;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-right .stat {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .hero-right .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            margin-top: 0.8vh;
+        }
+
+        /* --- VERTICAL LINE --- */
+        .vline {
+            position: fixed;
+            left: 8vw;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: var(--line);
+            opacity: 0.25;
+            z-index: 0;
+        }
+
+        /* --- MEETINGS GRID --- */
+        .meetings {
+            padding: 6vh 4vw 10vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 4vh;
+            font-weight: 500;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2.5vh 2.5vw;
+        }
+
+        .card {
+            border: 1px solid var(--line);
+            padding: 3vh 2vw;
+            background: rgba(255,255,255,0.25);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            background: rgba(255,255,255,0.6);
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .card .num {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1.5vh;
+            line-height: 1;
+        }
+
+        .card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            line-height: 1.25;
+            margin-bottom: 1vh;
+        }
+
+        .card .desc {
+            font-size: 0.78rem;
+            color: var(--text-sec);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .card .badge {
+            display: inline-block;
+            margin-top: 1.5vh;
+            padding: 0.4vh 0.8vw;
+            border: 1px solid var(--line);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            align-self: flex-start;
+        }
+
+        .card.exam {
+            border-style: dashed;
+            background: var(--green-light);
+        }
+
+        .card.exam .badge {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .card.locked {
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+        }
+
+        .card.locked::after {
+            content: 'Segera';
+            position: absolute;
+            top: 1.5vh;
+            right: 1.5vw;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent);
+            background: var(--bg);
+            padding: 0.3vh 0.6vw;
+            border: 1px solid var(--line);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            padding: 4vh 4vw;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+
+        footer a {
+            color: var(--text);
+            text-decoration: none;
+            border-bottom: 1px solid var(--line);
+            transition: border-color 0.2s;
+        }
+
+        footer a:hover {
+            border-color: var(--text);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .hero { flex-direction: column; align-items: flex-start; gap: 3vh; }
+            .hero-right { text-align: left; }
+            .hero .subtitle { max-width: 100%; }
+        }
+
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+            nav { padding: 2vh 4vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="vline"></div>
+
+    <nav>
+        <div class="brand">Sistem Database</div>
+        <div class="meta">Digital Business &mdash; Semester III</div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-left">
+            <div class="label">Program Studi Digital Business</div>
+            <h1>Sistem <em>Database</em></h1>
+            <p class="subtitle">16 pertemuan yang membawa kamu memahami database dari dasar hingga siap diimplementasikan dalam bisnis digital.</p>
+        </div>
+        <div class="hero-right">
+            <div class="stat">16</div>
+            <div class="stat-label">Pertemuan</div>
+        </div>
+    </section>
+
+    <section class="meetings">
+        <div class="section-label">Semua Pertemuan</div>
+        <div class="grid">
+
+            <!-- Pertemuan 01 -->
+            <a href="pertemuan-01.html" class="card">
+                <div class="num">01</div>
+                <h3>Pengenalan Sistem Database</h3>
+                <p class="desc">Apa itu database, database vs spreadsheet, jenis DBMS, evolusi database, dan database dalam bisnis digital.</p>
+                <div class="badge">Tersedia</div>
+            </a>
+
+            <!-- Pertemuan 02 -->
+            <div class="card locked">
+                <div class="num">02</div>
+                <h3>Model Data & ER Diagram</h3>
+                <p class="desc">Entity, Attribute, Relationship, Crow's Foot Notation, dan latihan membuat ER Diagram.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 03 -->
+            <div class="card locked">
+                <div class="num">03</div>
+                <h3>Database Relasional & Struktur Tabel</h3>
+                <p class="desc">Tabel, Primary Key, Foreign Key, relasi antar tabel, dan integritas data.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 04 -->
+            <div class="card locked">
+                <div class="num">04</div>
+                <h3>SQL Dasar &mdash; DDL & DML</h3>
+                <p class="desc">CREATE, ALTER, DROP, INSERT, UPDATE, DELETE. Praktikum buat database sederhana.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 05 -->
+            <div class="card locked">
+                <div class="num">05</div>
+                <h3>SQL Intermediate &mdash; Query Data Bisnis</h3>
+                <p class="desc">SELECT, WHERE, JOIN, GROUP BY, aggregate functions. Query data e-commerce.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 06 -->
+            <div class="card exam">
+                <div class="num">06</div>
+                <h3>Ujian Tengah Semester</h3>
+                <p class="desc">Essay + SQL hands-on di komputer. Cakupan: Pertemuan 01 &ndash; 05.</p>
+                <div class="badge">UTS</div>
+            </div>
+
+            <!-- Pertemuan 07 -->
+            <div class="card locked">
+                <div class="num">07</div>
+                <h3>Desain Database & Normalisasi</h3>
+                <p class="desc">1NF, 2NF, 3NF, denormalization, dan best practices desain database.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 08 -->
+            <div class="card locked">
+                <div class="num">08</div>
+                <h3>Transaksi & Konsistensi Data</h3>
+                <p class="desc">ACID properties, transaction management, dan case study kegagalan transaksi.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 09 -->
+            <div class="card locked">
+                <div class="num">09</div>
+                <h3>Keamanan Database & Tata Kelola Data</h3>
+                <p class="desc">Access control, SQL Injection, UU PDP Indonesia, dan ethical data handling.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 10 -->
+            <div class="card locked">
+                <div class="num">10</div>
+                <h3>NoSQL & Database Modern</h3>
+                <p class="desc">MongoDB, Redis, Cassandra, Neo4j. SQL vs NoSQL: kapan pakai yang mana.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 11 -->
+            <div class="card locked">
+                <div class="num">11</div>
+                <h3>Database untuk E-Commerce & SaaS</h3>
+                <p class="desc">Desain database e-commerce, inventory management, payment systems.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 12 -->
+            <div class="card locked">
+                <div class="num">12</div>
+                <h3>Data Warehouse & Business Intelligence</h3>
+                <p class="desc">OLTP vs OLAP, ETL process, dashboard & reporting tools.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 13 -->
+            <div class="card locked">
+                <div class="num">13</div>
+                <h3>Cloud Database & Database as a Service</h3>
+                <p class="desc">AWS RDS, Google Cloud SQL, database scaling, dan cost considerations.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 14 -->
+            <div class="card locked">
+                <div class="num">14</div>
+                <h3>Tren Database & AI</h3>
+                <p class="desc">Vector database, data lake, database untuk AI/ML applications.</p>
+                <div class="badge">Coming Soon</div>
+            </div>
+
+            <!-- Pertemuan 15 -->
+            <div class="card exam">
+                <div class="num">15</div>
+                <h3>Presentasi Tugas Akhir</h3>
+                <p class="desc">Setiap kelompok presentasi desain database startup digital (10-15 menit per kelompok).</p>
+                <div class="badge">Presentasi</div>
+            </div>
+
+            <!-- Pertemuan 16 -->
+            <div class="card exam">
+                <div class="num">16</div>
+                <h3>Ujian Akhir Semester</h3>
+                <p class="desc">Essay + analisis kasus + SQL practice. Cakupan: Pertemuan 01 &ndash; 14.</p>
+                <div class="badge">UAS</div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <span>Digital Business &mdash; Universitas Medan</span>
+        <a href="https://github.com/trixyncid/database-systems-slides">GitHub</a>
+    </footer>
+</body>
+</html>
