@@ -118,6 +118,11 @@ p,li{font-family:'Inter',sans-serif;font-size:clamp(.9rem,1.2vw,1.1rem);line-hei
 <div class="slide slide-closing"><div class="geo-ring"></div><div class="content"><div class="label">Slide 03 — Selesai</div><h1>Terima Kasih</h1><p>Ada Pertanyaan?</p></div></div>
 
 </div>
+
+<div class="nav-dots" id="navDots"></div>
+<div class="nav-arrows"><button class="nav-arrow" id="prevBtn">&#8592;</button><button class="nav-arrow" id="nextBtn">&#8594;</button></div>
+<div class="slide-counter"><span id="currentSlide">01</span> / <span id="totalSlides">10</span></div>
+
 <script>
 const slides=document.querySelectorAll('.slide'),totalSlides=slides.length,navDots=document.getElementById('navDots');
 for(let i=0;i<totalSlides;i++){const d=document.createElement('div');d.className='nav-dot'+(i===0?' active':'');d.dataset.slide=i;navDots.appendChild(d)}
@@ -130,7 +135,7 @@ document.getElementById('prevBtn').addEventListener('click',prev);
 dots.forEach(d=>d.addEventListener('click',()=>show(parseInt(d.dataset.slide))));
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next()}else if(e.key==='ArrowLeft'){e.preventDefault();prev()}});
 let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].screenX},false);
-</script>
 document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].screenX;if(Math.abs(d)>50){d>0?next():prev()}},false);
+</script>
 
 </body></html>
