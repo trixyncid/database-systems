@@ -3,151 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Database Systems — Digital Business</title>
+    <title>Database Systems — Trixync</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        :root{--bg:#ede8e0;--bg2:#e2dbd1;--text:#1a1a1a;--sec:#5a5a5a;--acc:#8a8178;--line:#b8b0a4;--grn:#2d5a27;--grn-l:#e8f0e7}
-        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-        nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:2.5vh 4vw;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);background:rgba(237,232,224,.92);backdrop-filter:blur(12px)}
-        nav .brand{font-family:'Playfair Display',serif;font-size:1.15rem}
-        nav .meta{font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--acc)}
-        .hero{padding:18vh 4vw 8vh;border-bottom:1px solid var(--line);position:relative}
-        .hero::before{content:'';position:absolute;top:12vh;right:4vw;width:22vw;height:22vw;border:1px solid var(--line);border-radius:50%;opacity:.35;pointer-events:none}
-        .hero::after{content:'';position:absolute;top:16vh;right:8vw;width:14vw;height:14vw;border:1px dashed var(--line);border-radius:50%;opacity:.25;pointer-events:none}
-        .hero-left{max-width:55vw;position:relative;z-index:1}
-        .hero .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:4px;color:var(--acc);margin-bottom:2.5vh;font-weight:500}
-        .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2.8rem,5.5vw,5rem);font-weight:400;line-height:1.08;margin-bottom:2.5vh}
-        .hero h1 em{font-style:italic;color:var(--grn)}
-        .hero .sub{font-size:clamp(.95rem,1.3vw,1.15rem);color:var(--sec);max-width:38vw;line-height:1.65}
-        .vline{position:fixed;left:8vw;top:0;width:1px;height:100%;background:var(--line);opacity:.25;z-index:0}
-        .slides-section{padding:6vh 4vw 10vh;position:relative;z-index:1}
-        .section-label{font-size:.7rem;text-transform:uppercase;letter-spacing:4px;color:var(--acc);margin-bottom:4vh;font-weight:500}
-        .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vh 2.5vw}
-        .card{border:1px solid var(--line);padding:3.5vh 2.2vw;background:rgba(255,255,255,.25);text-decoration:none;color:inherit;display:flex;flex-direction:column;transition:all .25s ease;position:relative;overflow:hidden}
-        .card:hover{background:rgba(255,255,255,.6);transform:translateY(-3px);border-color:var(--acc)}
-        .card .num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--acc);margin-bottom:1.5vh;line-height:1}
-        .card h3{font-family:'Playfair Display',serif;font-size:1.08rem;font-weight:400;line-height:1.3;margin-bottom:1.2vh}
-        .card .desc{font-size:.8rem;color:var(--sec);line-height:1.55;flex:1}
-        .card .badge{display:inline-block;margin-top:1.8vh;padding:.4vh .8vw;border:1px solid var(--line);font-size:.6rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--acc);align-self:flex-start}
-        footer{padding:4vh 4vw;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--acc);letter-spacing:1px}
-        footer a{color:var(--text);text-decoration:none;border-bottom:1px solid var(--line)}
-        footer a:hover{border-color:var(--text)}
-        @media(max-width:1024px){.grid{grid-template-columns:repeat(2,1fr)}.hero .sub{max-width:100%}}
-        @media(max-width:600px){.grid{grid-template-columns:1fr}}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #ede8e0; color: #1a1a1a; min-height: 100vh; }
+        .hero { text-align: center; padding: 10vh 5vw 6vh; }
+        .hero .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: #8a8178; margin-bottom: 2vh; }
+        h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: clamp(2.5rem, 5vw, 4rem); margin-bottom: 2vh; }
+        .subtitle { font-size: 1.1rem; color: #5a5a5a; max-width: 50vw; margin: 0 auto; line-height: 1.6; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; padding: 4vh 5vw 8vh; max-width: 1400px; margin: 0 auto; }
+        .card { background: #fff; border: 1px solid #e8e2d8; text-decoration: none; color: inherit; display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem 1.8rem; border-radius: 6px; transition: all 0.3s ease; position: relative; }
+        .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.08); transform: translateY(-3px); }
+        .card .num { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: #2d5a27; opacity: 0.5; min-width: 2.5rem; }
+        .card .info h3 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 1.05rem; margin-bottom: 0.3rem; }
+        .card .info p { font-size: 0.8rem; color: #5a5a5a; line-height: 1.5; }
+        .card .arrow { position: absolute; right: 1.5rem; font-size: 1.1rem; color: #b8b0a4; transition: all 0.3s ease; }
+        .card:hover .arrow { color: #2d5a27; transform: translateX(5px); }
+        .card .tag { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: #2d5a27; margin-bottom: 0.2rem; }
+        .footer { text-align: center; padding: 4vh 5vw 6vh; color: #8a8178; font-size: 0.8rem; }
+        @media (max-width: 768px) {
+            .hero { padding: 6vh 5vw 4vh; }
+            .subtitle { max-width: 90vw; }
+            .grid { padding: 3vh 4vw 6vh; gap: 1rem; }
+            .card { padding: 1rem 1.2rem; gap: 1rem; }
+            .card .num { font-size: 1.8rem; }
+            .card .info h3 { font-size: 0.95rem; }
+            .card .info p { font-size: 0.75rem; }
+        }
     </style>
 </head>
 <body>
-<div class="vline"></div>
-<nav>
-    <div class="brand">Database Systems</div>
-    <div class="meta">Digital Business — Semester III</div>
-</nav>
-<section class="hero">
-    <div class="hero-left">
-        <div class="lbl">Program Studi Digital Business</div>
-        <h1>Database <em>Systems</em></h1>
-        <p class="sub">Dari spreadsheet yang tidak terstruktur hingga bisa menulis query SQL — memahami mengapa data menjadi fondasi utama bisnis digital.</p>
+    <div class="hero">
+        <div class="label">Mata Kuliah</div>
+        <h1>Database Systems</h1>
+        <p class="subtitle">14 pertemuan — dari konsep dasar hingga membangun database yang benar untuk bisnis digital.</p>
     </div>
-</section>
-<section class="slides-section">
-    <div class="section-label">Slide</div>
+
     <div class="grid">
-                <a href="slides/00-introduction.html" class="card">
+        <a href="slides/00-introduction.html" class="card">
             <div class="num">00</div>
-            <h3>Profil Dosen Pengampu</h3>
-            <p class="desc">Randy Brilliant Chandra — Software Engineer &amp; Lecturer. S2 Universitas Mikroskil (Summa Cum Laude), S1 IT&amp;B Medan.</p>
-            <div class="badge">Profil</div>
+            <div class="info">
+                <div class="tag">Profil</div>
+                <h3>Profil Dosen Pengampu</h3>
+                <p>Randy Brilliant Chandra, S.S.I., M.Kom</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/01-why-databases-matter.html" class="card">
             <div class="num">01</div>
-            <h3>Mengapa Database Penting untuk Bisnis</h3>
-            <p class="desc">Data vs informasi, keterbatasan spreadsheet di skala besar, dan mengapa bisnis yang berkembang membutuhkan database.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Dasar</div>
+                <h3>Mengapa Database Penting?</h3>
+                <p>Data vs Informasi, masalah spreadsheet, pengenalan DBMS</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
-        <a href="slides/02-database-systems-landscape.html" class="card">
+
+        <a href="slides/02-erd-comprehensive.html" class="card">
             <div class="num">02</div>
-            <h3>Lanskap Sistem Database</h3>
-            <p class="desc">Relasional vs NoSQL, pemain utama (MySQL, PostgreSQL, MongoDB), dan posisi database dalam tech stack bisnis.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Perancangan</div>
+                <h3>Entity Relationship Diagram (ERD)</h3>
+                <p>Komponen ERD, jenis relasi, notasi, studi kasus, latihan</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/03-data-modeling-basics.html" class="card">
             <div class="num">03</div>
-            <h3>Dasar-Dasar Data Modeling</h3>
-            <p class="desc">Entity, attribute, dan relasi — dijelaskan melalui domain bisnis: pelanggan, pesanan, produk.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">SQL</div>
+                <h3>SQL (Structured Query Language)</h3>
+                <p>SELECT, INSERT, UPDATE, DELETE — praktik langsung</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/04-erd-practice.html" class="card">
             <div class="num">04</div>
-            <h3>Latihan ERD</h3>
-            <p class="desc">Membuat ER diagram bersama-sama menggunakan studi kasus. Praktik langsung dengan dbdiagram.io.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Praktik</div>
+                <h3>Praktik ERD</h3>
+                <p>Membuat ERD untuk studi kasus nyata</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/05-erd-to-tables.html" class="card">
             <div class="num">05</div>
-            <h3>Dari ERD ke Tabel</h3>
-            <p class="desc">Mentranslate entity dan relasi menjadi tabel, baris, kolom, primary key, dan foreign key.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Implementasi</div>
+                <h3>ERD ke Tabel</h3>
+                <p>Mengubah ERD menjadi struktur tabel database</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/06-normalization.html" class="card">
             <div class="num">06</div>
-            <h3>Data Redundansi &amp; Normalisasi</h3>
-            <p class="desc">Mengapa data duplikat menimbulkan masalah — harga tidak konsisten, data yatim piatu. Dari 1NF hingga 3NF.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Optimasi</div>
+                <h3>Normalisasi</h3>
+                <p>1NF, 2NF, 3NF — menghilangkan duplikasi data</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/07-sql-tools.html" class="card">
             <div class="num">07</div>
-            <h3>Praktik SQL &amp; Tools</h3>
-            <p class="desc">Mengenal MySQL Workbench dan menulis query SELECT pertama — membaca data seperti seorang analis bisnis.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Tools</div>
+                <h3>Tools SQL</h3>
+                <p>MySQL Workbench, phpMyAdmin, praktik langsung</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/08-querying-data.html" class="card">
             <div class="num">08</div>
-            <h3>Query Data</h3>
-            <p class="desc">SELECT, WHERE, ORDER BY — memfilter data menggunakan pertanyaan bisnis yang relevan.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">UTS</div>
+                <h3>Ujian Tengah Semester</h3>
+                <p>ERD, model relasional, normalisasi, SQL dasar</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/09-summarizing-data.html" class="card">
             <div class="num">09</div>
-            <h3>Meringkas Data</h3>
-            <p class="desc">GROUP BY dan fungsi agregat (SUM, COUNT, AVG) — membuat laporan penjualan sederhana.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Query</div>
+                <h3>Menyimpulkan Data</h3>
+                <p>GROUP BY, fungsi agregat, laporan bisnis</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/10-joins.html" class="card">
             <div class="num">10</div>
-            <h3>Menggabungkan Data — JOINs</h3>
-            <p class="desc">INNER JOIN dan LEFT JOIN menggunakan kasus multi-tabel: pesanan, pelanggan, dan produk.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Query</div>
+                <h3>JOIN — Menggabungkan Data</h3>
+                <p>INNER JOIN, LEFT JOIN, multi-tabel</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/11-views-subqueries.html" class="card">
             <div class="num">11</div>
-            <h3>View &amp; Subquery Sederhana</h3>
-            <p class="desc">Membuat "laporan" yang dapat digunakan kembali oleh tim bisnis. Pengenalan dashboard.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Lanjutan</div>
+                <h3>View & Subquery</h3>
+                <p>Membuat laporan reusable dan query bersarang</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/12-real-business-systems.html" class="card">
             <div class="num">12</div>
-            <h3>Database dalam Sistem Bisnis Nyata</h3>
-            <p class="desc">Bagaimana CRM, ERP, POS, dan e-commerce memanfaatkan database. Pengenalan data warehouse &amp; BI.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Bisnis</div>
+                <h3>Database dalam Bisnis Nyata</h3>
+                <p>CRM, ERP, e-commerce, data warehouse</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/13-security-governance.html" class="card">
             <div class="num">13</div>
-            <h3>Keamanan, Backup &amp; Tata Kelola Data</h3>
-            <p class="desc">Kontrol akses, backup, dan UU PDP Indonesia — mengapa ini penting bagi pemilik bisnis, bukan hanya tim IT.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Keamanan</div>
+                <h3>Keamanan & Tata Kelola Data</h3>
+                <p>Hak akses, backup, UU PDP Indonesia</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
+
         <a href="slides/14-capstone-project.html" class="card">
             <div class="num">14</div>
-            <h3>Proyek Akhir</h3>
-            <p class="desc">Merancang database lengkap (ERD + tabel + query) untuk studi kasus bisnis pilihan. Konsultasi di kelas.</p>
-            <div class="badge">Tersedia</div>
+            <div class="info">
+                <div class="tag">Proyek</div>
+                <h3>Capstone Project</h3>
+                <p>Merancang database lengkap untuk kasus bisnis</p>
+            </div>
+            <div class="arrow">&#8594;</div>
         </a>
     </div>
-</section>
-<footer>
-    <span>Digital Business — Universitas Medan</span>
-    <a href="https://github.com/trixyncid/database-systems">GitHub</a>
-</footer>
+
+    <div class="footer">
+        Database Systems — Trixync
+    </div>
 </body>
 </html>
