@@ -8,14 +8,14 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #101726;
-            --bg2: #1a2332;
-            --card: #1e293b;
+            --bg: #ede8e0;
+            --bg2: #e2dbd1;
+            --card: #ffffff;
             --accent: #3866f2;
-            --accent2: #60a5fa;
-            --text: #f1f5f9;
-            --sec: #94a3b8;
-            --line: #334155;
+            --accent2: #5b8def;
+            --text: #1a1a1a;
+            --sec: #5a5a5a;
+            --line: #b8b0a4;
             --green: #22c55e;
             --orange: #f59e0b;
             --red: #ef4444;
@@ -39,7 +39,7 @@
 
         /* ========== SLIDE 1: TITLE ========== */
         .slide-title {
-            background: linear-gradient(135deg, #101726 0%, #1a2332 50%, #0f172a 100%);
+            background: #ede8e0;
             justify-content: center;
             padding: 0 8vw;
             position: relative;
@@ -66,6 +66,7 @@
             line-height: 1.1;
             margin-bottom: 2vh;
             position: relative;
+            color: #1a1a1a;
         }
         .slide-title h1 em { color: var(--accent); font-style: italic; }
         .slide-title p {
@@ -92,6 +93,7 @@
         .slide-case h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #1a1a1a;
         }
         .case-grid {
             display: grid;
@@ -101,9 +103,10 @@
         }
         .case-card {
             background: var(--card);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 3vh 2.5vw;
-            border: 1px solid var(--line);
+            border: 1px solid #e8e2d8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
         }
         .case-card h3 {
             font-family: 'Playfair Display', serif;
@@ -162,6 +165,7 @@
         .slide-rules h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #1a1a1a;
         }
         .rules-grid {
             display: grid;
@@ -171,9 +175,10 @@
         }
         .rule-card {
             background: var(--card);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 3vh 2.5vw;
-            border: 1px solid var(--line);
+            border: 1px solid #e8e2d8;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
             border-top: 3px solid var(--accent);
         }
         .rule-card h3 {
@@ -213,7 +218,7 @@
 
         /* ========== SLIDE 4: EXERCISE ========== */
         .slide-exercise {
-            background: linear-gradient(135deg, #101726 0%, #0f172a 100%);
+            background: #ede8e0;
             padding: 5vh 6vw;
             display: grid;
             grid-template-columns: 1fr 1.2fr;
@@ -223,6 +228,7 @@
         .slide-exercise .left-side h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #1a1a1a;
             margin-bottom: 3vh;
         }
         .slide-exercise .scenario {
@@ -310,6 +316,7 @@
         .slide-template h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #1a1a1a;
         }
         .erd-preview {
             flex: 1;
@@ -342,6 +349,7 @@
         .slide-recap h2 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(1.8rem, 3vw, 2.5rem);
+            color: #1a1a1a;
             margin-bottom: 3vh;
         }
         .recap-list {
@@ -414,14 +422,14 @@
         .nav button {
             width: 44px; height: 44px;
             border: 1px solid var(--line);
-            background: var(--card);
-            color: var(--sec);
+            background: #ffffff;
+            color: #5a5a5a;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1.1rem;
             transition: all 0.2s;
         }
-        .nav button:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .nav button:hover { background: #3866f2; color: white; border-color: #3866f2; }
         .counter {
             position: fixed;
             bottom: 4vh;
