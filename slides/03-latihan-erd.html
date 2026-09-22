@@ -3,27 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slide 03 — Latihan ERD</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>Sesi 03 — Latihan ERD</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --bg: #101726;
-            --bg2: #1a2332;
-            --card: #1e293b;
-            --accent: #3866f2;
-            --accent2: #60a5fa;
-            --text: #f1f5f9;
-            --sec: #94a3b8;
-            --line: #334155;
-            --green: #22c55e;
-            --orange: #f59e0b;
-            --red: #ef4444;
-        }
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            background: #ede8e0;
+            color: #1a1a1a;
             overflow: hidden;
         }
         .slide {
@@ -37,9 +24,8 @@
         }
         .slide.active { opacity: 1; visibility: visible; }
 
-        /* ========== SLIDE 1: TITLE ========== */
+        /* ========== TITLE ========== */
         .slide-title {
-            background: linear-gradient(135deg, #101726 0%, #1a2332 50%, #0f172a 100%);
             justify-content: center;
             padding: 0 8vw;
             position: relative;
@@ -47,359 +33,201 @@
         .slide-title::before {
             content: '';
             position: absolute;
-            top: -30%; right: -10%;
-            width: 50vw; height: 50vw;
-            background: radial-gradient(circle, rgba(56,102,242,0.12) 0%, transparent 70%);
+            top: -20%; right: -5%;
+            width: 45vw; height: 45vw;
+            border: 1px solid #d4cfc7;
             border-radius: 50%;
+            opacity: 0.4;
         }
         .slide-title .label {
             font-size: 0.7rem;
             text-transform: uppercase;
             letter-spacing: 4px;
-            color: var(--accent);
+            color: #3866f2;
             margin-bottom: 2vh;
-            position: relative;
         }
         .slide-title h1 {
-            font-family: 'Playfair Display', serif;
+            font-family: 'DM Serif Display', serif;
             font-size: clamp(3rem, 6vw, 5rem);
             line-height: 1.1;
             margin-bottom: 2vh;
-            position: relative;
         }
-        .slide-title h1 em { color: var(--accent); font-style: italic; }
+        .slide-title h1 em { color: #3866f2; font-style: italic; }
         .slide-title p {
             font-size: 1.1rem;
-            color: var(--sec);
+            color: #5a5a5a;
             max-width: 45vw;
             line-height: 1.7;
-            position: relative;
+        }
+        .slide-title .vline {
+            position: absolute;
+            left: 8vw;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: #d4cfc7;
+            opacity: 0.3;
         }
 
-        /* ========== SLIDE 2: KASUS ========== */
-        .slide-case {
-            background: var(--bg);
-            padding: 5vh 6vw;
+        /* ========== INSTRUKSI ========== */
+        .slide-instruksi {
+            padding: 6vh 6vw;
         }
-        .slide-case .header { margin-bottom: 4vh; }
-        .slide-case .label {
+        .slide-instruksi .header {
+            margin-bottom: 4vh;
+        }
+        .slide-instruksi .label {
             font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 4px;
-            color: var(--accent);
+            color: #3866f2;
             margin-bottom: 1.5vh;
         }
-        .slide-case h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
+        .slide-instruksi h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
         }
-        .case-grid {
+        .instruksi-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2vw;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1.5vw;
             flex: 1;
+            align-items: start;
         }
-        .case-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 3vh 2.5vw;
-            border: 1px solid var(--line);
-        }
-        .case-card h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2rem;
-            margin-bottom: 2vh;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .case-card h3 .icon {
-            width: 40px; height: 40px;
-            background: rgba(56,102,242,0.15);
+        .instruksi-card {
+            background: #fff;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
+            padding: 2.5vh 2vw;
+            border: 1px solid #e8e2d8;
         }
-        .case-card ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 1vh;
+        .instruksi-num {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            color: #3866f2;
+            opacity: 0.4;
+            margin-bottom: 1vh;
         }
-        .case-card ul li {
-            font-size: 0.88rem;
-            color: var(--sec);
-            padding-left: 16px;
-            position: relative;
+        .instruksi-card h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 0.8vh;
+        }
+        .instruksi-card p {
+            font-size: 0.82rem;
+            color: #5a5a5a;
             line-height: 1.5;
         }
-        .case-card ul li::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-        }
-        .case-card .highlight {
-            color: var(--accent2);
-            font-weight: 500;
-        }
 
-        /* ========== SLIDE 3: ATURAN ERD ========== */
-        .slide-rules {
-            background: var(--bg);
+        /* ========== SOAL 1 ========== */
+        .slide-soal {
             padding: 5vh 6vw;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
         }
-        .slide-rules .header { margin-bottom: 4vh; }
-        .slide-rules .label {
+        .soal-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .soal-left .label {
             font-size: 0.65rem;
             text-transform: uppercase;
             letter-spacing: 4px;
-            color: var(--accent);
+            color: #3866f2;
             margin-bottom: 1.5vh;
         }
-        .slide-rules h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
+        .soal-left h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.6rem, 2.5vw, 2rem);
+            margin-bottom: 2vh;
         }
-        .rules-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2vw;
-            flex: 1;
-        }
-        .rule-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 3vh 2.5vw;
-            border: 1px solid var(--line);
-            border-top: 3px solid var(--accent);
-        }
-        .rule-card h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin-bottom: 1.5vh;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .rule-card .rule-icon {
-            width: 36px; height: 36px;
-            background: rgba(56,102,242,0.15);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .rule-card .rule-icon svg {
-            width: 18px; height: 18px;
-            color: var(--accent);
-        }
-        .rule-card p {
-            font-size: 0.85rem;
-            color: var(--sec);
-            line-height: 1.6;
-        }
-        .rule-card .example {
-            margin-top: 1.5vh;
-            padding: 1.5vh 1.5vw;
-            background: rgba(56,102,242,0.08);
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            color: var(--accent2);
-        }
-
-        /* ========== SLIDE 4: EXERCISE ========== */
-        .slide-exercise {
-            background: linear-gradient(135deg, #101726 0%, #0f172a 100%);
-            padding: 5vh 6vw;
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 4vw;
-            align-items: center;
-        }
-        .slide-exercise .left-side h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-            margin-bottom: 3vh;
-        }
-        .slide-exercise .scenario {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 3vh 3vw;
-            border: 1px solid var(--line);
-            margin-bottom: 3vh;
-        }
-        .slide-exercise .scenario h3 {
-            font-size: 0.9rem;
-            color: var(--accent);
-            margin-bottom: 1.5vh;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .slide-exercise .scenario p {
-            font-size: 0.95rem;
-            color: var(--sec);
+        .soal-left .case-desc {
+            font-size: 0.92rem;
+            color: #5a5a5a;
             line-height: 1.7;
+            margin-bottom: 3vh;
         }
-        .slide-exercise .scenario .hl { color: var(--text); font-weight: 600; }
-        .slide-exercise .timer {
+        .soal-left .entities {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2.5vh 2.5vw;
+            border: 1px solid #e8e2d8;
+        }
+        .soal-left .entities h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #8a8178;
+            margin-bottom: 1.5vh;
+        }
+        .soal-left .entity-list {
             display: flex;
-            align-items: center;
-            gap: 16px;
-            background: rgba(56,102,242,0.15);
-            padding: 2vh 3vw;
-            border-radius: 12px;
-            border: 1px solid var(--accent);
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .slide-exercise .timer .icon { font-size: 2rem; }
-        .slide-exercise .timer h4 { font-size: 1.3rem; color: var(--text); }
-        .slide-exercise .timer p { font-size: 0.8rem; color: var(--sec); }
-        
-        .slide-exercise .right-side {
+        .entity-tag {
+            background: #f0f4ff;
+            color: #3866f2;
+            padding: 0.6vh 1.2vw;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 500;
+        }
+        .soal-right {
             display: flex;
             flex-direction: column;
             gap: 1.5vh;
         }
-        .step-card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 2vh 2vw;
-            border: 1px solid var(--line);
-            display: flex;
-            gap: 16px;
-            align-items: flex-start;
-        }
-        .step-num {
-            width: 32px; height: 32px;
-            background: var(--accent);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .step-card h4 {
-            font-size: 0.95rem;
-            margin-bottom: 0.3vh;
-        }
-        .step-card p {
-            font-size: 0.82rem;
-            color: var(--sec);
-            line-height: 1.4;
-        }
-
-        /* ========== SLIDE 5: TEMPLATE ERD ========== */
-        .slide-template {
-            background: var(--bg);
-            padding: 5vh 6vw;
-        }
-        .slide-template .header { margin-bottom: 3vh; }
-        .slide-template .label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent);
-            margin-bottom: 1.5vh;
-        }
-        .slide-template h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-        }
-        .erd-preview {
+        .soal-right .hint-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 2.5vh 2.5vw;
+            border: 1px solid #e8e2d8;
             flex: 1;
-            background: var(--card);
-            border-radius: 16px;
-            padding: 4vh 4vw;
-            border: 1px solid var(--line);
-            display: flex;
-            flex-direction: column;
         }
-        .erd-note {
-            margin-top: 2vh;
-            padding: 2vh 2.5vw;
-            background: rgba(34,197,94,0.1);
-            border-radius: 10px;
-            border: 1px solid rgba(34,197,94,0.3);
-            font-size: 0.88rem;
-            color: var(--green);
-        }
-
-        /* ========== SLIDE 6: REKAP ========== */
-        .slide-recap {
-            background: var(--bg);
-            padding: 5vh 6vw;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4vw;
-            align-items: center;
-        }
-        .slide-recap h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(1.8rem, 3vw, 2.5rem);
-            margin-bottom: 3vh;
-        }
-        .recap-list {
-            display: flex;
-            flex-direction: column;
-            gap: 2vh;
-        }
-        .recap-item {
-            display: flex;
-            gap: 16px;
-            padding: 2vh 2vw;
-            background: var(--card);
-            border-radius: 12px;
-            border: 1px solid var(--line);
-        }
-        .recap-icon {
-            width: 40px; height: 40px;
-            background: rgba(56,102,242,0.15);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .recap-icon svg { width: 18px; height: 18px; color: var(--accent); }
-        .recap-body h4 { font-size: 0.95rem; margin-bottom: 0.3vh; }
-        .recap-body p { font-size: 0.85rem; color: var(--sec); line-height: 1.5; }
-
-        .next-box {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 3vh 3vw;
-            border: 1px solid var(--line);
-        }
-        .next-box .label {
-            font-size: 0.65rem;
+        .soal-right .hint-box h4 {
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--accent);
+            letter-spacing: 2px;
+            color: #8a8178;
             margin-bottom: 1.5vh;
         }
-        .next-box h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.3rem;
-            margin-bottom: 2vh;
+        .soal-right .hint-box ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8vh;
         }
-        .next-box ul { list-style: none; display: flex; flex-direction: column; gap: 1vh; }
-        .next-box ul li {
-            font-size: 0.9rem;
-            color: var(--sec);
-            padding-left: 18px;
+        .soal-right .hint-box li {
+            font-size: 0.85rem;
+            color: #5a5a5a;
+            padding-left: 16px;
             position: relative;
+            line-height: 1.5;
         }
-        .next-box ul li::before {
-            content: '→';
+        .soal-right .hint-box li::before {
+            content: '—';
             position: absolute;
             left: 0;
-            color: var(--accent);
+            color: #b8b0a4;
+        }
+        .soal-right .task-box {
+            background: #f8f6f2;
+            border-radius: 10px;
+            padding: 2vh 2.5vw;
+            border-left: 3px solid #3866f2;
+        }
+        .soal-right .task-box h4 {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #3866f2;
+            margin-bottom: 1vh;
+        }
+        .soal-right .task-box p {
+            font-size: 0.88rem;
+            color: #1a1a1a;
+            line-height: 1.6;
         }
 
         /* ========== NAVIGATION ========== */
@@ -413,336 +241,232 @@
         }
         .nav button {
             width: 44px; height: 44px;
-            border: 1px solid var(--line);
-            background: var(--card);
-            color: var(--sec);
+            border: 1px solid #d4cfc7;
+            background: rgba(255,255,255,0.9);
+            color: #5a5a5a;
             border-radius: 8px;
             cursor: pointer;
             font-size: 1.1rem;
             transition: all 0.2s;
         }
-        .nav button:hover { background: var(--accent); color: white; border-color: var(--accent); }
+        .nav button:hover { background: #3866f2; color: white; border-color: #3866f2; }
         .counter {
             position: fixed;
             bottom: 4vh;
             left: 5vw;
             font-size: 0.7rem;
-            color: var(--line);
+            color: #b8b0a4;
             letter-spacing: 2px;
-            z-index: 100;
-        }
-        .corner-mark {
-            position: fixed;
-            bottom: 4vh;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.6rem;
-            color: var(--line);
-            letter-spacing: 2px;
-            text-transform: uppercase;
             z-index: 100;
         }
 
         @media (max-width: 1024px) {
-            .case-grid, .slide-exercise { grid-template-columns: 1fr; }
-            .rules-grid { grid-template-columns: 1fr 1fr; }
-            .slide-recap { grid-template-columns: 1fr; }
+            .instruksi-grid { grid-template-columns: repeat(3, 1fr); }
+            .slide-soal { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
-    <div class="presentation">
-        <!-- SLIDE 1: TITLE -->
-        <div class="slide slide-title active">
-            <div class="label">Sesi 03 — Database Systems</div>
-            <h1>Latihan <em>ERD</em></h1>
-            <p>Entity Relationship Diagram — kita akan langsung praktik membuat ERD dari kasus nyata.</p>
-        </div>
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide slide-title active">
+        <div class="vline"></div>
+        <div class="label">Sesi 03 — Database Systems</div>
+        <h1>Latihan <em>ERD</em></h1>
+        <p>Pilih satu studi kasus dan buat Entity Relationship Diagram lengkap. Fokus pada entity, atribut, relasi, dan cardinality.</p>
+    </div>
 
-        <!-- SLIDE 2: KASUS -->
-        <div class="slide slide-case">
-            <div class="header">
-                <div class="label">Kasus Hari Ini</div>
-                <h2>Sistem Perpustakaan Kampus</h2>
+    <!-- SLIDE 2: INSTRUKSI -->
+    <div class="slide slide-instruksi">
+        <div class="header">
+            <div class="label">Langkah Pengerjaan</div>
+            <h2>Buat ERD dalam 5 Langkah</h2>
+        </div>
+        <div class="instruksi-grid">
+            <div class="instruksi-card">
+                <div class="instruksi-num">01</div>
+                <h3>Pilih Kasus</h3>
+                <p>Pilih salah satu dari 4 studi kasus yang tersedia.</p>
             </div>
-            <div class="case-grid">
-                <div class="case-card">
-                    <h3><div class="icon">🏫</div> Entitas</h3>
-                    <ul>
-                        <li><span class="highlight">Mahasiswa</span> — NIM, nama, jurusan, angkatan</li>
-                        <li><span class="highlight">Buku</span> — ISBN, judul, pengarang, penerbit</li>
-                        <li><span class="highlight">Peminjaman</span> — tanggal pinjam, tanggal kembali</li>
-                        <li><span class="highlight">Petugas</span> — ID, nama, jabatan</li>
-                        <li><span class="highlight">Kategori</span> — nama kategori, deskripsi</li>
-                    </ul>
-                </div>
-                <div class="case-card">
-                    <h3><div class="icon">🔗</div> Relasi</h3>
-                    <ul>
-                        <li>Mahasiswa <span class="highlight">meminjam</span> Buku</li>
-                        <li>Buku <span class="highlight">dikelola</span> oleh Petugas</li>
-                        <li>Buku <span class="highlight">termasuk</span> Kategori</li>
-                        <li>Peminjaman <span class="highlight">dicatat</span> oleh Petugas</li>
-                        <li>Mahasiswa <span class="highlight">memiliki</span> Riwayat Peminjaman</li>
-                    </ul>
-                </div>
-                <div class="case-card" style="grid-column: span 2;">
-                    <h3><div class="icon">📋</div> Aturan Bisnis</h3>
-                    <ul>
-                        <li>Satu mahasiswa bisa meminjam <span class="highlight">maksimal 3 buku</span> sekaligus</li>
-                        <li>Buku yang sudah dipinjam <span class="highlight">tidak bisa dipinjam</span> lagi sampai dikembalikan</li>
-                        <li>Peminjaman berlaku <span class="highlight">maksimal 7 hari</span></li>
-                        <li>Denda keterlambatan <span class="highlight">Rp 1.000/hari</span> per buku</li>
-                    </ul>
-                </div>
+            <div class="instruksi-card">
+                <div class="instruksi-num">02</div>
+                <h3>Identifikasi Entity</h3>
+                <p>Tulis semua objek yang perlu disimpan datanya dalam persegi panjang.</p>
+            </div>
+            <div class="instruksi-card">
+                <div class="instruksi-num">03</div>
+                <h3>Tambah Atribut</h3>
+                <p>Tentukan properti tiap entity. Tandai primary key dengan garis bawah.</p>
+            </div>
+            <div class="instruksi-card">
+                <div class="instruksi-num">04</div>
+                <h3>Gambar Relasi</h3>
+                <p>Hubungkan entity yang saling berkaitan dengan belah ketupat.</p>
+            </div>
+            <div class="instruksi-card">
+                <div class="instruksi-num">05</div>
+                <h3>Tentukan Cardinality</h3>
+                <p>Tulis 1:1, 1:N, atau M:N di setiap garis relasi.</p>
             </div>
         </div>
+    </div>
 
-        <!-- SLIDE 3: ATURAN ERD -->
-        <div class="slide slide-rules">
-            <div class="header">
-                <div class="label">Pengingat</div>
-                <h2>Aturan Dasar ERD</h2>
-            </div>
-            <div class="rules-grid">
-                <div class="rule-card">
-                    <h3>
-                        <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
-                        Entity
-                    </h3>
-                    <p>Objek nyata yang ingin disimpan datanya. Ditulis dalam <strong>persegi panjang</strong>.</p>
-                    <div class="example">Contoh: Mahasiswa, Buku, Dosen</div>
-                </div>
-                <div class="rule-card">
-                    <h3>
-                        <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="9"/></svg></div>
-                        Atribut
-                    </h3>
-                    <p>Properti/nilai dari entity. Ditulis dalam <strong>ellipse/oval</strong>.</p>
-                    <div class="example">Contoh: NIM, Nama, Judul Buku</div>
-                </div>
-                <div class="rule-card">
-                    <h3>
-                        <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></div>
-                        Relasi
-                    </h3>
-                    <p>Hubungan antar entity. Ditulis dalam <strong>belah ketupat/diamond</strong>.</p>
-                    <div class="example">Contoh: Meminjam, Mengajar, Membeli</div>
-                </div>
-                <div class="rule-card">
-                    <h3>
-                        <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></div>
-                        Cardinality
-                    </h3>
-                    <p>Jumlah relasi antar entity: <strong>1:1</strong>, <strong>1:N</strong>, atau <strong>M:N</strong>.</p>
-                    <div class="example">1 Mahasiswa → N Peminjaman</div>
-                </div>
-                <div class="rule-card">
-                    <h3>
-                        <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/></svg></div>
-                        Primary Key
-                    </h3>
-                    <p>Atribut unik yang mengidentifikasi setiap record. Ditulis dengan <strong>garis bawah</strong>.</p>
-                    <div class="example">NIM (Mahasiswa), ISBN (Buku)</div>
-                </div>
-                <div class="rule-card">
-                    <h3>
-                        <div class="rule-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg></div>
-                        Foreign Key
-                    </h3>
-                    <p>Atribut referensi ke primary key entity lain. Ditulis dengan <strong>garis putus-putus</strong>.</p>
-                    <div class="example">nim_mahasiswa di tabel Peminjaman</div>
+    <!-- SLIDE 3: KASUS A — RESTO -->
+    <div class="slide slide-soal">
+        <div class="soal-left">
+            <div class="label">Studi Kasus A</div>
+            <h2>Sistem Pemesanan Restoran</h2>
+            <p class="case-desc">
+                Sebuah restoran ingin membuat sistem pencatatan pesanan pelanggan. Setiap meja bisa memesan multiple item, dan setiap pesanan dicatat oleh satu waiter. Restoran juga ingin melacak menu yang paling laris dan inventaris bahan baku.
+            </p>
+            <div class="entities">
+                <h4>Entity yang Dibutuhkan</h4>
+                <div class="entity-list">
+                    <span class="entity-tag">Pelanggan</span>
+                    <span class="entity-tag">Meja</span>
+                    <span class="entity-tag">Pesanan</span>
+                    <span class="entity-tag">Menu</span>
+                    <span class="entity-tag">Waiter</span>
+                    <span class="entity-tag">Bahan Baku</span>
                 </div>
             </div>
         </div>
-
-        <!-- SLIDE 4: EXERCISE -->
-        <div class="slide slide-exercise">
-            <div class="left-side">
-                <div class="label">Mulai</div>
-                <h2>Buat ERD-nya!</h2>
-                <div class="scenario">
-                    <h3>📋 Instruksi</h3>
-                    <p>Berdasarkan kasus <span class="hl">Sistem Perpustakaan</span> tadi, buatlah ERD lengkap yang mencakup: semua entity, atribut, relasi, dan cardinality.</p>
-                </div>
-                <div class="timer">
-                    <div class="icon">⏱️</div>
-                    <div>
-                        <h4>25 Menit</h4>
-                        <p>Kerjakan di kertas atau draw.io</p>
-                    </div>
-                </div>
+        <div class="soal-right">
+            <div class="hint-box">
+                <h4>Aturan Bisnis</h4>
+                <ul>
+                    <li>Satu pelanggan duduk di satu meja</li>
+                    <li>Satu meja bisa punya banyak pesanan dalam sehari</li>
+                    <li>Satu pesanan bisa berisi banyak item menu</li>
+                    <li>Satu waiter melayani banyak meja</li>
+                    <li>Setiap menu terbuat dari beberapa bahan baku</li>
+                    <li>Bahan baku bisa dipakai untuk banyak menu</li>
+                </ul>
             </div>
-            <div class="right-side">
-                <div class="step-card">
-                    <div class="step-num">1</div>
-                    <div>
-                        <h4>Identifikasi Entity</h4>
-                        <p>Tulis semua entity dalam persegi panjang: Mahasiswa, Buku, Peminjaman, Petugas, Kategori</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">2</div>
-                    <div>
-                        <h4>Tambahkan Atribut</h4>
-                        <p>Tentukan atribut tiap entity. Tandai primary key dengan garis bawah.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">3</div>
-                    <div>
-                        <h4>Gambar Relasi</h4>
-                        <p>Hubungkan entity dengan diamond (belah ketupat). Tulis nama relasi.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">4</div>
-                    <div>
-                        <h4>Tentukan Cardinality</h4>
-                        <p>Tulis 1:1, 1:N, atau M:N di setiap garis relasi.</p>
-                    </div>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">5</div>
-                    <div>
-                        <h4>Review Aturan Bisnis</h4>
-                        <p>Pastikan ERD memenuhi semua aturan (maks 3 buku, denda, dll)</p>
-                    </div>
+            <div class="task-box">
+                <h4>Tugas</h4>
+                <p>Buat ERD lengkap: entity, atribut (dengan PK & FK), relasi, dan cardinality.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: KASUS B — E-COMMERCE -->
+    <div class="slide slide-soal">
+        <div class="soal-left">
+            <div class="label">Studi Kasus B</div>
+            <h2>Marketplace Online</h2>
+            <p class="case-desc">
+                Sebuah platform e-commerce ingin mengelola data penjual, pembeli, produk, transaksi, dan pengiriman. Setiap penjual punya toko, dan pembeli bisa memberikan ulasan untuk produk yang dibeli.
+            </p>
+            <div class="entities">
+                <h4>Entity yang Dibutuhkan</h4>
+                <div class="entity-list">
+                    <span class="entity-tag">Pembeli</span>
+                    <span class="entity-tag">Penjual</span>
+                    <span class="entity-tag">Toko</span>
+                    <span class="entity-tag">Produk</span>
+                    <span class="entity-tag">Pesanan</span>
+                    <span class="entity-tag">Ulasan</span>
+                    <span class="entity-tag">Pengiriman</span>
                 </div>
             </div>
         </div>
-
-        <!-- SLIDE 5: TEMPLATE ERD -->
-        <div class="slide slide-template">
-            <div class="header">
-                <div class="label">Template</div>
-                <h2>Panduan Struktur ERD</h2>
+        <div class="soal-right">
+            <div class="hint-box">
+                <h4>Aturan Bisnis</h4>
+                <ul>
+                    <li>Satu penjual punya satu toko</li>
+                    <li>Satu toko menjual banyak produk</li>
+                    <li>Satu produk hanya dijual di satu toko</li>
+                    <li>Satu pembeli bisa beli banyak produk</li>
+                    <li>Satu pesanan berisi satu atau lebih produk</li>
+                    <li>Pembeli bisa kasih ulasan per produk yang dibeli</li>
+                    <li>Setiap pesanan punya satu data pengiriman</li>
+                </ul>
             </div>
-            <div class="erd-preview">
-                <svg viewBox="0 0 900 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
-                    <!-- Entity: Mahasiswa -->
-                    <rect x="30" y="120" width="150" height="70" rx="6" fill="none" stroke="#3866f2" stroke-width="2"/>
-                    <text x="105" y="150" text-anchor="middle" fill="#f1f5f9" font-family="Inter" font-size="12" font-weight="600">MAHASISWA</text>
-                    <text x="105" y="170" text-anchor="middle" fill="#94a3b8" font-family="Inter" font-size="10"><tspan text-decoration="underline">NIM</tspan> | Nama | Jurusan</text>
-
-                    <!-- Entity: Buku -->
-                    <rect x="370" y="30" width="150" height="70" rx="6" fill="none" stroke="#3866f2" stroke-width="2"/>
-                    <text x="445" y="60" text-anchor="middle" fill="#f1f5f9" font-family="Inter" font-size="12" font-weight="600">BUKU</text>
-                    <text x="445" y="80" text-anchor="middle" fill="#94a3b8" font-family="Inter" font-size="10"><tspan text-decoration="underline">ISBN</tspan> | Judul | Pengarang</text>
-
-                    <!-- Entity: Peminjaman -->
-                    <rect x="370" y="200" width="160" height="70" rx="6" fill="none" stroke="#3866f2" stroke-width="2"/>
-                    <text x="450" y="230" text-anchor="middle" fill="#f1f5f9" font-family="Inter" font-size="12" font-weight="600">PEMINJAMAN</text>
-                    <text x="450" y="250" text-anchor="middle" fill="#94a3b8" font-family="Inter" font-size="10"><tspan text-decoration="underline">ID_Peminjaman</tspan> | Tgl Pinjam</text>
-
-                    <!-- Entity: Petugas -->
-                    <rect x="700" y="120" width="150" height="70" rx="6" fill="none" stroke="#3866f2" stroke-width="2"/>
-                    <text x="775" y="150" text-anchor="middle" fill="#f1f5f9" font-family="Inter" font-size="12" font-weight="600">PETUGAS</text>
-                    <text x="775" y="170" text-anchor="middle" fill="#94a3b8" font-family="Inter" font-size="10"><tspan text-decoration="underline">ID_Petugas</tspan> | Nama | Jabatan</text>
-
-                    <!-- Entity: Kategori -->
-                    <rect x="700" y="30" width="150" height="70" rx="6" fill="none" stroke="#3866f2" stroke-width="2"/>
-                    <text x="775" y="60" text-anchor="middle" fill="#f1f5f9" font-family="Inter" font-size="12" font-weight="600">KATEGORI</text>
-                    <text x="775" y="80" text-anchor="middle" fill="#94a3b8" font-family="Inter" font-size="10"><tspan text-decoration="underline">ID_Kategori</tspan> | Nama Kategori</text>
-
-                    <!-- Relasi: Meminjam -->
-                    <polygon points="260,145 300,125 340,145 300,165" fill="none" stroke="#22c55e" stroke-width="2"/>
-                    <text x="300" y="148" text-anchor="middle" fill="#22c55e" font-family="Inter" font-size="9" font-weight="600">MEMINJAM</text>
-                    
-                    <!-- Garis Mahasiswa - Meminjam -->
-                    <line x1="180" y1="155" x2="260" y2="145" stroke="#475569" stroke-width="1.5"/>
-                    <text x="220" y="140" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="9">1</text>
-                    
-                    <!-- Garis Meminjam - Buku -->
-                    <line x1="340" y1="135" x2="370" y2="80" stroke="#475569" stroke-width="1.5"/>
-                    <text x="350" y="100" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="9">N</text>
-
-                    <!-- Relasi: Mencatat -->
-                    <polygon points="560,175 600,155 640,175 600,195" fill="none" stroke="#22c55e" stroke-width="2"/>
-                    <text x="600" y="178" text-anchor="middle" fill="#22c55e" font-family="Inter" font-size="9" font-weight="600">MENCATAT</text>
-
-                    <!-- Garis Peminjaman - Mencatat -->
-                    <line x1="530" y1="235" x2="560" y2="185" stroke="#475569" stroke-width="1.5"/>
-                    <text x="540" y="205" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="9">N</text>
-
-                    <!-- Garis Mencatat - Petugas -->
-                    <line x1="640" y1="170" x2="700" y2="155" stroke="#475569" stroke-width="1.5"/>
-                    <text x="665" y="160" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="9">1</text>
-
-                    <!-- Relasi: Terkategori -->
-                    <polygon points="560,55 600,35 640,55 600,75" fill="none" stroke="#22c55e" stroke-width="2"/>
-                    <text x="600" y="58" text-anchor="middle" fill="#22c55e" font-family="Inter" font-size="9" font-weight="600">TERKATEGORI</text>
-
-                    <!-- Garis Buku - Terkategori -->
-                    <line x1="520" y1="65" x2="560" y2="55" stroke="#475569" stroke-width="1.5"/>
-                    <text x="540" y="52" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="9">N</text>
-
-                    <!-- Garis Terkategori - Kategori -->
-                    <line x1="640" y1="50" x2="700" y2="55" stroke="#475569" stroke-width="1.5"/>
-                    <text x="670" y="45" text-anchor="middle" fill="#60a5fa" font-family="Inter" font-size="9">1</text>
-
-                    <!-- Legend -->
-                    <rect x="30" y="330" width="12" height="12" rx="2" fill="none" stroke="#3866f2" stroke-width="1.5"/>
-                    <text x="50" y="341" fill="#94a3b8" font-family="Inter" font-size="10">Entity</text>
-                    
-                    <polygon points="120,336 132,330 144,336 132,342" fill="none" stroke="#22c55e" stroke-width="1.5"/>
-                    <text x="154" y="341" fill="#94a3b8" font-family="Inter" font-size="10">Relasi</text>
-                    
-                    <ellipse cx="220" cy="336" rx="20" ry="8" fill="none" stroke="#f59e0b" stroke-width="1.5"/>
-                    <text x="250" y="341" fill="#94a3b8" font-family="Inter" font-size="10">Atribut</text>
-                    
-                    <text x="330" y="341" fill="#60a5fa" font-family="Inter" font-size="10">1 | N = Cardinality</text>
-                </svg>
+            <div class="task-box">
+                <h4>Tugas</h4>
+                <p>Buat ERD lengkap: entity, atribut (dengan PK & FK), relasi, dan cardinality.</p>
             </div>
-            <div class="erd-note">💡 Gunakan draw.io (app.diagrams.net) atau kertas untuk membuat ERD. Kirim hasilnya ke WhatsApp group!</div>
         </div>
+    </div>
 
-        <!-- SLIDE 6: REKAP -->
-        <div class="slide slide-recap">
-            <div>
-                <div class="label">Rekap</div>
-                <h2>Yang Perlu Diingat</h2>
-                <div class="recap-list">
-                    <div class="recap-item">
-                        <div class="recap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
-                        <div class="recap-body">
-                            <h4>Entity = Persegi</h4>
-                            <p>Objek yang ingin disimpan datanya.</p>
-                        </div>
-                    </div>
-                    <div class="recap-item">
-                        <div class="recap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="9" ry="9"/></svg></div>
-                        <div class="recap-body">
-                            <h4>Atribut = Oval</h4>
-                            <p>Properti dari entity. Primary key digaris bawah.</p>
-                        </div>
-                    </div>
-                    <div class="recap-item">
-                        <div class="recap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 22,12 12,22 2,12"/></svg></div>
-                        <div class="recap-body">
-                            <h4>Relasi = Belah Ketupat</h4>
-                            <p>Hubungan antar entity.</p>
-                        </div>
-                    </div>
-                    <div class="recap-item">
-                        <div class="recap-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></div>
-                        <div class="recap-body">
-                            <h4>Cardinality = 1:1, 1:N, M:N</h4>
-                            <p>Jumlah relasi antar entity.</p>
-                        </div>
-                    </div>
+    <!-- SLIDE 5: KASUS C — RUMAH SAKIT -->
+    <div class="slide slide-soal">
+        <div class="soal-left">
+            <div class="label">Studi Kasus C</div>
+            <h2>Sistem Informasi Rumah Sakit</h2>
+            <p class="case-desc">
+                Rumah sakit ingin mengelola data pasien, dokter, kunjungan, resep obat, dan kamar rawat inap. Setiap kunjungan ditangani oleh satu dokter, dan pasien bisa mendapat resep obat.
+            </p>
+            <div class="entities">
+                <h4>Entity yang Dibutuhkan</h4>
+                <div class="entity-list">
+                    <span class="entity-tag">Pasien</span>
+                    <span class="entity-tag">Dokter</span>
+                    <span class="entity-tag">Kunjungan</span>
+                    <span class="entity-tag">Resep</span>
+                    <span class="entity-tag">Obat</span>
+                    <span class="entity-tag">Kamar</span>
                 </div>
             </div>
-            <div>
-                <div class="next-box">
-                    <div class="label">Sesi Selanjutnya</div>
-                    <h3>Sesi 04</h3>
-                    <ul>
-                        <li>Normalisasi Database</li>
-                        <li>1NF, 2NF, 3NF</li>
-                        <li>Decomposition & Functional Dependencies</li>
-                    </ul>
+        </div>
+        <div class="soal-right">
+            <div class="hint-box">
+                <h4>Aturan Bisnis</h4>
+                <ul>
+                    <li>Satu pasien bisa berkunjung berkali-kali</li>
+                    <li>Satu kunjungan ditangani oleh satu dokter</li>
+                    <li>Satu dokter bisa menangani banyak pasien</li>
+                    <li>Satu kunjungan bisa menghasilkan satu resep</li>
+                    <li>Satu resep berisi satu atau lebih obat</li>
+                    <li>Obat bisa ada di banyak resep</li>
+                    <li>Pasien rawat inap menempati satu kamar</li>
+                    <li>Satu kamar bisa diisi beberapa pasien (bed)</li>
+                </ul>
+            </div>
+            <div class="task-box">
+                <h4>Tugas</h4>
+                <p>Buat ERD lengkap: entity, atribut (dengan PK & FK), relasi, dan cardinality.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: KASUS D — PERPUSTAKAAN KAMPUS -->
+    <div class="slide slide-soal">
+        <div class="soal-left">
+            <div class="label">Studi Kasus D</div>
+            <h2>Perpustakaan Universitas</h2>
+            <p class="case-desc">
+                Perpustakaan kampus ingin mencatat data mahasiswa, buku, peminjaman, denda, dan petugas. Buku dikelompokkan berdasarkan kategori, dan mahasiswa yang terlambat mengembalikan dikenakan denda.
+            </p>
+            <div class="entities">
+                <h4>Entity yang Dibutuhkan</h4>
+                <div class="entity-list">
+                    <span class="entity-tag">Mahasiswa</span>
+                    <span class="entity-tag">Buku</span>
+                    <span class="entity-tag">Peminjaman</span>
+                    <span class="entity-tag">Denda</span>
+                    <span class="entity-tag">Kategori</span>
+                    <span class="entity-tag">Petugas</span>
                 </div>
+            </div>
+        </div>
+        <div class="soal-right">
+            <div class="hint-box">
+                <h4>Aturan Bisnis</h4>
+                <ul>
+                    <li>Satu mahasiswa bisa meminjam banyak buku</li>
+                    <li>Satu buku bisa dipinjam oleh banyak mahasiswa (bergantian)</li>
+                    <li>Setiap peminjaman dicatat oleh satu petugas</li>
+                    <li>Buku dikelompokkan dalam satu kategori</li>
+                    <li>Kategori bisa berisi banyak buku</li>
+                    <li>Jika terlambat, dikenakan denda per hari per buku</li>
+                    <li>Mahasiswa bisa punya banyak denda</li>
+                </ul>
+            </div>
+            <div class="task-box">
+                <h4>Tugas</h4>
+                <p>Buat ERD lengkap: entity, atribut (dengan PK & FK), relasi, dan cardinality.</p>
             </div>
         </div>
     </div>
@@ -753,7 +477,6 @@
         <button onclick="next()">→</button>
     </div>
     <div class="counter"><span id="num">1</span> / 6</div>
-    <div class="corner-mark">Sesi 03 — Database Systems</div>
 
     <script>
         let current = 0;
