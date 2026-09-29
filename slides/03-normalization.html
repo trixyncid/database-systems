@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pertemuan 03 — Normalisasi Basis Data</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600,0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#ede8e0;--bg2:#e2dbd1;--text:#1a1a1a;--sec:#5a5a5a;--acc:#8a8178;--line:#b8b0a4;--grn:#2d5a27;--grn-l:#e8f0e7;--red:#c0392b;--red-l:#fde8e8;--blue:#3866f2;--blue-l:#e8f0ff}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+.presentation{width:100vw;height:100vh;position:relative}
+.slide{width:100vw;height:100vh;position:absolute;top:0;left:0;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s ease;display:flex;flex-direction:column;padding:4vh 4vw;background:var(--bg);overflow:hidden}
+.slide.active{opacity:1;visibility:visible}
+.geo-decoration{position:absolute;border:1px solid var(--line);border-radius:50%;pointer-events:none;z-index:0}
+.nav-dots{position:fixed;right:2vw;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;z-index:100}
+.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--line);cursor:pointer;transition:all .3s ease}
+.nav-dot.active{background:var(--text);transform:scale(1.3)}
+.slide-counter{position:fixed;bottom:3vh;right:3vw;font-size:.75rem;color:var(--acc);letter-spacing:2px;z-index:100}
+.nav-arrows{position:fixed;bottom:3vh;left:3vw;display:flex;gap:16px;z-index:100}
+.nav-arrow{width:40px;height:40px;border:1px solid var(--line);background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--text);transition:all .3s ease}
+.nav-arrow:hover{background:var(--text);color:var(--bg)}
+h1,h2,h3,h4{font-family:'Playfair Display',serif;font-weight:400;line-height:1.1}
+h1{font-size:clamp(2.5rem,5vw,4.5rem)}h2{font-size:clamp(1.8rem,3.5vw,3rem)}h3{font-size:clamp(1.2rem,2vw,1.6rem)}h4{font-size:clamp(1rem,1.5vw,1.2rem)}
+p,li{font-family:'Inter',sans-serif;font-size:clamp(.85rem,1.1vw,1.05rem);line-height:1.6;color:var(--sec)}
+.label{font-size:.75rem;text-transform:uppercase;letter-spacing:3px;color:var(--acc);font-weight:500}
+.vline{position:absolute;left:8vw;top:0;width:1px;height:100%;background:var(--line);opacity:.3;z-index:0}
+
+/* TITLE */
+.slide-title{justify-content:center}
+.slide-title .content{position:relative;z-index:1;max-width:65vw}
+.slide-title .label{margin-bottom:3vh}
+.slide-title h1{font-size:clamp(3rem,6vw,5.5rem);margin-bottom:2vh}
+.slide-title h1 em{color:var(--grn);font-style:italic}
+.slide-title .subtitle{font-size:clamp(1rem,1.5vw,1.3rem);color:var(--sec);max-width:42vw;line-height:1.7}
+.slide-title .geo-decoration{right:5vw;bottom:10vh;width:30vw;height:30vw;opacity:.4}
+.slide-title .geo-decoration::before{content:'';position:absolute;top:10%;left:10%;width:80%;height:80%;border:1px dashed var(--line);border-radius:50%}
+
+/* AGENDA */
+.slide-agenda .content{display:grid;grid-template-columns:1fr 1fr;gap:6vw;align-items:center;height:100%;position:relative;z-index:1}
+.slide-agenda .left-col h2{margin-bottom:3vh}
+.slide-agenda .left-col p{max-width:30vw}
+.slide-agenda .agenda-list{list-style:none}
+.slide-agenda .agenda-list li{padding:2vh 0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:2vw}
+.slide-agenda .agenda-number{font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--acc);min-width:3vw}
+
+/* PROBLEM TABLE */
+.slide-table .content{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative;z-index:1}
+.slide-table .header{margin-bottom:4vh}
+.slide-table .header h2{margin-bottom:1.5vh}
+.slide-table .header p{max-width:50vw}
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{background:var(--text);color:var(--bg);padding:1.5vh 1.5vw;text-align:left;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:1px;font-size:.75rem;text-transform:uppercase}
+.data-table td{padding:1.2vh 1.5vw;border-bottom:1px solid var(--line);color:var(--sec);font-family:'Inter',sans-serif}
+.data-table tr:nth-child(even) td{background:rgba(255,255,255,.3)}
+.data-table .problem-cell{background:var(--red-l) !important;color:var(--red);font-weight:500}
+.table-note{margin-top:2vh;padding:1.5vh 2vw;border-left:3px solid var(--red);background:var(--red-l);font-size:.85rem;color:var(--red)}
+
+/* ANOMALY CARDS */
+.slide-anomaly .content{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative;z-index:1}
+.slide-anomaly .header{margin-bottom:4vh}
+.slide-anomaly .anomaly-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5vw}
+.anomaly-card{border:1px solid var(--line);padding:3vh 2vw;background:rgba(255,255,255,.3);position:relative;overflow:hidden}
+.anomaly-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+.anomaly-card.insert::before{background:var(--red)}
+.anomaly-card.update::before{background:#e67e22}
+.anomaly-card.delete::before{background:var(--blue)}
+.anomaly-card .anomaly-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:2vh;font-weight:700}
+.anomaly-card.insert .anomaly-icon{background:var(--red-l);color:var(--red)}
+.anomaly-card.update .anomaly-icon{background:#fef3e2;color:#e67e22}
+.anomaly-card.delete .anomaly-icon{background:var(--blue-l);color:var(--blue)}
+.anomaly-card h3{margin-bottom:1vh;font-size:1.15rem}
+.anomaly-card p{font-size:.85rem;line-height:1.6}
+.anomaly-card .example{margin-top:1.5vh;padding:1.2vh 1.5vw;background:var(--bg);border-radius:4px;font-size:.8rem;color:var(--text);border-left:2px solid var(--line)}
+
+/* UNF SLIDE */
+.slide-unf .content{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative;z-index:1}
+.slide-unf .header{margin-bottom:3vh}
+.unf-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.unf-table th{background:var(--text);color:var(--bg);padding:1.2vh 1.2vw;text-align:left;font-family:'Inter',sans-serif;font-weight:600;letter-spacing:1px;font-size:.72rem;text-transform:uppercase}
+.unf-table td{padding:1vh 1.2vw;border:1px solid var(--line);color:var(--sec);font-family:'Inter',sans-serif;vertical-align:top}
+.unf-table .multi{background:#fff3cd;color:#856404;font-style:italic}
+.unf-caption{margin-top:2vh;font-size:.82rem;color:var(--acc);font-style:italic}
+
+/* STEP CARDS */
+.slide-steps .content{display:flex;flex-direction:column;justify-content:center;height:100%;position:relative;z-index:1}
+.slide-steps .header{margin-bottom:4vh}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2vw}
+.step-card{border:1px solid var(--line);padding:2.5vh 1.8vw;background:rgba(255,255,255,.3);position:relative}
+.step-card .step-num{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--line);opacity:.5;position:absolute;top:1.5vh;right:1.5vw}
+.step-card h4{margin-bottom:1vh;font-size:1.05rem}
+.step-card p{font-size:.82rem;line-height:1.5}
+.step-card .step-arrow{position:absolute;right:-1.2vw;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--acc)}
+
+/* 1NF */
+.slide-1nf .content{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:start;height:100%;position:relative;z-index:1;padding-top:6vh}
+.slide-1nf .left-col h2{margin-bottom:1.5vh}
+.slide-1nf .left-col .definition{padding:2vh 2vw;border:1px solid var(--grn);background:var(--grn-l);border-radius:6px;margin-bottom:3vh}
+.slide-1nf .left-col .definition h4{color:var(--grn);margin-bottom:.8vh;font-size:1rem}
+.slide-1nf .left-col .definition p{font-size:.88rem;color:var(--text)}
+.slide-1nf .left-col .rules{list-style:none}
+.slide-1nf .left-col .rules li{padding:1.2vh 0;border-bottom:1px solid var(--line);font-size:.88rem;display:flex;align-items:flex-start;gap:1vw}
+.slide-1nf .left-col .rules li .rule-check{color:var(--grn);font-weight:700;flex-shrink:0}
+.slide-1nf .right-col h4{margin-bottom:1.5vh;font-size:.95rem}
+.nf-table{width:100%;border-collapse:collapse;font-size:.78rem}
+.nf-table th{background:var(--text);color:var(--bg);padding:1vh 1vw;text-align:left;font-family:'Inter',sans-serif;font-weight:600;font-size:.7rem;text-transform:uppercase;letter-spacing:1px}
+.nf-table td{padding:.8vh 1vw;border:1px solid var(--line);color:var(--sec);font-family:'Inter',sans-serif}
+.nf-table .fixed{background:var(--grn-l);color:var(--grn)}
+.nf-table .violation{background:var(--red-l);color:var(--red);text-decoration:line-through}
+.table-label{font-size:.72rem;text-transform:uppercase;letter-spacing:2px;color:var(--acc);margin-bottom:1vh;display:block}
+.after-label{color:var(--grn);font-weight:600}
+.before-label{color:var(--red);font-weight:600}
+
+/* 2NF */
+.slide-2nf .content{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:start;height:100%;position:relative;z-index:1;padding-top:6vh}
+.slide-2nf .left-col h2{margin-bottom:1.5vh}
+.slide-2nf .left-col .definition{padding:2vh 2vw;border:1px solid var(--grn);background:var(--grn-l);border-radius:6px;margin-bottom:2vh}
+.slide-2nf .left-col .definition h4{color:var(--grn);margin-bottom:.8vh;font-size:1rem}
+.slide-2nf .left-col .definition p{font-size:.88rem;color:var(--text)}
+.slide-2nf .left-col .concept{margin-top:2vh;padding:2vh 2vw;border:1px solid var(--line);background:rgba(255,255,255,.3)}
+.slide-2nf .left-col .concept h4{margin-bottom:1vh;font-size:.95rem}
+.slide-2nf .left-col .concept p{font-size:.85rem}
+.slide-2nf .right-col h4{margin-bottom:1.5vh;font-size:.95rem}
+.split-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5vw;margin-top:1.5vh}
+.split-box{border:1px solid var(--line);padding:1.5vh 1.2vw;background:rgba(255,255,255,.3)}
+.split-box h5{font-family:'Inter',sans-serif;font-size:.72rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--acc);margin-bottom:.8vh;font-weight:600}
+.split-box ul{list-style:none}
+.split-box ul li{font-size:.78rem;padding:.4vh 0;color:var(--sec)}
+
+/* 3NF */
+.slide-3nf .content{display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:start;height:100%;position:relative;z-index:1;padding-top:6vh}
+.slide-3nf .left-col h2{margin-bottom:1.5vh}
+.slide-3nf .left-col .definition{padding:2vh 2vw;border:1px solid var(--grn);background:var(--grn-l);border-radius:6px;margin-bottom:2vh}
+.slide-3nf .left-col .definition h4{color:var(--grn);margin-bottom:.8vh;font-size:1rem}
+.slide-3nf .left-col .definition p{font-size:.88rem;color:var(--text)}
+.slide-3nf .left-col .transitive{margin-top:2vh;padding:2vh 2vw;border:1px solid #e67e22;background:#fef8f0;border-radius:6px}
+.slide-3nf .left-col .transitive h4{color:#e67e22;margin-bottom:.8vh;font-size:.95rem}
+.slide-3nf .left-col .transitive p{font-size:.85rem}
+.slide-3nf .right-col h4{margin-bottom:1.5vh;font-size:.95rem}
+.transitive-chain{display:flex;align-items:center;gap:1vw;margin:2vh 0;font-size:.88rem;color:var(--sec)}
+.transitive-chain .chain-item{padding:1vh 1.5vw;border:1px solid var(--line);background:rgba(255,255,255,.5);border-radius:4px}
+.transitive-chain .chain-arrow{color:var(--acc);font-size:1.2rem}
+
+/* RECAP */
+.slide-recap .content{display:grid;grid-template-columns:1fr 1fr;gap:5vw;align-items:center;height:100%;position:relative;z-index:1}
+.slide-recap .left-col h2{margin-bottom:3vh}
+.slide-recap .recap-list{list-style:none}
+.slide-recap .recap-list li{padding:2vh 0;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:1.5vw}
+.slide-recap .recap-num{font-family:'Playfair Display',serif;font-size:1.8rem;color:var(--acc);min-width:2.5vw}
+.slide-recap .recap-text h4{font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:.3vh}
+.slide-recap .recap-text p{font-size:.85rem}
+.slide-recap .right-col{display:flex;flex-direction:column;gap:2vh}
+.slide-recap .next-session{border:1px solid var(--line);padding:3vh 2.5vw;background:var(--grn-l)}
+.slide-recap .next-session .label{margin-bottom:1.5vh}
+.slide-recap .next-session h3{margin-bottom:1.5vh;font-size:1.4rem}
+.slide-recap .next-session ul{list-style:none}
+.slide-recap .next-session ul li{padding:.8vh 0;font-size:.9rem;color:var(--sec)}
+.slide-recap .next-session ul li::before{content:'\2192 ';color:var(--grn);margin-right:.5vw}
+
+/* CLOSING */
+.slide-closing{justify-content:center;align-items:center;text-align:center}
+.slide-closing .content{position:relative;z-index:1}
+.slide-closing h1{margin-bottom:3vh}
+.slide-closing p{margin-bottom:4vh;color:var(--acc);text-transform:uppercase;letter-spacing:3px;font-size:.9rem}
+.slide-closing .geo-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:50vw;height:50vw;border:1px solid var(--line);border-radius:50%;opacity:.3;z-index:0}
+.slide-closing .geo-ring::before{content:'';position:absolute;top:15%;left:15%;width:70%;height:70%;border:1px dashed var(--line);border-radius:50%}
+
+/* FLOW ARROW */
+.flow-arrow{display:flex;align-items:center;justify-content:center;padding:1.5vh 0;color:var(--acc);font-size:1.5rem}
+
+/* RESPONSIVE */
+@media(max-aspect-ratio:4/3){
+  .slide-agenda .content,.slide-1nf .content,.slide-2nf .content,.slide-3nf .content,.slide-recap .content{grid-template-columns:1fr;gap:3vh}
+  .slide-anomaly .anomaly-grid,.steps-grid{grid-template-columns:1fr}
+  .split-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="presentation">
+
+<!-- ========== SLIDE 1: TITLE ========== -->
+<div class="slide slide-title active">
+  <div class="geo-decoration"></div>
+  <div class="vline"></div>
+  <div class="content">
+    <div class="label">Pertemuan 03 — Database Systems</div>
+    <h1>Normalisasi<br><em>Basis Data</em></h1>
+    <p class="subtitle">Memahami mengapa data duplikat menimbulkan masalah serius dan bagaimana normalisasi dari UNF hingga 3NF menyelesaikannya.</p>
+  </div>
+</div>
+
+<!-- ========== SLIDE 2: AGENDA ========== -->
+<div class="slide slide-agenda">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="left-col">
+      <div class="label">Yang Akan Dipelajari</div>
+      <h2>Agenda Hari Ini</h2>
+      <p>Perjalanan dari data yang berantakan hingga terstruktur dengan baik melalui proses normalisasi.</p>
+    </div>
+    <div class="right-col">
+      <ul class="agenda-list">
+        <li><span class="agenda-number">01</span>Mengapa Normalisasi Diperlukan</li>
+        <li><span class="agenda-number">02</span>Bentuk Tak Normal (UNF) & Masalahnya</li>
+        <li><span class="agenda-number">03</span>Tiga Anomali Utama</li>
+        <li><span class="agenda-number">04</span>First Normal Form (1NF)</li>
+        <li><span class="agenda-number">05</span>Second Normal Form (2NF)</li>
+        <li><span class="agenda-number">06</span>Third Normal Form (3NF)</li>
+        <li><span class="agenda-number">07</span>Rekap & Ringkasan</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 3: PROBLEM — TABEL REDUNDAN ========== -->
+<div class="slide slide-table">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="header">
+      <div class="label">Masalah</div>
+      <h2>Data Redundan: Studi Kasus</h2>
+      <p>Sebuah toko online menyimpan data pesanan dalam satu tabel besar. Perhatikan apa yang terjadi.</p>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID Pesanan</th>
+          <th>Tanggal</th>
+          <th>ID Pembeli</th>
+          <th>Nama Pembeli</th>
+          <th>Email</th>
+          <th>Kota</th>
+          <th>ID Produk</th>
+          <th>Nama Produk</th>
+          <th>Harga</th>
+          <th>Jumlah</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>P001</td><td>1 Jan</td><td>C01</td>
+          <td class="problem-cell">Andi</td><td class="problem-cell">andi@mail.com</td><td class="problem-cell">Medan</td>
+          <td>PRD10</td><td>Laptop</td><td>12.000.000</td><td>1</td>
+        </tr>
+        <tr>
+          <td>P002</td><td>2 Jan</td><td>C02</td>
+          <td class="problem-cell">Budi</td><td class="problem-cell">budi@mail.com</td><td class="problem-cell">Jakarta</td>
+          <td>PRD20</td><td>Mouse</td><td>150.000</td><td>2</td>
+        </tr>
+        <tr>
+          <td>P003</td><td>3 Jan</td><td>C01</td>
+          <td class="problem-cell">Andi</td><td class="problem-cell">andi@mail.com</td><td class="problem-cell">Medan</td>
+          <td>PRD30</td><td>Keyboard</td><td>350.000</td><td>1</td>
+        </tr>
+        <tr>
+          <td>P004</td><td>3 Jan</td><td>C01</td>
+          <td class="problem-cell">Andi</td><td class="problem-cell">andi@mail.com</td><td class="problem-cell">Medan</td>
+          <td>PRD10</td><td>Laptop</td><td>12.000.000</td><td>1</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="table-note">Data pembeli (Andi, Budi) dan produk (Laptop, Mouse) muncul berulang — ini adalah redundansi yang menjadi sumber masalah.</div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 4: TIGA ANOMALI ========== -->
+<div class="slide slide-anomaly">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="header">
+      <div class="label">Dampak</div>
+      <h2>Tiga Anomali Utama</h2>
+    </div>
+    <div class="anomaly-grid">
+      <div class="anomaly-card insert">
+        <div class="anomaly-icon">+</div>
+        <h3>Anomali Insertion</h3>
+        <p>Data baru tidak bisa ditambahkan tanpa data lain yang tidak terkait. Misalnya, data produk baru tidak bisa dimasukkan karena belum ada pesanan.</p>
+        <div class="example">Contoh: Ingin menambah produk "Printer" yang belum pernah dipesan — tidak bisa, karena tabel membutuhkan ID Pesanan.</div>
+      </div>
+      <div class="anomaly-card update">
+        <div class="anomaly-icon">✎</div>
+        <h3>Anomali Update</h3>
+        <p>Perubahan satu data harus dilakukan di banyak baris. Jika salah satu terlewat, data menjadi inkonsisten.</p>
+        <div class="example">Contoh: Andi pindah ke Bandung — harus update di baris P001, P003, DAN P004. Jika hanya satu yang terlewat, data kota Andi jadi beda-beda.</div>
+      </div>
+      <div class="anomaly-card delete">
+        <div class="anomaly-icon">✕</div>
+        <h3>Anomali Deletion</h3>
+        <p>Menghapus satu data bisa menghilangkan data lain yang seharusnya tetap ada.</p>
+        <div class="example">Contoh: Jika pesanan P002 dihapus (Budi tidak jadi beli), maka seluruh data Budi — nama, email, kota — juga hilang dari sistem.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 5: APA ITU NORMALISASI ========== -->
+<div class="slide slide-steps">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="header">
+      <div class="label">Solusi</div>
+      <h2>Apa Itu Normalisasi?</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4vw;align-items:start">
+      <div>
+        <p style="font-size:1rem;line-height:1.8;margin-bottom:3vh">
+          Normalisasi adalah proses mengorganisasi data dalam basis data agar <strong style="color:var(--text)">redundansi diminimalkan</strong> dan <strong style="color:var(--text)">integritas data terjaga</strong>. Proses ini dilakukan dengan memecah tabel besar menjadi tabel-tabel lebih kecil yang saling terhubung.
+        </p>
+        <p style="font-size:1rem;line-height:1.8;margin-bottom:3vh">
+          Tujuannya agar setiap data hanya disimpan di <strong style="color:var(--text)">satu tempat</strong>, sehingga ketika ada perubahan, cukup diubah di satu tempat saja — tidak perlu mengubah di banyak tempat.
+        </p>
+        <div style="padding:2vh 2vw;border:1px solid var(--grn);background:var(--grn-l);border-radius:6px">
+          <h4 style="color:var(--grn);margin-bottom:.8vh;font-size:1rem">Prinsip Utama</h4>
+          <p style="font-size:.88rem;color:var(--text)">"Setiap fakta harus disimpan di satu tempat, dan hanya di satu tempat."</p>
+        </div>
+      </div>
+      <div>
+        <div class="steps-grid" style="grid-template-columns:1fr">
+          <div class="step-card">
+            <div class="step-num">01</div>
+            <h4>Unnormalized Form (UNF)</h4>
+            <p>Tabel awal yang belum dinormalisasi. Bisa berisi data berulang, kolom multi-nilai, dan struktur yang belum terorganisasi.</p>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="step-card">
+            <div class="step-num">02</div>
+            <h4>First Normal Form (1NF)</h4>
+            <p>Setiap kolom berisi satu nilai tunggal. Tidak ada daftar atau kumpulan data dalam satu sel.</p>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="step-card">
+            <div class="step-num">03</div>
+            <h4>Second Normal Form (2NF)</h4>
+            <p>Sudah 1NF + setiap kolom non-key bergantung pada seluruh primary key, bukan sebagian.</p>
+          </div>
+          <div class="flow-arrow">↓</div>
+          <div class="step-card">
+            <div class="step-num">04</div>
+            <h4>Third Normal Form (3NF)</h4>
+            <p>Sudah 2NF + tidak ada dependensi transitif. Kolom non-key tidak bergantung pada kolom non-key lain.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 6: UNF — CONTOH ========== -->
+<div class="slide slide-unf">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="header">
+      <div class="label">Langkah 0</div>
+      <h2>Unnormalized Form (UNF)</h2>
+    </div>
+    <p style="margin-bottom:2vh">Tabel berikut belum dinormalisasi — kolom "Produk" berisi daftar item dalam satu sel (multi-value), dan data pelanggan serta produk redundan.</p>
+    <table class="unf-table">
+      <thead>
+        <tr>
+          <th>ID Pesanan</th>
+          <th>Tanggal</th>
+          <th>ID Pelanggan</th>
+          <th>Nama Pelanggan</th>
+          <th>Alamat</th>
+          <th>Kota</th>
+          <th>ID Produk</th>
+          <th>Nama Produk</th>
+          <th>Harga</th>
+          <th>Jumlah</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>P001</td><td>5 Jan</td><td>C01</td>
+          <td>Andi Saputra</td><td>Jl. Merdeka No.10</td><td>Medan</td>
+          <td>PRD10, PRD20</td>
+          <td class="multi">Laptop, Mouse</td>
+          <td class="multi">12.000.000, 150.000</td>
+          <td class="multi">1, 3</td>
+        </tr>
+        <tr>
+          <td>P002</td><td>6 Jan</td><td>C02</td>
+          <td>Budi Santoso</td><td>Jl. Sudirman No.5</td><td>Jakarta</td>
+          <td>PRD30</td>
+          <td>Keyboard</td>
+          <td>350.000</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>P003</td><td>7 Jan</td><td>C01</td>
+          <td>Andi Saputra</td><td>Jl. Merdeka No.10</td><td>Medan</td>
+          <td>PRD40</td>
+          <td>Headset</td>
+          <td>250.000</td>
+          <td>1</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="unf-caption">Masalah: Kolom Produk, Harga, dan Jumlah berisi banyak nilai dalam satu sel. Data Andi muncul 2 kali secara identik.</div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 7: 1NF ========== -->
+<div class="slide slide-1nf">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="left-col">
+      <div class="label">Langkah 1</div>
+      <h2>First Normal Form<br>(1NF)</h2>
+      <div class="definition">
+        <h4>Definisi</h4>
+        <p>Sebuah tabel sudah dalam 1NF jika <strong>setiap kolom berisi nilai atomik</strong> (tunggal) — tidak ada kumpulan data, daftar, atau nilai ganda dalam satu sel.</p>
+      </div>
+      <ul class="rules">
+        <li><span class="rule-check">✓</span>Setiap kolom hanya berisi satu nilai</li>
+        <li><span class="rule-check">✓</span>Tidak ada kolom yang berisi daftar atau array</li>
+        <li><span class="rule-check">✓</span>Setiap baris harus unik (ada primary key)</li>
+        <li><span class="rule-check">✓</span>Urutan kolom dan baris tidak signifikan</li>
+      </ul>
+    </div>
+    <div class="right-col">
+      <span class="table-label before-label">Sebelum 1NF (UNF)</span>
+      <table class="nf-table">
+        <thead><tr><th>ID Pelanggan</th><th>Nama</th><th>Produk Dibeli</th></tr></thead>
+        <tbody>
+          <tr><td>C01</td><td>Andi</td><td class="violation">Laptop, Mouse, Keyboard</td></tr>
+          <tr><td>C02</td><td>Budi</td><td class="violation">Mouse</td></tr>
+        </tbody>
+      </table>
+      <div class="flow-arrow">↓</div>
+      <span class="table-label after-label">Sesudah 1NF</span>
+      <table class="nf-table">
+        <thead><tr><th>ID Pelanggan</th><th>Nama</th><th>Produk Dibeli</th></tr></thead>
+        <tbody>
+          <tr><td>C01</td><td>Andi</td><td class="fixed">Laptop</td></tr>
+          <tr><td>C01</td><td>Andi</td><td class="fixed">Mouse</td></tr>
+          <tr><td>C01</td><td>Andi</td><td class="fixed">Keyboard</td></tr>
+          <tr><td>C02</td><td>Budi</td><td class="fixed">Mouse</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:1.5vh;font-size:.82rem;color:var(--acc);font-style:italic">Setiap sel hanya berisi satu nilai. Tapi perhatikan — nama Andi masih muncul 3 kali (redundansi belum selesai).</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 8: 1NF — TABEL LENGKAP ========== -->
+<div class="slide slide-table">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="header">
+      <div class="label">1NF — Contoh Lengkap</div>
+      <h2>Tabel Setelah 1NF</h2>
+    </div>
+    <table class="data-table" style="font-size:.8rem">
+      <thead>
+        <tr>
+          <th>ID Pesanan</th>
+          <th>Tanggal</th>
+          <th>ID Pelanggan</th>
+          <th>Nama</th>
+          <th>Alamat</th>
+          <th>Kota</th>
+          <th>ID Produk</th>
+          <th>Nama Produk</th>
+          <th>Harga</th>
+          <th>Jumlah</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>P001</td><td>5 Jan</td><td>C01</td><td class="problem-cell">Andi</td><td class="problem-cell">Jl. Merdeka</td><td class="problem-cell">Medan</td><td>PRD10</td><td>Laptop</td><td>12.000.000</td><td>1</td></tr>
+        <tr><td>P001</td><td>5 Jan</td><td>C01</td><td class="problem-cell">Andi</td><td class="problem-cell">Jl. Merdeka</td><td class="problem-cell">Medan</td><td>PRD20</td><td>Mouse</td><td>150.000</td><td>3</td></tr>
+        <tr><td>P002</td><td>6 Jan</td><td>C02</td><td>Budi</td><td>Jl. Sudirman</td><td>Jakarta</td><td>PRD30</td><td>Keyboard</td><td>350.000</td><td>2</td></tr>
+        <tr><td>P003</td><td>7 Jan</td><td>C01</td><td class="problem-cell">Andi</td><td class="problem-cell">Jl. Merdeka</td><td class="problem-cell">Medan</td><td>PRD40</td><td>Headset</td><td>250.000</td><td>1</td></tr>
+      </tbody>
+    </table>
+    <div class="table-note">Sudah 1NF (seluruh nilai atomik), tapi data pelanggan (Andi) masih duplikat di 3 baris. Inilah yang harus diselesaikan di 2NF.</div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 9: 2NF ========== -->
+<div class="slide slide-2nf">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="left-col">
+      <div class="label">Langkah 2</div>
+      <h2>Second Normal Form<br>(2NF)</h2>
+      <div class="definition">
+        <h4>Definisi</h4>
+        <p>Sebuah tabel sudah dalam 2NF jika sudah <strong>1NF</strong> dan <strong>tidak ada partial dependency</strong> — artinya semua kolom non-key bergantung pada <strong>seluruh</strong> primary key, bukan hanya sebagian.</p>
+      </div>
+      <div class="concept">
+        <h4>Kapan 2NF Diperlukan?</h4>
+        <p>2NF hanya relevan jika primary key-nya <strong>komposit</strong> (terdiri dari lebih dari satu kolom). Jika PK hanya satu kolom, maka otomatis sudah 2NF karena tidak mungkin ada partial dependency.</p>
+      </div>
+    </div>
+    <div class="right-col">
+      <span class="table-label">Tabel 1NF — Primary Key Komposit</span>
+      <p style="margin-bottom:1vh;font-size:.82rem;color:var(--sec)">PK = (ID Pesanan, ID Produk) — dua kolom</p>
+      <table class="nf-table">
+        <thead><tr><th>ID Pesanan</th><th>ID Produk</th><th>Tanggal</th><th>Nama</th><th>Kota</th><th>Nama Produk</th><th>Harga</th><th>Jumlah</th></tr></thead>
+        <tbody>
+          <tr><td>P001</td><td>PRD10</td><td>5 Jan</td><td class="violation">Andi</td><td class="violation">Medan</td><td>Laptop</td><td>12.000.000</td><td>1</td></tr>
+          <tr><td>P001</td><td>PRD20</td><td>5 Jan</td><td class="violation">Andi</td><td class="violation">Medan</td><td>Mouse</td><td>150.000</td><td>3</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:1.5vh 0;font-size:.82rem;color:var(--red)">Nama, Kota bergantung hanya pada ID Pesanan (sebagian PK). Nama Produk, Harga bergantung hanya pada ID Produk (sebagian PK). → Partial dependency!</p>
+      <div class="flow-arrow">↓</div>
+      <span class="table-label after-label">Hasil Pemecahan 2NF</span>
+      <div class="split-grid">
+        <div class="split-box">
+          <h5>Tabel Pesanan</h5>
+          <ul>
+            <li><strong>ID Pesanan</strong> (PK)</li>
+            <li>Tanggal</li>
+            <li>ID Pelanggan (FK)</li>
+          </ul>
+        </div>
+        <div class="split-box">
+          <h5>Tabel Produk</h5>
+          <ul>
+            <li><strong>ID Produk</strong> (PK)</li>
+            <li>Nama Produk</li>
+            <li>Harga</li>
+          </ul>
+        </div>
+        <div class="split-box">
+          <h5>Tabel Detail Pesanan</h5>
+          <ul>
+            <li><strong>ID Pesanan</strong> (FK)</li>
+            <li><strong>ID Produk</strong> (FK)</li>
+            <li>Jumlah</li>
+          </ul>
+        </div>
+        <div class="split-box">
+          <h5>Tabel Pelanggan</h5>
+          <ul>
+            <li><strong>ID Pelanggan</strong> (PK)</li>
+            <li>Nama</li>
+            <li>Alamat, Kota</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 10: 3NF ========== -->
+<div class="slide slide-3nf">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="left-col">
+      <div class="label">Langkah 3</div>
+      <h2>Third Normal Form<br>(3NF)</h2>
+      <div class="definition">
+        <h4>Definisi</h4>
+        <p>Sebuah tabel sudah dalam 3NF jika sudah <strong>2NF</strong> dan <strong>tidak ada dependensi transitif</strong> — artinya kolom non-key tidak bergantung pada kolom non-key lainnya.</p>
+      </div>
+      <div class="transitive">
+        <h4>Apa itu Dependensi Transitif?</h4>
+        <p>Jika A → B dan B → C, maka A → C secara transitif. Dalam konteks tabel: jika ID_Pelanggan → Kota dan Kota → Kode_Pos, maka Kode_Pos bergantung secara transitif pada ID_Pelanggan.</p>
+      </div>
+    </div>
+    <div class="right-col">
+      <span class="table-label">Masalah: Tabel Pelanggan (2NF)</span>
+      <table class="nf-table">
+        <thead><tr><th>ID Pelanggan</th><th>Nama</th><th>Kota</th><th>Kode Pos</th><th>Provinsi</th></tr></thead>
+        <tbody>
+          <tr><td>C01</td><td>Andi</td><td>Medan</td><td class="violation">20111</td><td class="violation">Sumatera Utara</td></tr>
+          <tr><td>C02</td><td>Budi</td><td>Jakarta</td><td class="violation">10110</td><td class="violation">DKI Jakarta</td></tr>
+          <tr><td>C03</td><td>Citra</td><td>Medan</td><td class="violation">20111</td><td class="violation">Sumatera Utara</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:1.5vh 0;font-size:.82rem;color:var(--red)">Kode_Pos dan Provinsi bergantung pada Kota, bukan langsung pada ID Pelanggan. Ini dependensi transitif!</p>
+      <div class="flow-arrow">↓</div>
+      <span class="table-label after-label">Hasil Pemecahan 3NF</span>
+      <div class="split-grid">
+        <div class="split-box" style="border-color:var(--grn)">
+          <h5>Tabel Pelanggan (3NF)</h5>
+          <ul>
+            <li><strong>ID Pelanggan</strong> (PK)</li>
+            <li>Nama</li>
+            <li>Kota (FK)</li>
+          </ul>
+        </div>
+        <div class="split-box" style="border-color:var(--grn)">
+          <h5>Tabel Kota</h5>
+          <ul>
+            <li><strong>Nama Kota</strong> (PK)</li>
+            <li>Kode Pos</li>
+            <li>Provinsi</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:1.5vh;font-size:.82rem;color:var(--grn);font-style:italic">Sekarang data Kota, Kode Pos, dan Provinsi hanya disimpan sekali di tabel Kota. Jika Kode Pos berubah, cukup update di satu tempat.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 11: RINGKASAN PERBANDINGAN ========== -->
+<div class="slide slide-table">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="header">
+      <div class="label">Ringkasan</div>
+      <h2>Perbandingan 1NF, 2NF, 3NF</h2>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Bentuk Normal</th>
+          <th>Syarat Utama</th>
+          <th>Masalah yang Diselesaikan</th>
+          <th>Contoh Penerapan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:600;color:var(--text)">1NF</td>
+          <td>Sudah UNF + setiap kolom berisi nilai atomik (tunggal)</td>
+          <td>Daftar/array dalam satu sel dipecah menjadi baris terpisah</td>
+          <td>Kolom "Produk Dibeli: Laptop, Mouse" dipecah menjadi 2 baris</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:var(--text)">2NF</td>
+          <td>Sudah 1NF + tidak ada partial dependency</td>
+          <td>Sebagian kolom non-key bergantung pada sebagian PK dipisah ke tabel baru</td>
+          <td>Nama pelanggan dipisah dari tabel pesanan karena bergantung pada ID Pelanggan saja</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;color:var(--text)">3NF</td>
+          <td>Sudah 2NF + tidak ada dependensi transitif</td>
+          <td>Kolom non-key yang bergantung pada kolom non-key lain dipisah</td>
+          <td>Kode Pos dan Provinsi dipisah ke tabel Kota karena bergantung pada Nama Kota</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:3vh;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2vw">
+      <div style="padding:2vh 2vw;border:1px solid var(--line);background:rgba(255,255,255,.3)">
+        <h4 style="font-size:.9rem;margin-bottom:.8vh;font-family:'Playfair Display',serif">Prinsip 1NF</h4>
+        <p style="font-size:.82rem">"Satu sel = satu nilai"</p>
+      </div>
+      <div style="padding:2vh 2vw;border:1px solid var(--line);background:rgba(255,255,255,.3)">
+        <h4 style="font-size:.9rem;margin-bottom:.8vh;font-family:'Playfair Display',serif">Prinsip 2NF</h4>
+        <p style="font-size:.82rem">"Semua non-key harus bergantung pada PK seluruhnya"</p>
+      </div>
+      <div style="padding:2vh 2vw;border:1px solid var(--line);background:rgba(255,255,255,.3)">
+        <h4 style="font-size:.9rem;margin-bottom:.8vh;font-family:'Playfair Display',serif">Prinsip 3NF</h4>
+        <p style="font-size:.82rem">"Non-key tidak boleh bergantung pada non-key lain"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 12: REKAP ========== -->
+<div class="slide slide-recap">
+  <div class="vline"></div>
+  <div class="content">
+    <div class="left-col">
+      <div class="label">Rekap</div>
+      <h2>Poin-Poin Penting</h2>
+      <ul class="recap-list">
+        <li><span class="recap-num">01</span><div class="recap-text"><h4>Redundansi = Sumber Masalah</h4><p>Data duplikat menyebabkan anomali insertion, update, dan deletion.</p></div></li>
+        <li><span class="recap-num">02</span><div class="recap-text"><h4>1NF: Nilai Atomik</h4><p>Setiap kolom hanya berisi satu nilai. Pecah daftar menjadi baris.</p></div></li>
+        <li><span class="recap-num">03</span><div class="recap-text"><h4>2NF: Hapus Partial Dependency</h4><p>Kolom non-key harus bergantung pada seluruh primary key.</p></div></li>
+        <li><span class="recap-num">04</span><div class="recap-text"><h4>3NF: Hapus Transitive Dependency</h4><p>Kolom non-key tidak boleh bergantung pada kolom non-key lain.</p></div></li>
+        <li><span class="recap-num">05</span><div class="recap-text"><h4>Normalisasi = Integritas Data</h4><p>Data tersimpan di tempat yang tepat, update cukup di satu tempat.</p></div></li>
+      </ul>
+    </div>
+    <div class="right-col">
+      <div class="next-session">
+        <div class="label">Selanjutnya</div>
+        <h3>Pertemuan Berikutnya</h3>
+        <ul>
+          <li>SQL — Data Definition Language (DDL)</li>
+          <li>Membuat Tabel & Menentukan Constraints</li>
+          <li>Praktik di MySQL / PostgreSQL</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== SLIDE 13: CLOSING ========== -->
+<div class="slide slide-closing">
+  <div class="geo-ring"></div>
+  <div class="content">
+    <div class="label">Pertemuan 03 — Selesai</div>
+    <h1>Terima Kasih</h1>
+    <p>Ada Pertanyaan?</p>
+  </div>
+</div>
+
+</div><!-- end presentation -->
+
+<div class="nav-dots" id="navDots"></div>
+<div class="nav-arrows">
+  <button class="nav-arrow" id="prevBtn">&#8592;</button>
+  <button class="nav-arrow" id="nextBtn">&#8594;</button>
+</div>
+<div class="slide-counter"><span id="currentSlide">01</span> / <span id="totalSlides">01</span></div>
+
+<script>
+const slides=document.querySelectorAll('.slide'),totalSlides=slides.length,navDots=document.getElementById('navDots');
+for(let i=0;i<totalSlides;i++){const d=document.createElement('div');d.className='nav-dot'+(i===0?' active':'');d.dataset.slide=i;navDots.appendChild(d)}
+const dots=document.querySelectorAll('.nav-dot');let cur=0;
+document.getElementById('totalSlides').textContent=String(totalSlides).padStart(2,'0');
+function show(i){slides.forEach((s,x)=>s.classList.toggle('active',x===i));dots.forEach((d,x)=>d.classList.toggle('active',x===i));document.getElementById('currentSlide').textContent=String(i+1).padStart(2,'0');cur=i}
+function next(){show((cur+1)%totalSlides)}function prev(){show((cur-1+totalSlides)%totalSlides)}
+document.getElementById('nextBtn').addEventListener('click',next);
+document.getElementById('prevBtn').addEventListener('click',prev);
+dots.forEach(d=>d.addEventListener('click',()=>show(parseInt(d.dataset.slide))));
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next()}else if(e.key==='ArrowLeft'){e.preventDefault();prev()}});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.changedTouches[0].screenX},false);
+document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].screenX;if(Math.abs(d)>50){d>0?next():prev()}},false);
+</script>
+</body>
+</html>
