@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pertemuan 05 — Normalisasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/deck.css">
+</head>
+<body>
+<div id="stage">
+<div id="run"><span>Database Systems · Pertemuan 05 · Normalisasi</span><span id="sec"></span></div>
+
+<!-- =====================================================================
+     COVER
+====================================================================== -->
+<section class="slide cover" data-plain>
+  <div class="eyebrow">Database Systems — Pertemuan 05</div>
+  <h1>Normalisasi</h1>
+  <p class="sub">Merapikan data yang berantakan: dari satu sheet penuh duplikat menjadi beberapa tabel kecil yang rapi dan saling terhubung.</p>
+  <div class="journey" aria-hidden="true">
+    <span class="lb">UNF</span><span class="bx"><i class="big mess"></i></span>
+    <span class="lb">1NF</span><span class="bx"><i class="big" style="height:52px"></i></span>
+    <span class="lb">2NF</span><span class="bx"><i></i><i></i><i></i></span>
+    <span class="lb">3NF</span><span class="bx"><i></i><i></i><i></i><i></i></span>
+    <span class="cap">1 sheet berantakan → 4 tabel rapi</span>
+  </div>
+  <div class="meta"><span>Digital Business · Semester III</span><span>Randy Brilliant Chandra, S.S.I., M.Kom</span></div>
+</section>
+
+<!-- AGENDA -->
+<section class="slide" data-section="Rencana hari ini">
+  <div class="eyebrow">Rencana hari ini</div>
+  <h2>Satu kasus, kita bedah dari awal sampai rapi.</h2>
+  <div class="cols4 col-rule mt">
+    <div><span class="num">01</span><h3>Masalahnya</h3><p class="sm">Melihat sheet pesanan sebuah toko online. Apa yang salah dengan data yang berulang?</p></div>
+    <div><span class="num">02</span><h3>Tiga anomali</h3><p class="sm">Tiga kejadian nyata yang bikin data jadi kacau: saat mengubah, menghapus, dan menambah.</p></div>
+    <div><span class="num">03</span><h3>1NF → 2NF → 3NF</h3><p class="sm">Merapikan sheet tadi langkah demi langkah, dengan satu pertanyaan sederhana di tiap langkah.</p></div>
+    <div><span class="num">04</span><h3>Latihan</h3><p class="sm">Tiga kasus bisnis baru, dari yang mudah sampai yang menantang. Dikerjakan berpasangan.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note grn"><p><strong>Target:</strong> setelah kelas ini, kamu bisa mengambil satu tabel yang berantakan dan memecahnya menjadi tabel-tabel yang sudah 3NF.</p></div>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 1 — MASALAH
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 1 / 3</div>
+  <h1>Masalahnya</h1>
+  <p>Hampir semua usaha kecil memulai pencatatan dengan spreadsheet. Itu wajar. Masalahnya baru terasa ketika datanya mulai banyak.</p>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Studi kasus">
+  <div class="eyebrow">Studi kasus</div>
+  <h2>Kenalan dengan Toko Oleh-Oleh <em>Kak Rina</em></h2>
+  <p class="lede">Kak Rina berjualan oleh-oleh khas Medan lewat WhatsApp dan Instagram. Setiap ada pesanan, admin mencatatnya di Google Sheets: <strong>satu baris untuk satu pesanan</strong>.</p>
+  <div class="mt">
+  <table class="sheet lg">
+    <tr><th>No Pesanan</th><th>Tanggal</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th><th>Produk</th><th>Harga</th><th>Jumlah</th></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>Bika Ambon, Sirup Markisa</td><td>85.000, 40.000</td><td>2, 1</td></tr>
+    <tr><td>INV-002</td><td>02 Okt</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td><td>Kopi Sidikalang</td><td>60.000</td><td>3</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>Teri Medan, Bika Ambon</td><td>75.000, 85.000</td><td>1, 1</td></tr>
+    <tr><td>INV-004</td><td>05 Okt</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td><td>Sirup Markisa</td><td>40.000</td><td>4</td></tr>
+  </table>
+  </div>
+  <div class="spacer"></div>
+  <p class="say-sm">Sekilas terlihat rapi. Tapi coba perhatikan baik-baik&hellip;</p>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Studi kasus">
+  <div class="eyebrow">Coba perhatikan</div>
+  <h2>Apa yang aneh dari sheet ini?</h2>
+  <table class="sheet lg">
+    <tr><th>No Pesanan</th><th>Tanggal</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th><th>Produk</th><th>Harga</th><th>Jumlah</th></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td><td class="multi">Bika Ambon, Sirup Markisa</td><td class="multi">85.000, 40.000</td><td class="multi">2, 1</td></tr>
+    <tr><td>INV-002</td><td>02 Okt</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td><td>Kopi Sidikalang</td><td>60.000</td><td>3</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td><td class="multi">Teri Medan, Bika Ambon</td><td class="multi">75.000, 85.000</td><td class="multi">1, 1</td></tr>
+    <tr><td>INV-004</td><td>05 Okt</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td><td>Sirup Markisa</td><td>40.000</td><td>4</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols3">
+    <div class="note"><p><span class="sw" style="background:var(--mark)"></span><strong>Satu sel, banyak isi.</strong> Coba hitung: berapa Bika Ambon yang terjual minggu ini? Harus dibaca satu per satu.</p></div>
+    <div class="note"><p><span class="sw" style="background:var(--red-bg)"></span><strong>Data Dewi ditulis ulang</strong> setiap kali ia belanja: nama, nomor HP, kota. Lagi dan lagi.</p></div>
+    <div class="note"><p><strong>Harga juga berulang.</strong> Bika Ambon 85.000 ditulis di dua pesanan. Kalau harga naik, mana yang diubah?</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Tiga anomali">
+  <div class="eyebrow">Masalah 1 dari 3 · <b>Anomali ubah</b></div>
+  <h2>Dewi ganti nomor HP. Admin hanya mengubah satu baris.</h2>
+  <div class="row mt">
+    <table class="sheet lg">
+      <tr><th>No Pesanan</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th></tr>
+      <tr><td>INV-001</td><td>Dewi Anggraini</td><td class="bad">0812-1111</td><td>Medan</td></tr>
+      <tr><td>INV-002</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td></tr>
+      <tr><td>INV-003</td><td>Dewi Anggraini</td><td class="ok">0812-9999</td><td>Medan</td></tr>
+      <tr><td>INV-004</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td></tr>
+    </table>
+    <div>
+      <p class="say">Sekarang, nomor Dewi yang benar yang mana?</p>
+      <p class="mt">Data yang sama disimpan di banyak baris, jadi setiap perubahan harus dilakukan di <strong>semua</strong> baris itu. Satu saja terlewat, datanya saling bertentangan.</p>
+      <p class="xs mt">Bayangkan kalau Dewi sudah belanja 50 kali.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Tiga anomali">
+  <div class="eyebrow">Masalah 2 dari 3 · <b>Anomali hapus</b></div>
+  <h2>Rudi membatalkan pesanannya. Admin menghapus barisnya.</h2>
+  <table class="sheet lg mt-s">
+    <tr><th>No Pesanan</th><th>Tanggal</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th><th>Produk</th><th>Harga</th><th>Jumlah</th></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>Bika Ambon, Sirup Markisa</td><td>85.000, 40.000</td><td>2, 1</td></tr>
+    <tr class="gone"><td>INV-002</td><td>02 Okt</td><td class="keep">Rudi Simanjuntak</td><td class="keep">0813-2222</td><td>Binjai</td><td class="keep">Kopi Sidikalang</td><td class="keep">60.000</td><td>3</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>Teri Medan, Bika Ambon</td><td>75.000, 85.000</td><td>1, 1</td></tr>
+    <tr><td>INV-004</td><td>05 Okt</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td><td>Sirup Markisa</td><td>40.000</td><td>4</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols2">
+    <p class="say-sm">Yang ingin dihapus hanya <em>pesanannya</em>. Tapi yang ikut hilang jauh lebih banyak.</p>
+    <div class="note red"><p>Ikut lenyap: satu-satunya catatan bahwa toko menjual <strong>Kopi Sidikalang seharga 60.000</strong>, dan <strong>kontak Rudi</strong> sebagai pelanggan.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Tiga anomali">
+  <div class="eyebrow">Masalah 3 dari 3 · <b>Anomali tambah</b></div>
+  <h2>Ada produk baru: Keripik Ubi Pedas, Rp30.000. Belum ada yang beli.</h2>
+  <table class="sheet lg mt-s">
+    <tr><th>No Pesanan</th><th>Tanggal</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th><th>Produk</th><th>Harga</th><th>Jumlah</th></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>Bika Ambon, Sirup Markisa</td><td>85.000, 40.000</td><td>2, 1</td></tr>
+    <tr><td>INV-002</td><td>02 Okt</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td><td>Kopi Sidikalang</td><td>60.000</td><td>3</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>Teri Medan, Bika Ambon</td><td>75.000, 85.000</td><td>1, 1</td></tr>
+    <tr><td>INV-004</td><td>05 Okt</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td><td>Sirup Markisa</td><td>40.000</td><td>4</td></tr>
+    <tr><td class="q">???</td><td class="q">???</td><td class="q">???</td><td class="q">???</td><td class="q">???</td><td class="ok">Keripik Ubi Pedas</td><td class="ok">30.000</td><td class="q">???</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols2">
+    <p class="say-sm">Sheet ini hanya bisa mencatat produk <em>kalau ada yang memesan</em>.</p>
+    <div class="note red"><p>Mau mencatat produk baru, harus mengarang nomor pesanan dan pelanggan palsu. Produk baru <strong>tidak punya tempat</strong>.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Akar masalah">
+  <div class="eyebrow">Akar masalahnya</div>
+  <p class="say" style="font-size:58px;max-width:1300px;line-height:1.2">Sheet ini sedang menceritakan <span class="mk">tiga hal sekaligus</span>: pesanan, pelanggan, dan produk.</p>
+  <div class="cols3 col-rule mt-l">
+    <div><h3>Anomali ubah</h3><p class="sm">Satu fakta tersimpan di banyak baris, jadi bisa saling bertentangan.</p></div>
+    <div><h3>Anomali hapus</h3><p class="sm">Menghapus satu hal ikut menghapus hal lain yang masih dibutuhkan.</p></div>
+    <div><h3>Anomali tambah</h3><p class="sm">Tidak bisa mencatat satu hal tanpa hal lain yang belum ada.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <p class="lede"><strong>Solusinya:</strong> pisahkan. Setiap tabel cukup menceritakan <strong>satu hal</strong>. Proses memisahkan inilah yang disebut <strong>normalisasi</strong>.</p>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 2 — NORMALISASI
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 2 / 3</div>
+  <h1>Normalisasi,<br>langkah demi langkah</h1>
+  <p>Kita akan merapikan sheet Kak Rina melalui tiga tahap. Di setiap tahap hanya ada satu pertanyaan yang perlu dijawab.</p>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Pengertian">
+  <div class="eyebrow">Apa itu normalisasi?</div>
+  <div class="cols2" style="gap:80px">
+    <div>
+      <h2>Memecah satu tabel besar menjadi beberapa tabel kecil yang saling terhubung.</h2>
+      <p>Tujuannya sederhana: <strong>setiap data cukup disimpan di satu tempat</strong>. Kalau ada yang berubah, cukup diubah sekali.</p>
+      <p>Bayangkan merapikan lemari. Baju, buku, dan sepatu yang tadinya ditumpuk jadi satu dipindahkan ke rak masing-masing, lalu setiap rak diberi label.</p>
+    </div>
+    <div style="align-self:center">
+      <h4>Pegangannya</h4>
+      <p class="say" style="font-size:52px;line-height:1.2">Satu tabel,<br>satu topik.</p>
+      <p class="say" style="font-size:52px;line-height:1.2;margin-top:18px">Satu fakta,<br>satu tempat.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Istilah">
+  <div class="eyebrow">Tiga istilah yang perlu kamu tahu</div>
+  <h2>Sebelum mulai, kita perlu bahasa yang sama.</h2>
+  <div class="cols3 col-rule mt">
+    <div>
+      <h3>Kunci utama <span class="xs">(Primary Key)</span></h3>
+      <p class="sm">Kolom yang nilainya <strong>pasti berbeda</strong> di setiap baris, sehingga bisa dipakai untuk menunjuk satu baris dengan tepat.</p>
+      <p class="sm mt-s">Contoh: <span class="mono">NIM</span> untuk mahasiswa, <span class="mono">No Pesanan</span> untuk pesanan.</p>
+    </div>
+    <div>
+      <h3>Kunci gabungan <span class="xs">(Composite Key)</span></h3>
+      <p class="sm">Kadang satu kolom saja tidak cukup unik. Maka kuncinya terdiri dari <strong>dua kolom atau lebih</strong> yang dibaca bersama.</p>
+      <p class="sm mt-s">Contoh: <span class="mono">NIM + Kode Matkul</span> di tabel nilai.</p>
+    </div>
+    <div>
+      <h3>Kunci tamu <span class="xs">(Foreign Key)</span></h3>
+      <p class="sm">Kunci dari tabel lain yang <strong>&ldquo;dititipkan&rdquo;</strong> di sebuah tabel untuk menghubungkan keduanya.</p>
+      <p class="sm mt-s">Contoh: <span class="mono">Kode Pelanggan</span> di tabel Pesanan menunjuk ke tabel Pelanggan.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Peta jalan">
+  <div class="eyebrow">Peta jalan</div>
+  <h2>Tiga tahap, tiga pertanyaan.</h2>
+  <div class="cols4 col-rule mt">
+    <div><span class="num">UNF</span><h3>Belum normal</h3><p class="sm">Data mentah, apa adanya. Seperti sheet Kak Rina.</p></div>
+    <div><span class="num">1NF</span><h3>Ada sel yang isinya lebih dari satu?</h3><p class="sm"><span class="grn">&rarr;</span> Pecah menjadi beberapa baris, lalu tentukan kuncinya.</p></div>
+    <div><span class="num">2NF</span><h3>Ada kolom yang cukup ditentukan oleh <em>sebagian</em> kunci?</h3><p class="sm"><span class="grn">&rarr;</span> Pindahkan ke tabel sendiri.</p></div>
+    <div><span class="num">3NF</span><h3>Ada kolom yang ditentukan oleh kolom <em>bukan</em> kunci?</h3><p class="sm"><span class="grn">&rarr;</span> Pindahkan ke tabel sendiri.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <p class="xs">Setiap tahap harus lolos tahap sebelumnya dulu. Tabel 2NF pasti sudah 1NF; tabel 3NF pasti sudah 2NF.</p>
+</section>
+
+<!-- ---------- 1NF ---------- -->
+<section class="slide" data-section="Bagian 2 · Langkah 1 · 1NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="now">1NF</li><li>2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 1 · 1NF</div>
+  <h2>Satu sel, satu nilai.</h2>
+  <p class="lede">Sel yang berisi daftar dipecah, sehingga <strong>setiap baris hanya berisi satu produk</strong>. Data lain di baris itu (tanggal, nama, dan seterusnya) ikut disalin ke baris barunya.</p>
+  <div class="row mt" style="align-items:center;gap:40px">
+    <div>
+      <h4 class="red">Sebelum</h4>
+      <table class="sheet">
+        <tr><th>No Pesanan</th><th>Nama Pelanggan</th><th>Produk</th><th>Jumlah</th></tr>
+        <tr><td>INV-001</td><td>Dewi Anggraini</td><td class="multi">Bika Ambon, Sirup Markisa</td><td class="multi">2, 1</td></tr>
+      </table>
+    </div>
+    <div class="say" style="font-style:normal">&rarr;</div>
+    <div>
+      <h4 class="grn">Sesudah</h4>
+      <table class="sheet">
+        <tr><th>No Pesanan</th><th>Nama Pelanggan</th><th>Produk</th><th>Jumlah</th></tr>
+        <tr><td>INV-001</td><td>Dewi Anggraini</td><td class="ok">Bika Ambon</td><td class="ok">2</td></tr>
+        <tr><td>INV-001</td><td>Dewi Anggraini</td><td class="ok">Sirup Markisa</td><td class="ok">1</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Langkah 1 · 1NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="now">1NF</li><li>2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 1 · 1NF</div>
+  <h2>Sambil merapikan, beri setiap pelanggan dan produk <em>kode</em>.</h2>
+  <div class="row mt" style="gap:72px">
+    <div style="max-width:560px">
+      <p>Nama tidak bisa dijadikan pegangan. Bisa saja ada dua pelanggan bernama Dewi, dan nama produk bisa berganti.</p>
+      <p>Karena itu kita tambahkan <strong>kode unik</strong>, sama seperti kampus memberi kamu NIM.</p>
+      <p class="xs mt">Kalau datanya sudah punya kode sejak awal, langkah ini dilewati saja.</p>
+    </div>
+    <table class="sheet lg">
+      <tr><th>Kode Plg</th><th>Nama Pelanggan</th></tr>
+      <tr><td class="ok">C01</td><td>Dewi Anggraini</td></tr>
+      <tr><td class="ok">C02</td><td>Rudi Simanjuntak</td></tr>
+      <tr><td class="ok">C03</td><td>Sinta Halim</td></tr>
+    </table>
+    <table class="sheet lg">
+      <tr><th>Kode Produk</th><th>Nama Produk</th></tr>
+      <tr><td class="ok">P01</td><td>Bika Ambon</td></tr>
+      <tr><td class="ok">P02</td><td>Sirup Markisa</td></tr>
+      <tr><td class="ok">P03</td><td>Kopi Sidikalang</td></tr>
+      <tr><td class="ok">P04</td><td>Teri Medan</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Langkah 1 · 1NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="now">1NF</li><li>2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 1 · Hasil 1NF</div>
+  <h2>Sudah 1NF. Tapi data Dewi malah muncul empat kali.</h2>
+  <table class="sheet">
+    <tr><th>No Pesanan</th><th>Tanggal</th><th>Kode Plg</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th><th>Kode Produk</th><th>Nama Produk</th><th>Harga</th><th>Jumlah</th></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>C01</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td><td>P01</td><td>Bika Ambon</td><td>85.000</td><td>2</td></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>C01</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td><td>P02</td><td>Sirup Markisa</td><td>40.000</td><td>1</td></tr>
+    <tr><td>INV-002</td><td>02 Okt</td><td>C02</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td><td>P03</td><td>Kopi Sidikalang</td><td>60.000</td><td>3</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>C01</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td><td>P04</td><td>Teri Medan</td><td>75.000</td><td>1</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>C01</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td><td>P01</td><td>Bika Ambon</td><td>85.000</td><td>1</td></tr>
+    <tr><td>INV-004</td><td>05 Okt</td><td>C03</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td><td>P02</td><td>Sirup Markisa</td><td>40.000</td><td>4</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="note"><p>Tenang, ini normal. 1NF hanya memastikan <strong>setiap sel berisi satu nilai</strong>. Duplikasi akan kita bereskan di 2NF dan 3NF.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Langkah 1 · Mencari kunci">
+  <ol class="stepper"><li class="done">UNF</li><li class="now">1NF</li><li>2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 1 · Mencari kunci</div>
+  <h2>Kolom mana yang membuat setiap baris <em>unik</em>?</h2>
+  <div class="row mt" style="gap:72px">
+    <div style="flex:1">
+      <div class="trial" style="border-top:1px solid var(--rule)"><span class="mono" style="font-size:22px">No Pesanan saja?</span><span class="v red">✗</span><p>INV-001 muncul di dua baris.</p></div>
+      <div class="trial"><span class="mono" style="font-size:22px">Kode Produk saja?</span><span class="v red">✗</span><p>P01 dan P02 masing-masing muncul dua kali.</p></div>
+      <div class="trial"><span class="mono" style="font-size:22px">No Pesanan + Kode Produk?</span><span class="v grn">✓</span><p>Tidak ada pasangan yang sama. Inilah kuncinya.</p></div>
+      <p class="mt">Jadi tabel 1NF ini memakai <strong>kunci gabungan</strong>: <span class="mono">No Pesanan + Kode Produk</span>. Ingat ini, karena 2NF bergantung pada kunci tersebut.</p>
+    </div>
+    <table class="sheet lg">
+      <tr><th class="key">No Pesanan</th><th class="key">Kode Produk</th></tr>
+      <tr><td class="dup">INV-001</td><td class="dup">P01</td></tr>
+      <tr><td class="dup">INV-001</td><td>P02</td></tr>
+      <tr><td>INV-002</td><td>P03</td></tr>
+      <tr><td>INV-003</td><td>P04</td></tr>
+      <tr><td>INV-003</td><td class="dup">P01</td></tr>
+      <tr><td>INV-004</td><td>P02</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ---------- 2NF ---------- -->
+<section class="slide" data-section="Bagian 2 · Langkah 2 · 2NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="done">1NF</li><li class="now">2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 2 · 2NF</div>
+  <h2>Setiap kolom harus butuh <em>seluruh</em> kunci, bukan sebagian.</h2>
+  <p class="lede">Kuncinya terdiri dari dua kolom. Maka tanyakan ke setiap kolom lain: <span class="say-sm" style="font-size:27px">&ldquo;untuk tahu nilaimu, aku butuh No Pesanan, Kode Produk, atau keduanya?&rdquo;</span></p>
+  <div class="cols3 col-rule mt">
+    <div>
+      <h3 class="c1">Cukup No Pesanan</h3>
+      <div class="mt-s"><span class="chip k1">Tanggal</span><span class="chip k1">Kode Plg</span><span class="chip k1">Nama Pelanggan</span><span class="chip k1">No HP</span><span class="chip k1">Kota</span></div>
+      <p class="xs mt-s">INV-001 selalu tanggal 02 Okt dan selalu milik Dewi, apa pun produknya.</p>
+    </div>
+    <div>
+      <h3 class="c2">Cukup Kode Produk</h3>
+      <div class="mt-s"><span class="chip k2">Nama Produk</span><span class="chip k2">Harga</span></div>
+      <p class="xs mt-s">P01 selalu Bika Ambon seharga 85.000, di pesanan mana pun.</p>
+    </div>
+    <div>
+      <h3 class="grn">Butuh keduanya</h3>
+      <div class="mt-s"><span class="chip k12">Jumlah</span></div>
+      <p class="xs mt-s">&ldquo;Berapa banyak?&rdquo; Harus tahu pesanan yang mana <em>dan</em> produk yang mana.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Langkah 2 · 2NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="done">1NF</li><li class="now">2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 2 · 2NF</div>
+  <h2>Kolom biru dan oranye hanya &ldquo;menumpang&rdquo; pada sebagian kunci.</h2>
+  <table class="sheet">
+    <colgroup><col><col class="k1"><col class="k1"><col class="k1"><col class="k1"><col class="k1"><col><col class="k2"><col class="k2"><col class="k12"></colgroup>
+    <tr><th class="key">No Pesanan</th><th class="k1">Tanggal</th><th class="k1">Kode Plg</th><th class="k1">Nama Pelanggan</th><th class="k1">No HP</th><th class="k1">Kota</th><th class="key">Kode Produk</th><th class="k2">Nama Produk</th><th class="k2">Harga</th><th class="k12">Jumlah</th></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>C01</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>P01</td><td>Bika Ambon</td><td>85.000</td><td>2</td></tr>
+    <tr><td>INV-001</td><td>02 Okt</td><td>C01</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>P02</td><td>Sirup Markisa</td><td>40.000</td><td>1</td></tr>
+    <tr><td>INV-002</td><td>02 Okt</td><td>C02</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td><td>P03</td><td>Kopi Sidikalang</td><td>60.000</td><td>3</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>C01</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>P04</td><td>Teri Medan</td><td>75.000</td><td>1</td></tr>
+    <tr><td>INV-003</td><td>03 Okt</td><td>C01</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td><td>P01</td><td>Bika Ambon</td><td>85.000</td><td>1</td></tr>
+    <tr><td>INV-004</td><td>05 Okt</td><td>C03</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td><td>P02</td><td>Sirup Markisa</td><td>40.000</td><td>4</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="note"><p>Kolom yang hanya bergantung pada sebagian kunci disebut <strong>ketergantungan parsial</strong> <span class="xs">(partial dependency)</span>. Solusinya: setiap warna pindah ke tabelnya sendiri, dibawa bersama bagian kuncinya.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Langkah 2 · Hasil 2NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="done">1NF</li><li class="now">2NF</li><li>3NF</li></ol>
+  <div class="eyebrow">Langkah 2 · Hasil 2NF</div>
+  <h2>Satu tabel menjadi tiga.</h2>
+  <div class="ent" style="border-color:var(--k1)">
+    <div class="en"><span class="c1">Pesanan</span><small>bagian biru</small></div>
+    <table class="mini">
+      <tr><th class="pk">No Pesanan</th><th>Tanggal</th><th>Kode Plg</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th></tr>
+      <tr><td>INV-001</td><td>02 Okt</td><td>C01</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td></tr>
+      <tr><td>INV-002</td><td>02 Okt</td><td>C02</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td></tr>
+      <tr><td>INV-003</td><td>03 Okt</td><td>C01</td><td class="dup">Dewi Anggraini</td><td class="dup">0812-1111</td><td class="dup">Medan</td></tr>
+      <tr><td>INV-004</td><td>05 Okt</td><td>C03</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td></tr>
+    </table>
+  </div>
+  <div class="row mt" style="gap:36px">
+    <div class="ent" style="border-color:var(--k2)">
+      <div class="en"><span class="c2">Produk</span><small>bagian oranye</small></div>
+      <table class="mini">
+        <tr><th class="pk">Kode Produk</th><th>Nama Produk</th><th>Harga</th></tr>
+        <tr><td>P01</td><td>Bika Ambon</td><td>85.000</td></tr>
+        <tr><td>P02</td><td>Sirup Markisa</td><td>40.000</td></tr>
+        <tr><td>P03</td><td>Kopi Sidikalang</td><td>60.000</td></tr>
+        <tr><td>P04</td><td>Teri Medan</td><td>75.000</td></tr>
+      </table>
+    </div>
+    <div class="ent" style="border-color:var(--green)">
+      <div class="en"><span class="grn">Detail Pesanan</span><small>bagian hijau</small></div>
+      <table class="mini">
+        <tr><th class="pk fk">No Pesanan</th><th class="pk fk">Kode Produk</th><th>Jumlah</th></tr>
+        <tr><td>INV-001</td><td>P01</td><td>2</td></tr><tr><td>INV-001</td><td>P02</td><td>1</td></tr>
+        <tr><td>INV-002</td><td>P03</td><td>3</td></tr><tr><td>INV-003</td><td>P04</td><td>1</td></tr>
+        <tr><td>INV-003</td><td>P01</td><td>1</td></tr><tr><td>INV-004</td><td>P02</td><td>4</td></tr>
+      </table>
+    </div>
+    <div class="note" style="align-self:center;flex:1"><p class="sm">Harga Bika Ambon kini hanya ditulis <strong>sekali</strong>. Tapi lihat tabel Pesanan: data Dewi <span class="red">masih ditulis dua kali</span>. Belum selesai.</p></div>
+  </div>
+</section>
+
+<!-- ---------- 3NF ---------- -->
+<section class="slide" data-section="Bagian 2 · Langkah 3 · 3NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="done">1NF</li><li class="done">2NF</li><li class="now">3NF</li></ol>
+  <div class="eyebrow">Langkah 3 · 3NF</div>
+  <h2>Kolom biasa tidak boleh menentukan kolom lain.</h2>
+  <p class="lede">Lihat tabel Pesanan. Kuncinya <span class="mono">No Pesanan</span>. Tapi Nama, No HP, dan Kota sebenarnya <strong>ditentukan oleh Kode Plg</strong>, yang bukan kunci.</p>
+  <div class="chain mt">
+    <span class="chip plain">No Pesanan</span>
+    <span class="arr">menentukan</span>
+    <span class="chip plain">Kode Plg</span>
+    <span class="arr">menentukan</span>
+    <span class="chip k1">Nama Pelanggan</span><span class="chip k1">No HP</span><span class="chip k1">Kota</span>
+  </div>
+  <div class="cols2 mt">
+    <div class="note"><p>Nama, No HP, dan Kota bukan informasi tentang <em>pesanan</em>. Mereka informasi tentang <em>pelanggan</em>, yang ikut terbawa hanya karena ada Kode Plg. Ini disebut <strong>ketergantungan transitif</strong> <span class="xs">(transitive dependency)</span>.</p></div>
+    <div class="note grn"><p><strong>Solusinya:</strong> pindahkan ketiganya ke tabel <strong>Pelanggan</strong>. Di tabel Pesanan cukup sisakan Kode Plg sebagai penghubung (foreign key).</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Langkah 3 · Hasil 3NF">
+  <ol class="stepper"><li class="done">UNF</li><li class="done">1NF</li><li class="done">2NF</li><li class="now">3NF</li></ol>
+  <div class="eyebrow">Langkah 3 · Hasil 3NF</div>
+  <h2>Empat tabel. Setiap fakta disimpan <em>sekali</em>.</h2>
+  <div class="row roomy" style="gap:32px">
+    <div class="ent">
+      <div class="en"><span>Pelanggan</span><small>baru</small></div>
+      <table class="mini">
+        <tr><th class="pk">Kode Plg</th><th>Nama Pelanggan</th><th>No HP</th><th>Kota</th></tr>
+        <tr><td>C01</td><td>Dewi Anggraini</td><td>0812-1111</td><td>Medan</td></tr>
+        <tr><td>C02</td><td>Rudi Simanjuntak</td><td>0813-2222</td><td>Binjai</td></tr>
+        <tr><td>C03</td><td>Sinta Halim</td><td>0857-3333</td><td>Siantar</td></tr>
+      </table>
+    </div>
+    <div class="ent">
+      <div class="en"><span>Pesanan</span><small>lebih ramping</small></div>
+      <table class="mini">
+        <tr><th class="pk">No Pesanan</th><th>Tanggal</th><th class="fk">Kode Plg</th></tr>
+        <tr><td>INV-001</td><td>02 Okt</td><td>C01</td></tr><tr><td>INV-002</td><td>02 Okt</td><td>C02</td></tr>
+        <tr><td>INV-003</td><td>03 Okt</td><td>C01</td></tr><tr><td>INV-004</td><td>05 Okt</td><td>C03</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="row mt roomy" style="gap:32px">
+    <div class="ent">
+      <div class="en"><span>Produk</span><small>tetap</small></div>
+      <table class="mini">
+        <tr><th class="pk">Kode Produk</th><th>Nama Produk</th><th>Harga</th></tr>
+        <tr><td>P01</td><td>Bika Ambon</td><td>85.000</td></tr><tr><td>P02</td><td>Sirup Markisa</td><td>40.000</td></tr>
+        <tr><td>P03</td><td>Kopi Sidikalang</td><td>60.000</td></tr><tr><td>P04</td><td>Teri Medan</td><td>75.000</td></tr>
+      </table>
+    </div>
+    <div class="ent">
+      <div class="en"><span>Detail Pesanan</span><small>tetap</small></div>
+      <table class="mini">
+        <tr><th class="pk fk">No Pesanan</th><th class="pk fk">Kode Produk</th><th>Jumlah</th></tr>
+        <tr><td>INV-001</td><td>P01</td><td>2</td></tr><tr><td>INV-001</td><td>P02</td><td>1</td></tr>
+        <tr><td>INV-002</td><td>P03</td><td>3</td></tr><tr><td>INV-003</td><td>P04</td><td>1</td></tr>
+      </table>
+      <p class="xs" style="padding:6px 12px;border-top:1px solid var(--grid)">&hellip; 2 baris lagi</p>
+    </div>
+    <div class="note grn" style="align-self:center;flex:1"><p class="sm">Data Dewi sekarang hanya ada di <strong>satu baris</strong> tabel Pelanggan. Pesanan cukup menyebut <span class="mono">C01</span>.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Hubungan antar tabel">
+  <div class="eyebrow">Hubungan antar tabel</div>
+  <h2>Ingat ERD di pertemuan 03? Inilah ERD dari hasil normalisasi kita.</h2>
+  <div class="erd mt"><script type="application/json">
+  {"w":1376,"h":200,"e":[
+    {"id":"plg","name":"Pelanggan","x":0,"y":0,"w":260,"a":["Kode Plg|PK","Nama Pelanggan","No HP","Kota"]},
+    {"id":"psn","name":"Pesanan","x":372,"y":0,"w":260,"a":["No Pesanan|PK","Tanggal","Kode Plg|FK"]},
+    {"id":"det","name":"Detail Pesanan","x":744,"y":0,"w":260,"a":["No Pesanan|PK FK","Kode Produk|PK FK","Jumlah"]},
+    {"id":"prd","name":"Produk","x":1116,"y":0,"w":260,"a":["Kode Produk|PK","Nama Produk","Harga"]}],
+   "r":[{"from":"plg","to":"psn","a":"one","b":"zmany","label":"memesan","y":80},
+        {"from":"psn","to":"det","a":"one","b":"many","label":"berisi","y":80},
+        {"from":"det","to":"prd","a":"zmany","b":"one","label":"untuk","y":80}]}
+  </script></div>
+  <div class="spacer"></div>
+  <div class="cols3">
+    <p class="sm">Satu pelanggan bisa punya <strong>banyak</strong> pesanan.</p>
+    <p class="sm">Satu pesanan bisa berisi <strong>banyak</strong> produk.</p>
+    <p class="sm">Detail Pesanan adalah &ldquo;jembatan&rdquo; antara Pesanan dan Produk, yang hubungannya banyak-ke-banyak.</p>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Uji ulang">
+  <div class="eyebrow">Uji ulang</div>
+  <h2>Masih ingat tiga masalah tadi? Coba lagi sekarang.</h2>
+  <div class="cols3 col-rule mt">
+    <div>
+      <h4>Anomali ubah</h4>
+      <h3>Dewi ganti nomor HP</h3>
+      <p class="sm">Ubah <strong>1 baris</strong> di tabel Pelanggan. Semua pesanan Dewi otomatis ikut benar, karena hanya menyimpan <span class="mono">C01</span>.</p>
+      <p class="grn sm mt-s"><strong>✓ Tidak mungkin bertentangan lagi</strong></p>
+    </div>
+    <div>
+      <h4>Anomali hapus</h4>
+      <h3>Rudi batal pesan</h3>
+      <p class="sm">Hapus INV-002 dari Pesanan dan Detail Pesanan. Kopi Sidikalang tetap ada di tabel Produk; data Rudi tetap ada di tabel Pelanggan.</p>
+      <p class="grn sm mt-s"><strong>✓ Tidak ada yang ikut hilang</strong></p>
+    </div>
+    <div>
+      <h4>Anomali tambah</h4>
+      <h3>Produk baru masuk</h3>
+      <p class="sm">Cukup tambah <strong>1 baris</strong> di tabel Produk: <span class="mono">P05, Keripik Ubi Pedas, 30.000</span>. Tidak perlu pesanan palsu.</p>
+      <p class="grn sm mt-s"><strong>✓ Setiap data punya tempatnya</strong></p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Catatan bisnis">
+  <div class="eyebrow">Catatan bisnis</div>
+  <h2>Bulan depan, harga Bika Ambon naik menjadi 95.000.</h2>
+  <div class="row mt" style="gap:72px">
+    <div style="flex:1">
+      <p>Kalau harga hanya disimpan di tabel Produk, maka nota INV-001 tiba-tiba ikut &ldquo;naik harga&rdquo;. Padahal Dewi sudah membayar <strong>85.000</strong>.</p>
+      <p>Karena itu toko online sungguhan juga menyimpan <strong>harga saat transaksi</strong> di Detail Pesanan.</p>
+      <div class="note grn mt"><p class="sm">Ini bukan duplikasi. <strong>Harga</strong> di Produk = harga hari ini. <strong>Harga Jual</strong> di Detail Pesanan = harga yang benar-benar dibayar di pesanan itu. Dua fakta yang berbeda.</p></div>
+    </div>
+    <div class="ent">
+      <div class="en">Detail Pesanan</div>
+      <table class="mini" style="font-size:17px">
+        <tr><th class="pk fk">No Pesanan</th><th class="pk fk">Kode Produk</th><th>Jumlah</th><th style="color:var(--green)">Harga Jual</th></tr>
+        <tr><td>INV-001</td><td>P01</td><td>2</td><td class="grn">85.000</td></tr>
+        <tr><td>INV-001</td><td>P02</td><td>1</td><td class="grn">40.000</td></tr>
+        <tr><td>INV-009</td><td>P01</td><td>1</td><td class="grn">95.000</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Sering tertukar">
+  <div class="eyebrow">Yang paling sering tertukar</div>
+  <h2>2NF atau 3NF? Lihat kolom itu bergantung pada <em>apa</em>.</h2>
+  <div class="cols2 col-rule mt" style="gap:80px">
+    <div>
+      <span class="num">Melanggar 2NF</span>
+      <p class="say-sm">Kolom bergantung pada <span class="mk">sebagian</span> kunci.</p>
+      <p class="sm mt">Contoh: di tabel 1NF (kunci = No Pesanan + Kode Produk), <span class="mono">Nama Produk</span> cukup ditentukan oleh Kode Produk saja.</p>
+      <p class="xs mt-s">Hanya bisa terjadi kalau kuncinya <strong>gabungan</strong>.</p>
+    </div>
+    <div>
+      <span class="num">Melanggar 3NF</span>
+      <p class="say-sm">Kolom bergantung pada kolom yang <span class="mk">bukan kunci</span>.</p>
+      <p class="sm mt">Contoh: di tabel Pesanan (kunci = No Pesanan), <span class="mono">Nama Pelanggan</span> ditentukan oleh Kode Plg.</p>
+      <p class="xs mt-s">Bisa terjadi walaupun kuncinya <strong>hanya satu kolom</strong>.</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note"><p><strong>Trik cepat:</strong> kalau kunci tabelnya cuma satu kolom, tabel itu otomatis lolos 2NF. Langsung cek 3NF.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Ringkasan">
+  <div class="eyebrow">Ringkasan dalam satu kalimat</div>
+  <p class="say" style="font-size:60px;line-height:1.2;max-width:1300px">Setiap kolom harus menjelaskan <span class="mk">kunci</span>, <span class="mk">seluruh kunci</span>, dan <span class="mk">hanya kunci</span>.</p>
+  <div class="cols3 col-rule mt-l">
+    <div><span class="num">1NF · &ldquo;kunci&rdquo;</span><p class="sm">Ada kunci yang jelas, dan setiap sel hanya berisi satu nilai.</p></div>
+    <div><span class="num">2NF · &ldquo;seluruh kunci&rdquo;</span><p class="sm">Tidak ada kolom yang cukup dengan sebagian kunci.</p></div>
+    <div><span class="num">3NF · &ldquo;hanya kunci&rdquo;</span><p class="sm">Tidak ada kolom yang ditentukan oleh kolom lain yang bukan kunci.</p></div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 3 — LATIHAN
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 3 / 3</div>
+  <h1>Latihan</h1>
+  <p>Tiga kasus bisnis, dari yang mudah sampai yang menantang. Gunakan langkah yang sama seperti Toko Kak Rina.</p>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Cara mengerjakan">
+  <div class="eyebrow">Cara mengerjakan</div>
+  <h2>Kerjakan berpasangan, ±15 menit per latihan.</h2>
+  <div class="cols2" style="gap:80px">
+    <ol class="steps">
+      <li><p class="sm"><strong>Lingkari</strong> sel yang isinya lebih dari satu. Pecah jadi beberapa baris <span class="xs">(1NF)</span>.</p></li>
+      <li><p class="sm"><strong>Cari kunci:</strong> kolom apa yang membuat setiap baris unik?</p></li>
+      <li><p class="sm"><strong>Tanya setiap kolom:</strong> cukup dengan sebagian kunci? Pindahkan <span class="xs">(2NF)</span>.</p></li>
+      <li><p class="sm"><strong>Tanya lagi:</strong> ditentukan oleh kolom yang bukan kunci? Pindahkan <span class="xs">(3NF)</span>.</p></li>
+      <li><p class="sm"><strong>Tulis hasil akhir</strong> dengan format di sebelah kanan.</p></li>
+    </ol>
+    <div>
+      <h4>Format penulisan hasil</h4>
+      <ul class="schema">
+        <li><b>Pelanggan</b> (<u>Kode Plg</u>, Nama, No HP, Kota)</li>
+        <li><b>Pesanan</b> (<u>No Pesanan</u>, Tanggal, <i>Kode Plg</i>)</li>
+        <li><b>Detail</b> (<u><i>No Pesanan</i></u>, <u><i>Kode Produk</i></u>, Jumlah)</li>
+      </ul>
+      <p class="sm mt"><u style="text-decoration-thickness:2px;text-underline-offset:4px">Garis bawah</u> = kunci utama (PK)<br><span style="border-bottom:2px dashed var(--ink-2)">Garis putus-putus</span> = kunci tamu (FK)</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- LATIHAN 1 ---------- -->
+<section class="slide" data-section="Bagian 3 · Latihan 1">
+  <div class="eyebrow">Latihan 1 <span class="level"><i class="f"></i><i></i><i></i></span> &nbsp;Mudah</div>
+  <h2>Kelas Kreator: rekap pendaftaran kursus</h2>
+  <p class="lede">Kelas Kreator membuka kursus online untuk pelaku UMKM. Admin mencatat pendaftaran di satu sheet. <strong>Satu pendaftaran boleh mengambil lebih dari satu kelas.</strong></p>
+  <table class="sheet sm mt">
+    <tr><th>No Daftar</th><th>Tanggal</th><th>Kode Peserta</th><th>Nama Peserta</th><th>No HP</th><th>Kode Kelas</th><th>Nama Kelas</th><th>Instruktur</th><th>Biaya</th></tr>
+    <tr><td>D-01</td><td>01 Sep</td><td>S01</td><td>Andre</td><td>0811-0101</td><td>K1, K2</td><td>Desain Canva, Copywriting</td><td>Bu Lina, Pak Yosef</td><td>150.000, 200.000</td></tr>
+    <tr><td>D-02</td><td>03 Sep</td><td>S02</td><td>Maria</td><td>0811-0202</td><td>K1</td><td>Desain Canva</td><td>Bu Lina</td><td>150.000</td></tr>
+    <tr><td>D-03</td><td>06 Sep</td><td>S01</td><td>Andre</td><td>0811-0101</td><td>K3</td><td>Iklan Media Sosial</td><td>Pak Yosef</td><td>300.000</td></tr>
+    <tr><td>D-04</td><td>08 Sep</td><td>S03</td><td>Putri</td><td>0811-0303</td><td>K2, K3</td><td>Copywriting, Iklan Media Sosial</td><td>Pak Yosef, Pak Yosef</td><td>200.000, 300.000</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols2">
+    <div class="note"><p class="sm"><strong>Tugas:</strong> normalisasi sampai 3NF. Tulis tabel akhirnya, tandai PK dan FK.</p></div>
+    <div class="note"><p class="sm"><strong>Pertanyaan tambahan:</strong> kalau ditambah kolom <span class="mono">No HP Instruktur</span>, tabel mana yang berubah?</p></div>
+  </div>
+</section>
+
+<section class="slide answer" data-section="Kunci jawaban · Latihan 1">
+  <div class="eyebrow"><b>Kunci jawaban</b> · Latihan 1</div>
+  <h2>Polanya sama persis dengan Toko Kak Rina.</h2>
+  <div class="cols2" style="gap:72px">
+    <ol class="steps">
+      <li><p class="sm"><strong>1NF:</strong> D-01 dan D-04 dipecah menjadi dua baris. Kunci = <span class="mono">No Daftar + Kode Kelas</span>.</p></li>
+      <li><p class="sm"><strong>2NF:</strong> Tanggal, Kode Peserta, Nama, No HP cukup <span class="mono">No Daftar</span> &rarr; Pendaftaran. Nama Kelas, Instruktur, Biaya cukup <span class="mono">Kode Kelas</span> &rarr; Kelas.</p></li>
+      <li><p class="sm"><strong>3NF:</strong> Nama dan No HP ditentukan oleh <span class="mono">Kode Peserta</span> (bukan kunci) &rarr; tabel Peserta.</p></li>
+      <li><p class="sm"><strong>Tambahan:</strong> No HP Instruktur ditentukan oleh Instruktur, bukan oleh Kode Kelas. Buat tabel <span class="mono">Instruktur (<u>Kode Instruktur</u>, Nama, No HP)</span>; Kelas menyimpan Kode Instruktur.</p></li>
+    </ol>
+    <div>
+      <h4>Hasil 3NF · 4 tabel</h4>
+      <ul class="schema">
+        <li><b>Peserta</b> (<u>Kode Peserta</u>, Nama Peserta, No HP)</li>
+        <li><b>Pendaftaran</b> (<u>No Daftar</u>, Tanggal, <i>Kode Peserta</i>)</li>
+        <li><b>Kelas</b> (<u>Kode Kelas</u>, Nama Kelas, Instruktur, Biaya)</li>
+        <li><b>Detail Pendaftaran</b> (<u><i>No Daftar</i></u>, <u><i>Kode Kelas</i></u>)</li>
+      </ul>
+      <p class="xs mt">Detail Pendaftaran boleh hanya berisi kunci. Tugasnya memang hanya menghubungkan.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- LATIHAN 2 ---------- -->
+<section class="slide" data-section="Bagian 3 · Latihan 2">
+  <div class="eyebrow">Latihan 2 <span class="level"><i class="f"></i><i class="f"></i><i></i></span> &nbsp;Sedang</div>
+  <h2>Bengkel Jaya Motor: catatan servis</h2>
+  <p class="lede">Bengkel mencatat setiap servis di satu sheet. <strong>Satu nota bisa berisi beberapa jasa</strong>, dan <strong>satu pelanggan bisa punya lebih dari satu motor</strong>.</p>
+  <table class="sheet sm mt">
+    <tr><th>No Nota</th><th>Tanggal</th><th>Plat Nomor</th><th>Jenis Motor</th><th>Kode Plg</th><th>Nama Pemilik</th><th>No HP</th><th>Kode Jasa</th><th>Nama Jasa</th><th>Biaya</th></tr>
+    <tr><td>N-101</td><td>07 Okt</td><td>BK 1234 AB</td><td>Honda Beat</td><td>C01</td><td>Yoga</td><td>0812-7070</td><td>J1, J3</td><td>Ganti Oli, Servis CVT</td><td>45.000, 80.000</td></tr>
+    <tr><td>N-102</td><td>07 Okt</td><td>BK 5678 CD</td><td>Yamaha NMAX</td><td>C02</td><td>Lia</td><td>0813-8080</td><td>J2</td><td>Tune Up</td><td>120.000</td></tr>
+    <tr><td>N-103</td><td>10 Okt</td><td>BK 1234 AB</td><td>Honda Beat</td><td>C01</td><td>Yoga</td><td>0812-7070</td><td>J1</td><td>Ganti Oli</td><td>45.000</td></tr>
+    <tr><td>N-104</td><td>11 Okt</td><td>BK 9012 EF</td><td>Honda Vario</td><td>C01</td><td>Yoga</td><td>0812-7070</td><td>J2</td><td>Tune Up</td><td>120.000</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols2">
+    <div class="note"><p class="sm"><strong>Tugas:</strong> normalisasi sampai 3NF. Tulis tabel akhirnya, tandai PK dan FK.</p></div>
+    <div class="note"><p class="sm"><strong>Petunjuk:</strong> hati-hati, ada rantai. Nota menentukan motor, dan motor menentukan pemiliknya.</p></div>
+  </div>
+</section>
+
+<section class="slide answer" data-section="Kunci jawaban · Latihan 2">
+  <div class="eyebrow"><b>Kunci jawaban</b> · Latihan 2</div>
+  <h2>3NF dikerjakan dua putaran karena ada rantai.</h2>
+  <div class="cols2" style="gap:72px">
+    <ol class="steps">
+      <li><p class="sm"><strong>1NF:</strong> N-101 dipecah (J1 dan J3). Kunci = <span class="mono">No Nota + Kode Jasa</span>.</p></li>
+      <li><p class="sm"><strong>2NF:</strong> Nama Jasa, Biaya &rarr; tabel Jasa. Tanggal, Plat, Jenis Motor, Kode Plg, Nama, No HP cukup <span class="mono">No Nota</span> &rarr; tabel Nota.</p></li>
+      <li><p class="sm"><strong>3NF putaran 1:</strong> di tabel Nota, Jenis Motor dan Kode Plg ditentukan oleh <span class="mono">Plat Nomor</span> &rarr; tabel Motor.</p></li>
+      <li><p class="sm"><strong>3NF putaran 2:</strong> di tabel Motor, Nama dan No HP ditentukan oleh <span class="mono">Kode Plg</span> &rarr; tabel Pelanggan.</p></li>
+    </ol>
+    <div>
+      <h4>Hasil 3NF · 5 tabel</h4>
+      <ul class="schema">
+        <li><b>Pelanggan</b> (<u>Kode Plg</u>, Nama Pemilik, No HP)</li>
+        <li><b>Motor</b> (<u>Plat Nomor</u>, Jenis Motor, <i>Kode Plg</i>)</li>
+        <li><b>Nota</b> (<u>No Nota</u>, Tanggal, <i>Plat Nomor</i>)</li>
+        <li><b>Jasa</b> (<u>Kode Jasa</u>, Nama Jasa, Biaya)</li>
+        <li><b>Detail Nota</b> (<u><i>No Nota</i></u>, <u><i>Kode Jasa</i></u>)</li>
+      </ul>
+      <p class="xs mt">Kenapa Motor dan Pelanggan dipisah? Yoga punya dua motor. Kalau digabung, data Yoga tertulis dua kali lagi.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- LATIHAN 3 ---------- -->
+<section class="slide" data-section="Bagian 3 · Latihan 3">
+  <div class="eyebrow">Latihan 3 <span class="level"><i class="f"></i><i class="f"></i><i class="f"></i></span> &nbsp;Menantang</div>
+  <h2>Agensi Kreasi Digital: jam kerja tim per proyek</h2>
+  <p class="lede">Manajer agensi pemasaran digital mencatat siapa mengerjakan proyek apa, dan berapa jam.</p>
+  <table class="sheet mt-s">
+    <tr><th>Kode Proyek</th><th>Nama Proyek</th><th>Klien</th><th>Kode Karyawan</th><th>Nama Karyawan</th><th>Divisi</th><th>Kepala Divisi</th><th>Jam Kerja</th></tr>
+    <tr><td>PR-1</td><td>Website Toko Kain</td><td>CV Tenun Indah</td><td>E01</td><td>Fajar</td><td>Desain</td><td>Bu Ratna</td><td>20</td></tr>
+    <tr><td>PR-1</td><td>Website Toko Kain</td><td>CV Tenun Indah</td><td>E02</td><td>Nadia</td><td>Konten</td><td>Pak Hendra</td><td>12</td></tr>
+    <tr><td>PR-2</td><td>Kampanye Ramadan</td><td>PT Sinar Rasa</td><td>E01</td><td>Fajar</td><td>Desain</td><td>Bu Ratna</td><td>8</td></tr>
+    <tr><td>PR-2</td><td>Kampanye Ramadan</td><td>PT Sinar Rasa</td><td>E03</td><td>Gilang</td><td>Desain</td><td>Bu Ratna</td><td>15</td></tr>
+    <tr><td>PR-3</td><td>Foto Produk</td><td>CV Tenun Indah</td><td>E02</td><td>Nadia</td><td>Konten</td><td>Pak Hendra</td><td>6</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols3">
+    <div class="note"><p class="sm"><strong>a.</strong> Apakah tabel ini sudah 1NF? Jelaskan alasannya.</p></div>
+    <div class="note"><p class="sm"><strong>b.</strong> Normalisasi sampai 3NF. Tandai PK dan FK.</p></div>
+    <div class="note"><p class="sm"><strong>c.</strong> Divisi Desain ganti kepala divisi. Berapa baris yang diubah <em>sebelum</em> dan <em>sesudah</em> normalisasi?</p></div>
+  </div>
+</section>
+
+<section class="slide answer" data-section="Kunci jawaban · Latihan 3">
+  <div class="eyebrow"><b>Kunci jawaban</b> · Latihan 3</div>
+  <h2>Sudah 1NF sejak awal. Jebakannya ada di 2NF dan 3NF.</h2>
+  <div class="cols2" style="gap:72px">
+    <ol class="steps">
+      <li><p class="sm"><strong>a.</strong> Sudah 1NF: tidak ada sel yang berisi lebih dari satu nilai. Kunci = <span class="mono">Kode Proyek + Kode Karyawan</span>.</p></li>
+      <li><p class="sm"><strong>2NF:</strong> Nama Proyek, Klien cukup <span class="mono">Kode Proyek</span> &rarr; Proyek. Nama Karyawan, Divisi, Kepala Divisi cukup <span class="mono">Kode Karyawan</span> &rarr; Karyawan. Jam Kerja butuh keduanya &rarr; Penugasan.</p></li>
+      <li><p class="sm"><strong>3NF:</strong> Kepala Divisi ditentukan oleh <span class="mono">Divisi</span>, bukan oleh Kode Karyawan &rarr; tabel Divisi.</p></li>
+      <li><p class="sm"><strong>c.</strong> Sebelum: <strong>3 baris</strong> (Fajar ×2, Gilang). Sesudah: <strong>1 baris</strong> di tabel Divisi.</p></li>
+    </ol>
+    <div>
+      <h4>Hasil 3NF · 4 tabel</h4>
+      <ul class="schema">
+        <li><b>Proyek</b> (<u>Kode Proyek</u>, Nama Proyek, Klien)</li>
+        <li><b>Divisi</b> (<u>Divisi</u>, Kepala Divisi)</li>
+        <li><b>Karyawan</b> (<u>Kode Karyawan</u>, Nama, <i>Divisi</i>)</li>
+        <li><b>Penugasan</b> (<u><i>Kode Proyek</i></u>, <u><i>Kode Karyawan</i></u>, Jam Kerja)</li>
+      </ul>
+      <p class="xs mt">Diskusi: Klien juga berulang. Boleh dipisah jadi tabel Klien kalau ada data klien lain (alamat, kontak). Jawaban dengan atau tanpa tabel Klien sama-sama benar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- PENUTUP ---------- -->
+<section class="slide" data-section="Penutup">
+  <div class="eyebrow">Pertemuan berikutnya</div>
+  <h2>Tabel hasil normalisasi hari ini akan kita buat sungguhan di <em>MySQL Workbench</em>.</h2>
+  <div class="cols3 col-rule mt">
+    <div><h3>Bawa</h3><p class="sm">Laptop dengan MySQL Workbench atau XAMPP (phpMyAdmin) yang sudah terpasang.</p></div>
+    <div><h3>Simpan</h3><p class="sm">Jawaban latihan hari ini. Salah satunya akan kita ubah menjadi database.</p></div>
+    <div><h3>Ingat</h3><p class="sm">Kunci, seluruh kunci, dan hanya kunci.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <p class="say">Terima kasih. Ada pertanyaan?</p>
+</section>
+
+<div id="foot"><span><button id="prev" aria-label="Sebelumnya">&larr;</button><button id="next" aria-label="Berikutnya">&rarr;</button></span><span id="count"></span></div>
+<div id="bar"></div>
+<div id="toast"></div>
+</div>
+
+<script src="../assets/deck.js"></script>
+</body>
+</html>
