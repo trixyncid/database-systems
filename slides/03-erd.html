@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Pertemuan 03 — Entity Relationship Diagram</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/deck.css">
+</head>
+<body>
+<div id="stage">
+<div id="run"><span>Database Systems · Pertemuan 03 · ERD</span><span id="sec"></span></div>
+
+<!-- =====================================================================
+     COVER
+====================================================================== -->
+<section class="slide cover" data-plain>
+  <div class="eyebrow">Database Systems — Pertemuan 03</div>
+  <h1>Entity<br>Relationship<br>Diagram</h1>
+  <p class="sub">Menggambar denah database sebelum membangunnya: data tentang apa, apa saja yang dicatat, dan bagaimana semuanya terhubung.</p>
+  <div class="erd" style="position:absolute;right:112px;top:50%;transform:translateY(-55%)"><script type="application/json">
+  {"w":460,"h":330,"e":[
+    {"id":"a","name":"Pelanggan","x":0,"y":0,"w":200,"a":["Kode Pelanggan|PK","Nama"]},
+    {"id":"b","name":"Pesanan","x":260,"y":0,"w":200,"a":["No Pesanan|PK","Tanggal"]},
+    {"id":"c","name":"Produk","x":260,"y":220,"w":200,"a":[]}],
+   "r":[{"from":"a","to":"b","a":"one","b":"zmany"},{"from":"b","to":"c","a":"zmany","b":"many"}]}
+  </script></div>
+  <div class="meta"><span>Digital Business · Semester III</span><span>Randy Brilliant Chandra, S.S.I., M.Kom</span></div>
+</section>
+
+<!-- AGENDA -->
+<section class="slide" data-section="Rencana hari ini">
+  <div class="eyebrow">Rencana hari ini</div>
+  <h2>Dari cerita bisnis menjadi gambar yang bisa dibaca semua orang.</h2>
+  <div class="cols4 col-rule mt">
+    <div><span class="num">01</span><h3>Kenapa perlu denah?</h3><p class="sm">Apa itu ERD dan kenapa dibuat sebelum database.</p></div>
+    <div><span class="num">02</span><h3>Tiga komponen</h3><p class="sm">Entity, atribut, dan relasi. Cara menemukannya dari sebuah cerita.</p></div>
+    <div><span class="num">03</span><h3>Kardinalitas</h3><p class="sm">1:1, 1:N, M:N, dan cara membaca simbol crow&rsquo;s foot.</p></div>
+    <div><span class="num">04</span><h3>Studi kasus &amp; latihan</h3><p class="sm">Satu ERD utuh kita bedah bersama, lalu empat kasus untuk kamu kerjakan.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note grn"><p><strong>Target:</strong> setelah kelas ini, kamu bisa membaca sebuah ERD dan menggambar ERD sendiri dari deskripsi bisnis.</p></div>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 1 — KENAPA
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 1 / 4</div>
+  <h1>Kenapa perlu denah?</h1>
+  <p>Tidak ada yang membangun rumah tanpa denah. Database juga begitu.</p>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Analogi">
+  <div class="eyebrow">Analogi</div>
+  <div class="cols2" style="gap:80px">
+    <div>
+      <h2>ERD adalah <em>denah</em> sebuah database.</h2>
+      <p>Arsitek menggambar denah dulu: ada ruangan apa saja, ukurannya berapa, pintunya menghubungkan ruangan yang mana. Baru setelah semua setuju, tukang mulai membangun.</p>
+      <p>ERD melakukan hal yang sama untuk data. Semua orang (pemilik usaha, analis, programmer) bisa melihat dan mengoreksi rancangannya <strong>sebelum</strong> database dibuat.</p>
+    </div>
+    <div style="align-self:center">
+      <div class="cols2 col-rule" style="gap:36px">
+        <div><h4>Denah rumah</h4><p class="sm">Ruangan</p><p class="sm">Isi ruangan</p><p class="sm">Pintu antar ruangan</p></div>
+        <div><h4>ERD</h4><p class="sm"><strong>Entity</strong></p><p class="sm"><strong>Atribut</strong></p><p class="sm"><strong>Relasi</strong></p></div>
+      </div>
+      <div class="note red mt-l"><p class="sm">Memindahkan tembok di atas kertas itu murah. Memindahkannya setelah rumah jadi itu mahal. Sama halnya dengan database yang sudah berisi ribuan transaksi.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 1 · Pengertian">
+  <div class="eyebrow">Apa itu ERD?</div>
+  <h2>Diagram yang menunjukkan data apa yang disimpan dan bagaimana hubungannya.</h2>
+  <div class="row mt-l" style="gap:64px;align-items:center">
+    <div class="erd"><script type="application/json">
+    {"w":820,"h":165,"e":[
+      {"id":"a","name":"Pelanggan","x":0,"y":0,"w":270,"a":["Kode Pelanggan|PK","Nama","No HP"]},
+      {"id":"b","name":"Pesanan","x":550,"y":0,"w":270,"a":["No Pesanan|PK","Tanggal","Kode Pelanggan|FK"]}],
+     "r":[{"from":"a","to":"b","a":"one","b":"zmany","label":"melakukan"}]}
+    </script></div>
+    <ol class="steps" style="flex:1">
+      <li><p class="sm"><strong>Entity</strong> = kotak. Hal yang datanya ingin disimpan.</p></li>
+      <li><p class="sm"><strong>Atribut</strong> = isi kotak. Detail yang dicatat.</p></li>
+      <li><p class="sm"><strong>Relasi</strong> = garis. Hubungan antar entity.</p></li>
+    </ol>
+  </div>
+  <div class="spacer"></div>
+  <p class="say-sm">&ldquo;Satu pelanggan melakukan nol atau banyak pesanan.&rdquo; Di akhir pertemuan ini, kamu bisa membaca kalimat itu langsung dari gambarnya.</p>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 2 — TIGA KOMPONEN
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 2 / 4</div>
+  <h1>Tiga komponen</h1>
+  <p>Entity, atribut, dan relasi. Semuanya bisa ditemukan dari cerita bisnis yang biasa.</p>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Entity">
+  <div class="eyebrow">Komponen 1 · <b>Entity</b></div>
+  <h2>Cari kata benda di dalam cerita bisnisnya.</h2>
+  <p class="story mt">Toko Kelontong Berkah ingin beralih dari buku catatan ke aplikasi kasir. Toko mencatat data <span class="n">pelanggan</span> langganan. Setiap pelanggan bisa <span class="v">melakukan</span> banyak <span class="n">pesanan</span>. Satu pesanan <span class="v">berisi</span> beberapa <span class="n">produk</span>, dan setiap produk <span class="v">termasuk</span> dalam satu <span class="n">kategori</span>. Setiap pesanan <span class="v">dibayar</span> lewat satu <span class="n">pembayaran</span>.</p>
+  <div class="spacer"></div>
+  <div class="cols2">
+    <div class="note"><p><span class="sw" style="background:var(--mark)"></span><strong>Kata benda</strong> → calon <strong>entity</strong>: Pelanggan, Pesanan, Produk, Kategori, Pembayaran.</p></div>
+    <div class="note grn"><p><span class="sw" style="background:var(--green-bg);border-color:var(--green)"></span><strong>Kata kerja</strong> → calon <strong>relasi</strong>: melakukan, berisi, termasuk, dibayar.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Entity">
+  <div class="eyebrow">Komponen 1 · <b>Entity</b></div>
+  <h2>Tapi tidak semua kata benda menjadi entity.</h2>
+  <p class="lede">Uji setiap calon dengan dua pertanyaan: <strong>apakah ada banyak contohnya?</strong> dan <strong>apakah kita perlu mencatat beberapa data tentangnya?</strong></p>
+  <div class="cols3 col-rule mt">
+    <div><h3>Pelanggan <span class="grn">✓ entity</span></h3><p class="sm">Ada banyak pelanggan, dan tiap pelanggan punya nama, nomor HP, alamat.</p></div>
+    <div><h3>Nama pelanggan <span class="red">✗ atribut</span></h3><p class="sm">Ini hanya satu nilai yang menjelaskan pelanggan. Masuk ke dalam kotak Pelanggan.</p></div>
+    <div><h3>Toko <span class="red">✗ bukan</span></h3><p class="sm">Hanya ada satu toko, yaitu pemilik sistemnya sendiri. Tidak perlu dijadikan entity.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note"><p><strong>Tips:</strong> beri nama entity dengan kata benda tunggal yang jelas: <span class="mono">Pelanggan</span>, bukan <span class="mono">Data_Pelanggan2</span> atau <span class="mono">Tabel1</span>.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Atribut">
+  <div class="eyebrow">Komponen 2 · <b>Atribut</b></div>
+  <h2>Atribut adalah detail yang dicatat tentang sebuah entity.</h2>
+  <div class="row mt" style="gap:80px;align-items:center">
+    <div class="erd"><script type="application/json">
+    {"w":360,"h":230,"e":[{"id":"a","name":"Pelanggan","x":0,"y":0,"w":360,"a":["Kode Pelanggan|PK","Nama","No HP","Tanggal Lahir","Umur|turunan"]}],"r":[]}
+    </script></div>
+    <div class="cols3 col-rule" style="flex:1;gap:36px">
+      <div><h3>Atribut biasa</h3><p class="sm">Informasi umum: nama, nomor HP, alamat, harga.</p></div>
+      <div><h3>Atribut kunci</h3><p class="sm">Pembeda yang pasti unik di setiap baris. Digambar dengan <u>garis bawah</u>. Setiap entity <strong>wajib</strong> punya satu.</p></div>
+      <div><h3>Atribut turunan</h3><p class="sm">Bisa dihitung dari atribut lain. Umur cukup dihitung dari tanggal lahir, jadi biasanya tidak disimpan.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Kunci">
+  <div class="eyebrow">Komponen 2 · <b>Memilih kunci</b></div>
+  <h2>Kolom mana yang paling layak jadi kunci Pelanggan?</h2>
+  <div class="row mt" style="gap:72px">
+    <div style="flex:1">
+      <div class="trial" style="border-top:1px solid var(--rule)"><span class="mono" style="font-size:22px">Nama</span><span class="v red">✗</span><p>Bisa ada dua pelanggan bernama sama.</p></div>
+      <div class="trial"><span class="mono" style="font-size:22px">No HP</span><span class="v red">✗</span><p>Unik, tapi bisa berganti sewaktu-waktu.</p></div>
+      <div class="trial"><span class="mono" style="font-size:22px">NIK</span><span class="v red">✗</span><p>Unik dan tetap, tapi data pribadi yang sensitif (UU PDP).</p></div>
+      <div class="trial"><span class="mono" style="font-size:22px">Kode Pelanggan</span><span class="v grn">✓</span><p>Dibuat sendiri oleh toko: unik, tidak berubah, tidak sensitif.</p></div>
+    </div>
+    <div class="side">
+      <h4>Syarat kunci yang baik</h4>
+      <ol class="steps">
+        <li><p class="sm"><strong>Unik</strong>, tidak ada yang sama.</p></li>
+        <li><p class="sm"><strong>Selalu ada</strong>, tidak boleh kosong.</p></li>
+        <li><p class="sm"><strong>Tidak berubah</strong> selama data itu ada.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 2 · Relasi">
+  <div class="eyebrow">Komponen 3 · <b>Relasi</b></div>
+  <h2>Relasi adalah kata kerja yang menghubungkan dua entity.</h2>
+  <div class="mt-l erd"><script type="application/json">
+  {"w":1100,"h":60,"e":[
+    {"id":"a","name":"Pelanggan","x":0,"y":6,"w":260,"a":[]},
+    {"id":"b","name":"Pesanan","x":420,"y":6,"w":260,"a":[]},
+    {"id":"c","name":"Pembayaran","x":840,"y":6,"w":260,"a":[]}],
+   "r":[{"from":"a","to":"b","a":"one","b":"zmany","label":"melakukan"},{"from":"b","to":"c","a":"one","b":"zone","label":"dibayar"}]}
+  </script></div>
+  <div class="spacer"></div>
+  <div class="cols2">
+    <div class="note"><p>Relasi selalu bisa <strong>dibaca dua arah</strong>. &ldquo;Pelanggan melakukan pesanan&rdquo;, dan sebaliknya &ldquo;pesanan dilakukan oleh pelanggan&rdquo;.</p></div>
+    <div class="note"><p>Simbol di ujung garis menunjukkan <strong>berapa banyak</strong>. Itu yang akan kita pelajari berikutnya: kardinalitas.</p></div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 3 — KARDINALITAS
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 3 / 4</div>
+  <h1>Kardinalitas</h1>
+  <p>Berapa banyak? Satu atau banyak? Boleh kosong atau wajib ada? Inilah yang membuat ERD benar-benar berguna.</p>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Tiga jenis relasi">
+  <div class="eyebrow">Tiga jenis relasi</div>
+  <h2>Satu-ke-satu, satu-ke-banyak, banyak-ke-banyak.</h2>
+  <div class="mt" style="display:grid;grid-template-columns:1fr 780px;row-gap:34px;align-items:center">
+    <div><span class="num">1 : 1</span><p class="sm">Satu penjual punya <strong>satu</strong> toko. Satu toko milik <strong>satu</strong> penjual.</p></div>
+    <div class="erd"><script type="application/json">
+    {"w":780,"h":56,"e":[{"id":"a","name":"Penjual","x":0,"y":0,"w":230,"a":[]},{"id":"b","name":"Toko","x":550,"y":0,"w":230,"a":[]}],
+     "r":[{"from":"a","to":"b","a":"one","b":"one","label":"memiliki"}]}
+    </script></div>
+    <div><span class="num">1 : N</span><p class="sm">Satu pelanggan melakukan <strong>banyak</strong> pesanan. Satu pesanan milik <strong>satu</strong> pelanggan.</p></div>
+    <div class="erd"><script type="application/json">
+    {"w":780,"h":56,"e":[{"id":"a","name":"Pelanggan","x":0,"y":0,"w":230,"a":[]},{"id":"b","name":"Pesanan","x":550,"y":0,"w":230,"a":[]}],
+     "r":[{"from":"a","to":"b","a":"one","b":"zmany","label":"melakukan"}]}
+    </script></div>
+    <div><span class="num">M : N</span><p class="sm">Satu mahasiswa mengambil <strong>banyak</strong> mata kuliah. Satu mata kuliah diambil <strong>banyak</strong> mahasiswa.</p></div>
+    <div class="erd"><script type="application/json">
+    {"w":780,"h":56,"e":[{"id":"a","name":"Mahasiswa","x":0,"y":0,"w":230,"a":[]},{"id":"b","name":"Mata Kuliah","x":550,"y":0,"w":230,"a":[]}],
+     "r":[{"from":"a","to":"b","a":"zmany","b":"many","label":"mengambil"}]}
+    </script></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Menentukan kardinalitas">
+  <div class="eyebrow">Cara menentukan</div>
+  <h2>Ajukan dua pertanyaan, dari dua arah.</h2>
+  <div class="row mt" style="gap:72px">
+    <div style="flex:1">
+      <div class="trial" style="border-top:1px solid var(--rule);grid-template-columns:520px 1fr"><span style="font-size:23px">Satu pelanggan bisa melakukan berapa pesanan?</span><span class="v">banyak</span></div>
+      <div class="trial" style="grid-template-columns:520px 1fr"><span style="font-size:23px">Satu pesanan dilakukan oleh berapa pelanggan?</span><span class="v">satu</span></div>
+      <p class="say-sm mt">Banyak + satu = relasi <span class="mk">satu-ke-banyak (1:N)</span>.</p>
+    </div>
+    <div class="side">
+      <h4>Tabel cepat</h4>
+      <table class="sheet lg">
+        <tr><th>Arah 1</th><th>Arah 2</th><th>Jenis</th></tr>
+        <tr><td>satu</td><td>satu</td><td><strong>1:1</strong></td></tr>
+        <tr><td>banyak</td><td>satu</td><td><strong>1:N</strong></td></tr>
+        <tr><td>banyak</td><td>banyak</td><td><strong>M:N</strong></td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note"><p><strong>Pertanyaan ketiga:</strong> boleh nol? Pelanggan baru yang belum pernah belanja tetap pelanggan, jadi pesanannya <em>boleh nol</em>. Tapi pesanan <em>wajib</em> punya pelanggan.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Notasi crow's foot">
+  <div class="eyebrow">Notasi crow&rsquo;s foot</div>
+  <h2>Empat simbol yang perlu kamu hafal.</h2>
+  <div class="cols2 mt" style="gap:80px">
+    <div class="legend">
+      <svg width="200" height="24"><line x1="0" y1="12" x2="190" y2="12" class="ln" marker-end="url(#m-one)" style="stroke:#1d1c1a;stroke-width:1.6"/><rect x="190" y="0" width="10" height="24" fill="#fffdf8" stroke="#1d1c1a" stroke-width="1.5"/></svg>
+      <p><strong>Tepat satu</strong> <span class="xs">(wajib, maksimal satu)</span></p>
+      <svg width="200" height="24"><line x1="0" y1="12" x2="190" y2="12" marker-end="url(#m-zone)" style="stroke:#1d1c1a;stroke-width:1.6"/><rect x="190" y="0" width="10" height="24" fill="#fffdf8" stroke="#1d1c1a" stroke-width="1.5"/></svg>
+      <p><strong>Nol atau satu</strong> <span class="xs">(boleh kosong)</span></p>
+      <svg width="200" height="24"><line x1="0" y1="12" x2="190" y2="12" marker-end="url(#m-many)" style="stroke:#1d1c1a;stroke-width:1.6"/><rect x="190" y="0" width="10" height="24" fill="#fffdf8" stroke="#1d1c1a" stroke-width="1.5"/></svg>
+      <p><strong>Satu atau banyak</strong> <span class="xs">(wajib, bisa banyak)</span></p>
+      <svg width="200" height="24"><line x1="0" y1="12" x2="190" y2="12" marker-end="url(#m-zmany)" style="stroke:#1d1c1a;stroke-width:1.6"/><rect x="190" y="0" width="10" height="24" fill="#fffdf8" stroke="#1d1c1a" stroke-width="1.5"/></svg>
+      <p><strong>Nol atau banyak</strong> <span class="xs">(boleh kosong, bisa banyak)</span></p>
+    </div>
+    <div>
+      <h4>Cara mengingat</h4>
+      <ul class="rules">
+        <li><strong>Garis tegak |</strong> berarti satu.</li>
+        <li><strong>Lingkaran o</strong> berarti nol, alias boleh kosong.</li>
+        <li><strong>Kaki gagak &lt;</strong> berarti banyak. Dari sinilah nama &ldquo;crow&rsquo;s foot&rdquo;.</li>
+        <li>Simbol yang <strong>menempel ke kotak</strong> = jumlah maksimal. Simbol yang lebih jauh = jumlah minimal.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Membaca ERD">
+  <div class="eyebrow">Membaca ERD</div>
+  <h2>Baca simbol yang ada di sisi <em>seberang</em>.</h2>
+  <div class="mt-l erd"><script type="application/json">
+  {"w":1376,"h":60,"e":[{"id":"a","name":"Pelanggan","x":0,"y":6,"w":340,"a":[]},{"id":"b","name":"Pesanan","x":1036,"y":6,"w":340,"a":[]}],
+   "r":[{"from":"a","to":"b","a":"one","b":"zmany","label":"melakukan"}]}
+  </script></div>
+  <div class="cols2 mt-l" style="gap:80px">
+    <div class="note"><h4>Kiri ke kanan &rarr;</h4><p class="say-sm">&ldquo;Satu pelanggan melakukan <span class="mk">nol atau banyak</span> pesanan.&rdquo;</p><p class="xs mt-s">Lihat simbol di dekat kotak Pesanan: lingkaran + kaki gagak.</p></div>
+    <div class="note"><h4>&larr; Kanan ke kiri</h4><p class="say-sm">&ldquo;Satu pesanan dilakukan oleh <span class="mk">tepat satu</span> pelanggan.&rdquo;</p><p class="xs mt-s">Lihat simbol di dekat kotak Pelanggan: dua garis tegak.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Dua notasi">
+  <div class="eyebrow">Dua gaya gambar</div>
+  <h2>Mungkin kamu pernah melihat ERD dengan belah ketupat.</h2>
+  <div class="cols2 mt" style="gap:96px">
+    <div>
+      <h4>Notasi Chen</h4>
+      <svg class="dg" width="600" height="140" viewBox="0 0 600 140">
+        <line x1="170" y1="68" x2="230" y2="68" class="ln"/><line x1="370" y1="68" x2="430" y2="68" class="ln"/>
+        <rect x="0" y="40" width="170" height="56" class="chen"/><text x="85" y="74" class="t-c" text-anchor="middle">Pelanggan</text>
+        <polygon points="230,68 300,22 370,68 300,114" class="chen"/><text x="300" y="73" class="t-c" text-anchor="middle" style="font-size:14px">melakukan</text>
+        <rect x="430" y="40" width="170" height="56" class="chen"/><text x="515" y="74" class="t-c" text-anchor="middle">Pesanan</text>
+        <text x="196" y="58" class="t-c">1</text><text x="398" y="58" class="t-c">N</text>
+      </svg>
+      <p class="sm mt">Relasi digambar sebagai <strong>belah ketupat</strong>, jumlahnya ditulis dengan angka 1 dan N. Cocok untuk sketsa konsep.</p>
+    </div>
+    <div>
+      <h4>Notasi crow&rsquo;s foot</h4>
+      <div class="erd" style="padding-top:40px;height:140px"><script type="application/json">
+      {"w":600,"h":60,"e":[{"id":"a","name":"Pelanggan","x":0,"y":6,"w":200,"a":[]},{"id":"b","name":"Pesanan","x":400,"y":6,"w":200,"a":[]}],
+       "r":[{"from":"a","to":"b","a":"one","b":"zmany","label":"melakukan"}]}
+      </script></div>
+      <p class="sm mt">Jumlah dan &ldquo;boleh kosong&rdquo; langsung terlihat dari simbol. Dipakai oleh <strong>MySQL Workbench</strong> dan <strong>dbdiagram.io</strong>.</p>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note"><p>Isinya sama, hanya gaya gambarnya berbeda. Di kelas ini kita memakai <strong>crow&rsquo;s foot</strong> karena itulah yang akan kamu temui di tools.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 3 · Memecah M:N">
+  <div class="eyebrow">Aturan penting</div>
+  <h2>Relasi banyak-ke-banyak harus <em>dipecah</em>.</h2>
+  <div class="row mt" style="gap:48px;align-items:center">
+    <h4 style="width:110px;margin:0" class="red">Sebelum</h4>
+    <div class="erd"><script type="application/json">
+    {"w":780,"h":130,"e":[{"id":"a","name":"Pesanan","x":0,"y":0,"w":230,"a":["No Pesanan|PK","Tanggal"]},{"id":"b","name":"Produk","x":550,"y":0,"w":230,"a":["Kode Produk|PK","Nama Produk"]}],
+     "r":[{"from":"a","to":"b","a":"zmany","b":"many","label":"berisi"}]}
+    </script></div>
+  </div>
+  <div class="row mt" style="gap:48px;align-items:center">
+    <h4 style="width:110px;margin:0" class="grn">Sesudah</h4>
+    <div class="erd"><script type="application/json">
+    {"w":1180,"h":165,"e":[{"id":"a","name":"Pesanan","x":0,"y":0,"w":230,"a":["No Pesanan|PK","Tanggal"]},
+      {"id":"d","name":"Detail Pesanan","x":420,"y":0,"w":300,"cls":"hl","a":["No Pesanan|PK FK","Kode Produk|PK FK","Jumlah"]},
+      {"id":"b","name":"Produk","x":950,"y":0,"w":230,"a":["Kode Produk|PK","Nama Produk"]}],
+     "r":[{"from":"a","to":"d","a":"one","b":"many","label":"berisi"},{"from":"d","to":"b","a":"zmany","b":"one","label":"untuk"}]}
+    </script></div>
+  </div>
+  <div class="spacer"></div>
+  <div class="note"><p>Database tidak bisa menyimpan M:N secara langsung. Kita tambahkan <strong>entity penghubung</strong> (Detail Pesanan) sehingga M:N menjadi dua relasi 1:N. Bonusnya, &ldquo;Jumlah&rdquo; sekarang punya tempat.</p></div>
+</section>
+
+<!-- =====================================================================
+     BAGIAN 4 — STUDI KASUS
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Bagian 4 / 4</div>
+  <h1>Studi kasus</h1>
+  <p>Kita kembali ke cerita Toko Kelontong Berkah dan menggambar ERD-nya sampai lengkap.</p>
+</section>
+
+<section class="slide" data-section="Bagian 4 · Langkah">
+  <div class="eyebrow">Langkah menggambar ERD</div>
+  <h2>Enam langkah, selalu dengan urutan yang sama.</h2>
+  <div class="cols2" style="gap:80px">
+    <ol class="steps">
+      <li><p class="sm"><strong>Baca cerita bisnisnya</strong>, garis bawahi kata benda. Itulah calon entity.</p></li>
+      <li><p class="sm"><strong>Saring</strong>: mana yang entity, mana yang hanya atribut.</p></li>
+      <li><p class="sm"><strong>Isi atribut</strong> tiap entity, lalu pilih kuncinya.</p></li>
+    </ol>
+    <ol class="steps" start="4" style="counter-reset:s 3">
+      <li><p class="sm"><strong>Hubungkan</strong> entity berdasarkan kata kerja di cerita.</p></li>
+      <li><p class="sm"><strong>Tentukan kardinalitas</strong> dengan dua pertanyaan dua arah.</p></li>
+      <li><p class="sm"><strong>Pecah M:N</strong> dengan entity penghubung, lalu cocokkan lagi dengan ceritanya.</p></li>
+    </ol>
+  </div>
+  <div class="spacer"></div>
+  <p class="say-sm">Gambar di kertas dulu. Coret-coret jauh lebih cepat daripada merapikan di aplikasi.</p>
+</section>
+
+<section class="slide" data-section="Bagian 4 · ERD Toko Kelontong Berkah">
+  <div class="eyebrow">Hasil · Toko Kelontong Berkah</div>
+  <h2 style="margin-bottom:10px">Enam entity, lima relasi.</h2>
+  <div class="erd"><script type="application/json">
+  {"w":1376,"h":540,"e":[
+    {"id":"plg","name":"Pelanggan","x":0,"y":0,"w":250,"a":["Kode Pelanggan|PK","Nama","No HP","Alamat"]},
+    {"id":"psn","name":"Pesanan","x":375,"y":0,"w":260,"a":["No Pesanan|PK","Tanggal","Status","Kode Pelanggan|FK"]},
+    {"id":"byr","name":"Pembayaran","x":760,"y":0,"w":260,"a":["No Bayar|PK","Tanggal Bayar","Metode","Total","No Pesanan|FK"]},
+    {"id":"det","name":"Detail Pesanan","x":375,"y":300,"w":260,"a":["No Pesanan|PK FK","Kode Produk|PK FK","Jumlah","Harga Jual"]},
+    {"id":"prd","name":"Produk","x":760,"y":300,"w":260,"a":["Kode Produk|PK","Nama Produk","Harga","Stok","Kode Kategori|FK"]},
+    {"id":"kat","name":"Kategori","x":1126,"y":300,"w":250,"a":["Kode Kategori|PK","Nama Kategori"]}],
+   "r":[
+    {"from":"plg","to":"psn","a":"one","b":"zmany","label":"melakukan"},
+    {"from":"psn","to":"byr","a":"one","b":"zone","label":"dibayar"},
+    {"from":"psn","to":"det","a":"one","b":"many","label":"berisi"},
+    {"from":"det","to":"prd","a":"zmany","b":"one","label":"untuk"},
+    {"from":"prd","to":"kat","a":"zmany","b":"one","label":"termasuk"}]}
+  </script></div>
+</section>
+
+<section class="slide" data-section="Bagian 4 · Membaca hasilnya">
+  <div class="eyebrow">Membaca hasilnya</div>
+  <h2>Setiap garis bisa diucapkan sebagai kalimat bisnis.</h2>
+  <ul class="rules mt">
+    <li>Satu <strong>pelanggan</strong> melakukan <strong>nol atau banyak</strong> pesanan. Satu pesanan dilakukan oleh <strong>tepat satu</strong> pelanggan.</li>
+    <li>Satu <strong>pesanan</strong> dibayar oleh <strong>nol atau satu</strong> pembayaran. <span class="xs">Nol, karena pesanan bisa belum dibayar.</span></li>
+    <li>Satu <strong>pesanan</strong> berisi <strong>satu atau banyak</strong> baris detail. Pesanan kosong tidak masuk akal.</li>
+    <li>Satu <strong>produk</strong> muncul di <strong>nol atau banyak</strong> detail pesanan. <span class="xs">Produk baru belum pernah dibeli.</span></li>
+    <li>Satu <strong>kategori</strong> berisi <strong>nol atau banyak</strong> produk. Satu produk masuk ke <strong>tepat satu</strong> kategori.</li>
+  </ul>
+  <div class="spacer"></div>
+  <div class="note grn"><p><strong>Cara mengecek ERD:</strong> bacakan kalimat-kalimat ini ke pemilik usaha. Kalau ia bilang &ldquo;bukan begitu&rdquo;, berarti ERD-nya yang harus diperbaiki.</p></div>
+</section>
+
+<section class="slide" data-section="Bagian 4 · Kesalahan umum">
+  <div class="eyebrow">Kesalahan yang paling sering</div>
+  <h2>Periksa lima hal ini sebelum mengumpulkan ERD.</h2>
+  <div class="cols2 mt" style="gap:80px">
+    <ol class="steps">
+      <li><p class="sm"><strong>Atribut dijadikan entity.</strong> &ldquo;Kota&rdquo; atau &ldquo;Nama&rdquo; tidak perlu kotak sendiri.</p></li>
+      <li><p class="sm"><strong>Entity tanpa kunci.</strong> Setiap kotak wajib punya satu atribut bergaris bawah.</p></li>
+      <li><p class="sm"><strong>M:N dibiarkan.</strong> Selalu pecah dengan entity penghubung.</p></li>
+    </ol>
+    <ol class="steps" style="counter-reset:s 3">
+      <li><p class="sm"><strong>Garis tanpa simbol.</strong> Tanpa kardinalitas, ERD tidak bisa dibaca.</p></li>
+      <li><p class="sm"><strong>Menyimpan yang bisa dihitung.</strong> Total belanja atau umur cukup dihitung saat dibutuhkan.</p></li>
+    </ol>
+  </div>
+  <div class="spacer"></div>
+  <div class="cols4 col-rule">
+    <div><h3>Kertas</h3><p class="xs">Untuk sketsa pertama.</p></div>
+    <div><h3>draw.io</h3><p class="xs">Gratis, tinggal tarik dan lepas.</p></div>
+    <div><h3>dbdiagram.io</h3><p class="xs">ERD ditulis sebagai teks.</p></div>
+    <div><h3>MySQL Workbench</h3><p class="xs">ERD bisa langsung jadi tabel.</p></div>
+  </div>
+</section>
+
+<!-- =====================================================================
+     LATIHAN
+====================================================================== -->
+<section class="slide section" data-plain>
+  <div class="part">Latihan</div>
+  <h1>Giliranmu</h1>
+  <p>Empat kasus bisnis. Pilih satu, kerjakan berpasangan, lalu presentasikan ERD-mu di depan kelas.</p>
+</section>
+
+<section class="slide" data-section="Latihan · Cara mengerjakan">
+  <div class="eyebrow">Cara mengerjakan</div>
+  <h2>Pilih satu kasus. Waktu 25 menit, lalu presentasi.</h2>
+  <div class="cols2" style="gap:80px">
+    <ol class="steps">
+      <li><p class="sm"><strong>Pilih</strong> salah satu dari empat kasus berikut.</p></li>
+      <li><p class="sm"><strong>Tulis entity</strong> dari daftar yang diberikan. Boleh tambah kalau perlu.</p></li>
+      <li><p class="sm"><strong>Isi atribut</strong>, garis bawahi kunci (PK), tandai FK.</p></li>
+      <li><p class="sm"><strong>Hubungkan</strong> sesuai aturan bisnis, beri nama relasinya.</p></li>
+      <li><p class="sm"><strong>Gambar simbol crow&rsquo;s foot</strong> di kedua ujung setiap garis.</p></li>
+    </ol>
+    <div>
+      <h4>Yang dinilai saat presentasi</h4>
+      <ul class="rules">
+        <li>Semua aturan bisnis terwakili di gambar.</li>
+        <li>Setiap entity punya kunci.</li>
+        <li>Tidak ada relasi M:N yang tersisa.</li>
+        <li>Kamu bisa membacakan setiap garis sebagai kalimat.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Latihan · Kasus A">
+  <div class="eyebrow">Kasus A</div>
+  <h2>Sistem Pemesanan Restoran</h2>
+  <div class="cols2" style="gap:72px">
+    <div>
+      <p>Sebuah restoran ingin mencatat pesanan pelanggan. Setiap meja bisa memesan beberapa menu, dan setiap pesanan dicatat oleh satu pelayan. Restoran juga ingin tahu menu mana yang paling laris dan bahan baku apa saja yang terpakai.</p>
+      <h4 class="mt">Entity yang dibutuhkan</h4>
+      <div><span class="chip plain">Pelanggan</span><span class="chip plain">Meja</span><span class="chip plain">Pesanan</span><span class="chip plain">Menu</span><span class="chip plain">Pelayan</span><span class="chip plain">Bahan Baku</span></div>
+    </div>
+    <div>
+      <h4>Aturan bisnis</h4>
+      <ul class="rules">
+        <li>Satu pelanggan duduk di satu meja.</li>
+        <li>Satu meja bisa punya banyak pesanan dalam sehari.</li>
+        <li>Satu pesanan bisa berisi banyak menu.</li>
+        <li>Satu pelayan melayani banyak meja.</li>
+        <li>Setiap menu dibuat dari beberapa bahan baku.</li>
+        <li>Satu bahan baku bisa dipakai untuk banyak menu.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Latihan · Kasus B">
+  <div class="eyebrow">Kasus B</div>
+  <h2>Marketplace Online</h2>
+  <div class="cols2" style="gap:72px">
+    <div>
+      <p>Sebuah platform e-commerce ingin mengelola data penjual, pembeli, produk, transaksi, dan pengiriman. Setiap penjual punya toko, dan pembeli bisa memberi ulasan untuk produk yang sudah dibelinya.</p>
+      <h4 class="mt">Entity yang dibutuhkan</h4>
+      <div><span class="chip plain">Pembeli</span><span class="chip plain">Penjual</span><span class="chip plain">Toko</span><span class="chip plain">Produk</span><span class="chip plain">Pesanan</span><span class="chip plain">Ulasan</span><span class="chip plain">Pengiriman</span></div>
+    </div>
+    <div>
+      <h4>Aturan bisnis</h4>
+      <ul class="rules">
+        <li>Satu penjual punya satu toko.</li>
+        <li>Satu toko menjual banyak produk; satu produk hanya dijual di satu toko.</li>
+        <li>Satu pembeli bisa membeli banyak produk.</li>
+        <li>Satu pesanan berisi satu atau lebih produk.</li>
+        <li>Pembeli bisa memberi ulasan per produk yang dibeli.</li>
+        <li>Setiap pesanan punya satu data pengiriman.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Latihan · Kasus C">
+  <div class="eyebrow">Kasus C</div>
+  <h2>Sistem Informasi Rumah Sakit</h2>
+  <div class="cols2" style="gap:72px">
+    <div>
+      <p>Rumah sakit ingin mengelola data pasien, dokter, kunjungan, resep obat, dan kamar rawat inap. Setiap kunjungan ditangani oleh satu dokter, dan pasien bisa mendapat resep obat.</p>
+      <h4 class="mt">Entity yang dibutuhkan</h4>
+      <div><span class="chip plain">Pasien</span><span class="chip plain">Dokter</span><span class="chip plain">Kunjungan</span><span class="chip plain">Resep</span><span class="chip plain">Obat</span><span class="chip plain">Kamar</span></div>
+    </div>
+    <div>
+      <h4>Aturan bisnis</h4>
+      <ul class="rules">
+        <li>Satu pasien bisa berkunjung berkali-kali.</li>
+        <li>Satu kunjungan ditangani oleh satu dokter; satu dokter menangani banyak kunjungan.</li>
+        <li>Satu kunjungan bisa menghasilkan satu resep.</li>
+        <li>Satu resep berisi satu atau lebih obat; satu obat bisa ada di banyak resep.</li>
+        <li>Pasien rawat inap menempati satu kamar.</li>
+        <li>Satu kamar bisa diisi beberapa pasien (per tempat tidur).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-section="Latihan · Kasus D">
+  <div class="eyebrow">Kasus D</div>
+  <h2>Perpustakaan Universitas</h2>
+  <div class="cols2" style="gap:72px">
+    <div>
+      <p>Perpustakaan kampus ingin mencatat data mahasiswa, buku, peminjaman, denda, dan petugas. Buku dikelompokkan berdasarkan kategori, dan mahasiswa yang terlambat mengembalikan buku dikenakan denda.</p>
+      <h4 class="mt">Entity yang dibutuhkan</h4>
+      <div><span class="chip plain">Mahasiswa</span><span class="chip plain">Buku</span><span class="chip plain">Peminjaman</span><span class="chip plain">Denda</span><span class="chip plain">Kategori</span><span class="chip plain">Petugas</span></div>
+    </div>
+    <div>
+      <h4>Aturan bisnis</h4>
+      <ul class="rules">
+        <li>Satu mahasiswa bisa meminjam banyak buku.</li>
+        <li>Satu buku bisa dipinjam banyak mahasiswa (bergantian).</li>
+        <li>Setiap peminjaman dicatat oleh satu petugas.</li>
+        <li>Satu buku masuk ke satu kategori; satu kategori berisi banyak buku.</li>
+        <li>Jika terlambat, dikenakan denda per hari per buku.</li>
+        <li>Satu mahasiswa bisa punya banyak denda.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- PENUTUP ---------- -->
+<section class="slide" data-section="Ringkasan">
+  <div class="eyebrow">Ringkasan</div>
+  <p class="say" style="font-size:54px;line-height:1.2;max-width:1300px">ERD menjawab tiga pertanyaan: data tentang <span class="mk">apa</span>, apa saja yang <span class="mk">dicatat</span>, dan bagaimana semuanya <span class="mk">terhubung</span>.</p>
+  <div class="cols3 col-rule mt-l">
+    <div><span class="num">Entity</span><p class="sm">Kata benda penting bagi bisnis. Punya banyak contoh dan punya data sendiri.</p></div>
+    <div><span class="num">Atribut</span><p class="sm">Detail yang dicatat. Satu di antaranya menjadi kunci.</p></div>
+    <div><span class="num">Relasi</span><p class="sm">Kata kerja di antara entity, lengkap dengan kardinalitas di kedua ujungnya.</p></div>
+  </div>
+</section>
+
+<section class="slide" data-section="Penutup">
+  <div class="eyebrow">Pertemuan berikutnya</div>
+  <h2>ERD yang sudah jadi akan kita ubah menjadi <em>tabel</em>.</h2>
+  <div class="cols2 col-rule mt" style="gap:80px">
+    <div><h3>Tugas mandiri</h3><p class="sm">Buat ERD untuk <strong>sistem reservasi hotel</strong>: minimal 5 entity dan minimal 2 relasi M:N yang sudah dipecah dengan entity penghubung.</p></div>
+    <div><h3>Bawa</h3><p class="sm">ERD latihan hari ini. Di pertemuan 04, setiap kotak akan menjadi tabel dan setiap garis menjadi foreign key.</p></div>
+  </div>
+  <div class="spacer"></div>
+  <p class="say">Terima kasih. Ada pertanyaan?</p>
+</section>
+
+<div id="foot"><span><button id="prev" aria-label="Sebelumnya">&larr;</button><button id="next" aria-label="Berikutnya">&rarr;</button></span><span id="count"></span></div>
+<div id="bar"></div>
+<div id="toast"></div>
+</div>
+<script src="../assets/deck.js"></script>
+</body>
+</html>
