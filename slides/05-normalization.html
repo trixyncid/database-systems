@@ -38,7 +38,7 @@
     <div><span class="num">01</span><h3>Masalahnya</h3><p class="sm">Melihat sheet pesanan sebuah toko online. Apa yang salah dengan data yang berulang?</p></div>
     <div><span class="num">02</span><h3>Tiga anomali</h3><p class="sm">Tiga kejadian nyata yang bikin data jadi kacau: saat mengubah, menghapus, dan menambah.</p></div>
     <div><span class="num">03</span><h3>1NF → 2NF → 3NF</h3><p class="sm">Merapikan sheet tadi langkah demi langkah, dengan satu pertanyaan sederhana di tiap langkah.</p></div>
-    <div><span class="num">04</span><h3>Latihan</h3><p class="sm">Tiga kasus bisnis baru, dari yang mudah sampai yang menantang. Dikerjakan berpasangan.</p></div>
+    <div><span class="num">04</span><h3>Latihan</h3><p class="sm">Empat kasus bisnis baru, dari yang mudah sampai yang menantang. Dikerjakan berpasangan.</p></div>
   </div>
   <div class="spacer"></div>
   <div class="note grn"><p><strong>Target:</strong> setelah kelas ini, kamu bisa mengambil satu tabel yang berantakan dan memecahnya menjadi tabel-tabel yang sudah 3NF.</p></div>
@@ -555,7 +555,7 @@
 <section class="slide section" data-plain>
   <div class="part">Bagian 3 / 3</div>
   <h1>Latihan</h1>
-  <p>Tiga kasus bisnis, dari yang mudah sampai yang menantang. Gunakan langkah yang sama seperti Toko Kak Rina.</p>
+  <p>Empat kasus bisnis, dari yang mudah sampai yang menantang. Gunakan langkah yang sama seperti Toko Kak Rina.</p>
 </section>
 
 <section class="slide" data-section="Bagian 3 · Cara mengerjakan">
@@ -706,6 +706,50 @@
         <li><b>Penugasan</b> (<u><i>Kode Proyek</i></u>, <u><i>Kode Karyawan</i></u>, Jam Kerja)</li>
       </ul>
       <p class="xs mt">Diskusi: Klien juga berulang. Boleh dipisah jadi tabel Klien kalau ada data klien lain (alamat, kontak). Jawaban dengan atau tanpa tabel Klien sama-sama benar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- LATIHAN 4 ---------- -->
+<section class="slide" data-section="Bagian 3 · Latihan 4">
+  <div class="eyebrow">Latihan 4 <span class="level"><i class="f"></i><i class="f"></i><i class="f"></i></span> &nbsp;Tantangan</div>
+  <h2>Katering Dapur Hijau: langganan makan sehat</h2>
+  <p class="lede">Pelanggan berlangganan satu paket menu per minggu. <strong>Ongkir ditentukan oleh kecamatan</strong> tempat pelanggan tinggal, dan satu langganan bisa diantar di beberapa hari.</p>
+  <table class="sheet sm mt-s">
+    <tr><th>No Langganan</th><th>Tgl Mulai</th><th>Kode Plg</th><th>Nama</th><th>Kecamatan</th><th>Ongkir</th><th>Kode Paket</th><th>Nama Paket</th><th>Harga/Minggu</th><th>Hari Antar</th></tr>
+    <tr><td>L-01</td><td>01 Okt</td><td>C01</td><td>Bima</td><td>Medan Baru</td><td>10.000</td><td>PK1</td><td>Rendah Kalori</td><td>350.000</td><td>Senin, Rabu, Jumat</td></tr>
+    <tr><td>L-02</td><td>03 Okt</td><td>C02</td><td>Clara</td><td>Medan Johor</td><td>15.000</td><td>PK2</td><td>Menu Keluarga</td><td>600.000</td><td>Selasa, Kamis</td></tr>
+    <tr><td>L-03</td><td>05 Okt</td><td>C03</td><td>Dedi</td><td>Medan Baru</td><td>10.000</td><td>PK1</td><td>Rendah Kalori</td><td>350.000</td><td>Senin</td></tr>
+    <tr><td>L-04</td><td>08 Okt</td><td>C01</td><td>Bima</td><td>Medan Baru</td><td>10.000</td><td>PK3</td><td>Vegetarian</td><td>400.000</td><td>Sabtu</td></tr>
+  </table>
+  <div class="spacer"></div>
+  <div class="cols3">
+    <div class="note"><p class="sm"><strong>a.</strong> Normalisasi sampai 3NF. Tandai PK dan FK.</p></div>
+    <div class="note"><p class="sm"><strong>b.</strong> Bentuk normal mana yang dilanggar oleh kolom <span class="mono">Ongkir</span>? 2NF atau 3NF?</p></div>
+    <div class="note"><p class="sm"><strong>c.</strong> Ongkir ke Medan Baru naik jadi 12.000. Berapa baris diubah <em>sebelum</em> dan <em>sesudah</em>?</p></div>
+  </div>
+</section>
+
+<section class="slide answer" data-section="Kunci jawaban · Latihan 4">
+  <div class="eyebrow"><b>Kunci jawaban</b> · Latihan 4</div>
+  <h2>Satu kasus, ketiga bentuk normal terpakai semua.</h2>
+  <div class="cols2" style="gap:72px">
+    <ol class="steps">
+      <li><p class="sm"><strong>1NF:</strong> Hari Antar dipecah per baris (L-01 jadi 3 baris). Kunci = <span class="mono">No Langganan + Hari Antar</span>.</p></li>
+      <li><p class="sm"><strong>2NF:</strong> semua kolom selain Hari Antar cukup <span class="mono">No Langganan</span> &rarr; tabel Langganan. Sisanya: Jadwal Antar.</p></li>
+      <li><p class="sm"><strong>3NF:</strong> Nama &amp; Kecamatan ditentukan <span class="mono">Kode Plg</span> &rarr; Pelanggan. Nama Paket &amp; Harga ditentukan <span class="mono">Kode Paket</span> &rarr; Paket. Lalu Ongkir ditentukan <span class="mono">Kecamatan</span> &rarr; tabel Kecamatan.</p></li>
+      <li><p class="sm"><strong>b.</strong> 3NF: Ongkir ditentukan oleh Kecamatan, kolom yang bukan kunci. <strong>c.</strong> Sebelum: 3 baris (L-01, L-03, L-04). Sesudah: 1 baris.</p></li>
+    </ol>
+    <div>
+      <h4>Hasil 3NF · 5 tabel</h4>
+      <ul class="schema">
+        <li><b>Kecamatan</b> (<u>Kecamatan</u>, Ongkir)</li>
+        <li><b>Pelanggan</b> (<u>Kode Plg</u>, Nama, <i>Kecamatan</i>)</li>
+        <li><b>Paket</b> (<u>Kode Paket</u>, Nama Paket, Harga)</li>
+        <li><b>Langganan</b> (<u>No Langganan</u>, Tgl Mulai, <i>Kode Plg</i>, <i>Kode Paket</i>)</li>
+        <li><b>Jadwal Antar</b> (<u><i>No Langganan</i></u>, <u>Hari Antar</u>)</li>
+      </ul>
+      <p class="xs mt">Ada rantai dua langkah: Langganan &rarr; Pelanggan &rarr; Kecamatan. Mirip Latihan 2 (Bengkel).</p>
     </div>
   </div>
 </section>

@@ -16,7 +16,7 @@ Slide deck for the Database Systems course, Digital Business program, Semester I
 | 03 | Entity Relationship Diagram (+ latihan) | `slides/03-erd.html` |
 | 04 | Dari ERD ke Tabel | `slides/04-erd-to-tables.html` |
 | 05 | Normalisasi (+ latihan) | `slides/05-normalization.html` |
-| 06 | Praktik SQL & Tools | `slides/06-sql-tools.html` |
+| 06 | Praktik SQL & Tools (+ latihan) | `slides/06-sql-tools.html` |
 | 07 | Query Data | `slides/07-querying-data.html` |
 | 08 | UTS | — |
 | 09 | Meringkas Data | `slides/09-summarizing-data.html` |
@@ -31,7 +31,8 @@ Old file names (`02-erd-comprehensive`, `03-data-modeling-basics`, `03-normaliza
 ## Tech
 
 - Pure HTML/CSS/JS — no build tools, no dependencies
-- Redesigned decks (03, 05) share `assets/deck.css` and `assets/deck.js`: 1600×900 canvas scaled to fit, `F` fullscreen, `K` toggles answer-key slides, ERD diagrams drawn from small JSON specs
+- Redesigned decks (03, 05, 06) share `assets/deck.css` and `assets/deck.js`: 1600×900 canvas scaled to fit, `F` fullscreen, `K` toggles answer-key slides, ERD diagrams drawn from small JSON specs, SQL code blocks with highlighting and a copy button
+- `assets/sql/toko-kak-rina.sql`: the session 06 database script (tested on MySQL 8.0)
 - Playfair Display + Inter (Google Fonts)
 - All images embedded as base64 (self-contained files)
 - Keyboard navigation (← →), touch swipe, dot navigation

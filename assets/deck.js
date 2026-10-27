@@ -58,6 +58,30 @@
     d.replaceChildren(svg);
   });
 
+
+  // SQL code blocks: <pre class="sql">…</pre> get keyword colouring and a copy button
+  const KW='CREATE|DATABASE|TABLE|USE|PRIMARY|KEY|FOREIGN|REFERENCES|NOT|NULL|INSERT|INTO|VALUES|SELECT|FROM|WHERE|UPDATE|SET|DELETE|DROP|SHOW|TABLES|DESCRIBE|UNIQUE|DEFAULT|AND|OR|IF|EXISTS|ORDER|BY|LIMIT';
+  const TY='INT|VARCHAR|CHAR|DATE|TEXT|DECIMAL';
+  const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const tok=new RegExp(`(--[^\\n]*)|('[^']*')|\\b(${TY})\\b|\\b(${KW})\\b|\\b(\\d+(?:\\.\\d+)?)\\b`,'gi');
+  document.querySelectorAll('pre.sql').forEach(pre=>{
+    const src=pre.textContent.replace(/^\n/,'').replace(/\s+$/,'');
+    let out='',last=0;
+    src.replace(tok,(m,c,st,ty,kw,nu,off)=>{
+      out+=esc(src.slice(last,off))+`<span class="${c?'cm':st?'st':ty?'ty':kw?'kw':'nu'}">${esc(m)}</span>`;
+      last=off+m.length; return m;
+    });
+    pre.innerHTML=out+esc(src.slice(last));
+    const b=document.createElement('button'); b.className='copy'; b.type='button'; b.textContent='Salin';
+    b.addEventListener('click',e=>{
+      e.stopPropagation();
+      const done=()=>{b.textContent='Tersalin ✓';setTimeout(()=>b.textContent='Salin',1500)};
+      if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(src).then(done);
+      else{const t=document.createElement('textarea');t.value=src;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();done()}
+    });
+    pre.appendChild(b);
+  });
+
   const visible=()=>all.filter(s=>!s.classList.contains('answer')||document.body.classList.contains('kunci'));
   function show(i){
     const list=visible();
